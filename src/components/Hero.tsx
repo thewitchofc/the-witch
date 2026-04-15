@@ -51,15 +51,15 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate flex h-full min-h-0 w-full flex-1 scroll-mt-24 flex-col overflow-x-clip bg-[#020617] text-white"
+      className="relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col items-center justify-center overflow-x-clip bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]"
       dir="rtl"
       lang="he"
     >
       <CosmicField />
 
-        <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
-        <div className="flex min-h-[100svh] w-full flex-1 flex-col items-center justify-center pt-[max(0px,env(safe-area-inset-top,0px))] pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] md:justify-start md:pb-[max(1rem,env(safe-area-inset-bottom,0px))]">
-          <div className="mx-auto flex w-full max-w-[90%] flex-col items-center gap-5 text-center md:max-w-4xl md:gap-8 md:-translate-y-[6%] lg:max-w-5xl">
+      <div className="relative z-10 flex w-full flex-1 touch-manipulation items-center justify-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
+        <div className="flex w-full max-w-full flex-col items-center justify-center py-[max(0.75rem,env(safe-area-inset-bottom,0px))]">
+          <div className="mx-auto flex w-full max-w-[90%] flex-col items-center gap-5 text-center md:max-w-4xl md:gap-8 lg:max-w-5xl">
             <motion.div
               className="order-3 flex w-full justify-center max-md:opacity-90 md:order-1"
               lang="en"

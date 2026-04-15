@@ -10,7 +10,7 @@ function navLinkClassName({ isActive }: { isActive: boolean }): string {
 export function Navbar() {
   return (
     <header
-      className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-slate-950/40 backdrop-blur-xl"
+      className="fixed left-0 right-0 top-0 z-50 w-full border-b border-white/5 bg-slate-900/30 backdrop-blur-md"
       dir="rtl"
       lang="he"
     >

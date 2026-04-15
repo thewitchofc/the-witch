@@ -1,5 +1,6 @@
 import { LeadForm } from '../components/LeadForm'
 import { CosmicField } from '../components/CosmicField'
+import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
 export function ApplyPage() {
   return (
@@ -9,6 +10,7 @@ export function ApplyPage() {
       lang="he"
     >
       <CosmicField />
+      <WhyItWorksDifferent />
       <div
         id="contact"
         className="relative z-10 mx-auto w-full max-w-xl scroll-mt-24 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] md:max-w-2xl sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]"

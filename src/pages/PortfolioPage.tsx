@@ -1,5 +1,6 @@
 import { CosmicField } from '../components/CosmicField'
 import { PortfolioGrid } from '../components/Portfolio'
+import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
 export function PortfolioPage() {
   return (
@@ -7,7 +8,7 @@ export function PortfolioPage() {
       <CosmicField />
       <main
         id="portfolio"
-        className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-6 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
+        className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-4 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:px-6 md:pb-32"
         dir="rtl"
         lang="he"
         aria-labelledby="portfolio-page-heading"
@@ -20,6 +21,8 @@ export function PortfolioPage() {
         </h2>
 
         <PortfolioGrid />
+
+        <WhyItWorksDifferent />
       </main>
     </div>
   )
