@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 type PortfolioProject = {
   title: string
@@ -10,6 +10,8 @@ type PortfolioProject = {
   href: string
   /** פרויקט ראשי — רוחב מלא בדסקטופ, תג חי, CTA לאתר בפרודקשן */
   featured?: boolean
+  /** כשיש גם מקרה בוחן פנימי וגם אתר חי — הכרטיס מנווט למקרה הבוחן; הקישור החי נפרד */
+  liveSiteUrl?: string
 }
 
 const projects: PortfolioProject[] = [
@@ -23,6 +25,7 @@ const projects: PortfolioProject[] = [
     imageAlt: 'מסך הבית של SAB Glass — מקלחוני זכוכית בהתאמה אישית',
     href: '/projects/sab-glass',
     featured: true,
+    liveSiteUrl: 'https://sabglass.co.il/',
   },
   {
     title: 'Royal Fruit',
@@ -56,7 +59,9 @@ const projects: PortfolioProject[] = [
 ]
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
+  const navigate = useNavigate()
   const isFeatured = Boolean(project.featured)
+  const hasLiveAndCase = Boolean(project.featured && project.liveSiteUrl)
   const cardClass = [
     'group relative block cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-slate-950/40 backdrop-blur-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:transition-all md:duration-500 md:ease-out',
     isFeatured
@@ -87,6 +92,32 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       </div>
     </>
   )
+
+  const dualControls = hasLiveAndCase ? (
+    <>
+      <a
+        href={project.liveSiteUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="absolute left-4 top-4 z-30 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-xs font-medium text-white backdrop-blur-md transition hover:bg-black/50 hover:ring-1 hover:ring-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:px-3.5 md:py-1.5 md:text-sm"
+      >
+        צפה באתר →
+      </a>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          navigate(project.href)
+        }}
+        className="absolute bottom-6 left-4 z-30 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-white/90 backdrop-blur-sm transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:left-6 md:px-3 md:text-[11px]"
+        lang="en"
+        dir="ltr"
+      >
+        Case Study
+      </button>
+    </>
+  ) : null
 
   const statusBadge = isFeatured ? (
     <span
@@ -121,16 +152,42 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       <div className="px-4 pb-4 pt-3 md:hidden">
         <h3 className="text-base font-medium text-white">{project.title}</h3>
         <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{project.description}</p>
-        {isFeatured ? (
+        {isFeatured && !hasLiveAndCase ? (
           <span className="mt-3 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white">
             {ctaLabel}
           </span>
+        ) : null}
+        {hasLiveAndCase ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <a
+              href={project.liveSiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex min-h-[40px] items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            >
+              צפה באתר →
+            </a>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate(project.href)
+              }}
+              className="inline-flex min-h-[40px] items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium uppercase tracking-wide text-white/85 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              lang="en"
+              dir="ltr"
+            >
+              Case Study
+            </button>
+          </div>
         ) : null}
         {metaBlock}
       </div>
 
       <div className={`relative hidden overflow-hidden md:block ${desktopMediaMinH}`}>
         {statusBadge}
+        {dualControls}
         <img
           src={project.image}
           alt={project.imageAlt}
@@ -144,7 +201,13 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-all duration-500 ease-out group-hover:from-black/90 group-hover:via-black/45"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6 opacity-0 transition-all duration-500 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+        <div
+          className={`absolute inset-0 flex items-center justify-center p-6 transition-all duration-500 ease-out ${
+            hasLiveAndCase
+              ? 'pointer-events-none opacity-0'
+              : 'pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100'
+          }`}
+        >
           <span
             className="rounded-full border border-white/20 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white shadow-lg ring-1 ring-white/10 backdrop-blur-md"
             aria-hidden
@@ -160,6 +223,26 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       <div className="hidden p-5 md:block md:p-6">{metaBlock}</div>
     </>
   )
+
+  if (hasLiveAndCase) {
+    return (
+      <div
+        className={cardClass}
+        role="link"
+        tabIndex={0}
+        onClick={() => navigate(project.href)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            navigate(project.href)
+          }
+        }}
+        aria-label={`${project.title} — מעבר למקרה בוחן`}
+      >
+        {inner}
+      </div>
+    )
+  }
 
   if (isInternal) {
     return (
