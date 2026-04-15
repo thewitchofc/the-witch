@@ -21,7 +21,7 @@ const projects: PortfolioProject[] = [
     tags: ['SEO', 'המרות', 'ביצועים', 'קוד מלא'],
     image: '/portfolio/sab-glass-hero.png',
     imageAlt: 'מסך הבית של SAB Glass — מקלחוני זכוכית בהתאמה אישית',
-    href: 'https://sabglass.co.il/',
+    href: '/projects/sab-glass',
     featured: true,
   },
   {
@@ -65,7 +65,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
   ].join(' ')
 
   const isInternal = project.href.startsWith('/')
-  const ctaLabel = isFeatured ? 'צפה באתר →' : 'צפה בפרויקט →'
+  const ctaLabel = 'צפה בפרויקט →'
   const mobileImgH = isFeatured ? 'h-[220px]' : 'h-[180px]'
   const desktopMediaMinH = isFeatured ? 'min-h-[320px] h-[320px]' : 'min-h-[280px] lg:min-h-[300px]'
   const desktopImgScale = isFeatured
@@ -88,19 +88,26 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     </>
   )
 
-  const liveBadge = isFeatured ? (
+  const statusBadge = isFeatured ? (
     <span
       className="absolute right-4 top-4 z-20 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300"
       lang="he"
     >
       פרויקט באוויר
     </span>
-  ) : null
+  ) : (
+    <span
+      className="absolute right-4 top-4 z-20 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70"
+      lang="he"
+    >
+      בפיתוח
+    </span>
+  )
 
   const inner = (
     <>
       <div className="relative overflow-hidden md:hidden">
-        {liveBadge}
+        {statusBadge}
         <img
           src={project.image}
           alt={project.imageAlt}
@@ -123,7 +130,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       </div>
 
       <div className={`relative hidden overflow-hidden md:block ${desktopMediaMinH}`}>
-        {liveBadge}
+        {statusBadge}
         <img
           src={project.image}
           alt={project.imageAlt}
@@ -163,13 +170,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
   }
 
   return (
-    <a
-      href={project.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cardClass}
-      {...(isFeatured ? { 'aria-label': `${project.title} — צפה באתר החי (נפתח בלשונית חדשה)` } : {})}
-    >
+    <a href={project.href} target="_blank" rel="noopener noreferrer" className={cardClass}>
       {inner}
     </a>
   )
