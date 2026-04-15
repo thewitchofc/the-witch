@@ -60,14 +60,6 @@ const projects: PortfolioProject[] = [
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
   const navigate = useNavigate()
-  const isFeatured = Boolean(project.featured)
-  const hasLiveAndCase = Boolean(project.featured && project.liveSiteUrl)
-  const cardClass = [
-    'group relative block cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70',
-    'max-md:overflow-visible max-md:rounded-none max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:backdrop-blur-none max-md:ring-0',
-    'md:overflow-visible md:rounded-none md:border-0 md:bg-transparent md:backdrop-blur-none md:shadow-none md:ring-0',
-    isFeatured ? 'md:col-span-2' : '',
-  ].join(' ')
 
   function openProject() {
     const { href } = project
@@ -77,102 +69,6 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     }
     window.open(href, '_blank', 'noopener,noreferrer')
   }
-  const desktopMediaMinH = isFeatured ? 'min-h-[300px] h-[300px] lg:h-[320px]' : 'min-h-[240px] h-[240px] lg:min-h-[260px] lg:h-[260px]'
-
-  const statusBadge = isFeatured ? (
-    <span
-      className="absolute right-2 top-2 z-20 rounded-full bg-emerald-500/25 px-2 py-0.5 text-[10px] font-medium text-emerald-200 md:right-4 md:top-4 md:px-3 md:py-1 md:text-xs md:text-emerald-300"
-      lang="he"
-    >
-      פרויקט באוויר
-    </span>
-  ) : (
-    <span
-      className="absolute right-2 top-2 z-20 rounded-full bg-black/40 px-2 py-0.5 text-[10px] font-medium text-white/75 backdrop-blur-sm md:right-4 md:top-4 md:px-3 md:py-1 md:text-xs md:text-white/70"
-      lang="he"
-    >
-      בפיתוח
-    </span>
-  )
-
-  const inner = (
-    <>
-      <div className="relative p-0 shadow-none md:hidden">
-        {statusBadge}
-        <img
-          src={project.image}
-          alt={project.imageAlt}
-          width={900}
-          height={520}
-          loading="lazy"
-          decoding="async"
-          className="h-[200px] w-full rounded-xl object-cover shadow-none ring-0"
-        />
-      </div>
-      <div className="space-y-3 px-4 pt-3 md:hidden">
-        <h3 className="text-base font-semibold text-white">{project.title}</h3>
-        <p className="line-clamp-1 text-sm leading-snug text-white/60">{project.description}</p>
-      </div>
-
-      {/* דסקטופ: תמונה מלאה, גרדיאנט, טקסט bottom-right, hover — scale + overlay כהה + כפתור */}
-      <div
-        className={`relative mx-auto hidden w-full max-w-full overflow-hidden rounded-xl md:block ${desktopMediaMinH}`}
-      >
-        {statusBadge}
-        <img
-          src={project.image}
-          alt={project.imageAlt}
-          width={900}
-          height={520}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/70 to-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-black/0 transition duration-500 ease-out group-hover:bg-black/35"
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute bottom-6 right-6 z-10 max-w-[min(100%,22rem)] text-right">
-          <h3 className="text-lg font-semibold leading-snug text-white md:text-xl">{project.title}</h3>
-          <p className="mt-1 line-clamp-1 text-sm leading-snug text-white/65">{project.description}</p>
-        </div>
-        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 px-6 opacity-0 transition duration-500 ease-out group-hover:opacity-100">
-          <span className="rounded-full border border-white/20 bg-white/15 px-6 py-2.5 text-sm font-semibold text-white shadow-lg ring-1 ring-white/10 backdrop-blur-md">
-            צפה בפרויקט
-          </span>
-          {hasLiveAndCase ? (
-            <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-4 text-xs text-white/85">
-              <a
-                href={project.liveSiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="rounded-full border border-white/15 bg-black/30 px-3 py-1.5 transition hover:bg-black/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-              >
-                צפה באתר →
-              </a>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  navigate(project.href)
-                }}
-                className="rounded-full border border-white/15 bg-black/30 px-3 py-1.5 font-medium transition hover:bg-black/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-                lang="en"
-                dir="ltr"
-              >
-                Case Study
-              </button>
-            </div>
-          ) : null}
-        </div>
-      </div>
-    </>
-  )
 
   const isExternalHref = !project.href.startsWith('/')
   const cardAriaLabel = isExternalHref
@@ -181,7 +77,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
   return (
     <div
-      className={cardClass}
+      className="block cursor-pointer rounded-none border-0 bg-transparent p-0 shadow-none ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
       role="link"
       tabIndex={0}
       onClick={openProject}
@@ -193,14 +89,30 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       }}
       aria-label={cardAriaLabel}
     >
-      {inner}
+      <div className="space-y-3">
+        <div className="overflow-hidden rounded-lg">
+          <img
+            src={project.image}
+            alt={project.imageAlt}
+            width={900}
+            height={520}
+            loading="lazy"
+            decoding="async"
+            className="h-[200px] w-full object-cover md:h-[240px]"
+          />
+        </div>
+        <div>
+          <h3 className="text-base font-semibold text-white md:text-lg">{project.title}</h3>
+          <p className="mt-1 line-clamp-1 text-sm leading-snug text-white/60">{project.description}</p>
+        </div>
+      </div>
     </div>
   )
 }
 
 export function PortfolioGrid() {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-8">
       {projects.map((project) => (
         <ProjectCard key={project.title} project={project} />
       ))}
