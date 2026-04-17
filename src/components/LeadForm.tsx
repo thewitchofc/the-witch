@@ -13,6 +13,12 @@ function useIsMinMd(): boolean {
   )
 }
 
+const fieldShellClass =
+  'rounded-2xl border border-white/10 bg-slate-950/40 p-4 ring-1 ring-white/[0.06] sm:p-5'
+
+const fieldControlClass =
+  'mt-2 w-full rounded-lg border-0 bg-slate-900/35 px-3 py-3 text-base text-white transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/45 sm:px-4 sm:py-3.5'
+
 const BUDGET_BELOW = 'below' as const
 
 const budgetChoices = [
@@ -134,7 +140,7 @@ export function LeadForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-name" className="block text-sm font-medium text-slate-300">
               שם מלא
             </label>
@@ -144,12 +150,12 @@ export function LeadForm() {
               type="text"
               autoComplete="name"
               required
-              className="w-full rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={fieldControlClass}
               placeholder="לדוגמה: שרה כהן"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-phone" className="block text-sm font-medium text-slate-300">
               טלפון
             </label>
@@ -160,12 +166,12 @@ export function LeadForm() {
               inputMode="tel"
               autoComplete="tel"
               required
-              className="w-full rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={fieldControlClass}
               placeholder="לדוגמה: 050-1234567"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-business" className="block text-sm font-medium text-slate-300">
               עסק
             </label>
@@ -174,12 +180,12 @@ export function LeadForm() {
               name="business"
               type="text"
               autoComplete="organization"
-              className="w-full rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={fieldControlClass}
               placeholder="שם העסק או המותג"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-existing-site" className="block text-sm font-medium text-slate-300">
               אתר קיים
             </label>
@@ -189,7 +195,7 @@ export function LeadForm() {
               type="text"
               inputMode="url"
               autoComplete="url"
-              className="w-full rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={fieldControlClass}
               placeholder="כתובת או «אין»"
             />
           </div>
@@ -266,7 +272,7 @@ export function LeadForm() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: isMinMd ? 0.32 : 0.22, ease: 'easeOut' }}
           >
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-goal" className="block text-sm font-medium text-slate-300">
               מטרה
             </label>
@@ -274,12 +280,12 @@ export function LeadForm() {
               id="lead-goal"
               name="goal"
               rows={3}
-              className="w-full resize-y rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={`${fieldControlClass} min-h-[5.5rem] resize-y`}
               placeholder="מה האתר צריך להשיג בשבילך?"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-why-now" className="block text-sm font-medium text-slate-300">
               למה עכשיו
             </label>
@@ -287,12 +293,12 @@ export function LeadForm() {
               id="lead-why-now"
               name="whyNow"
               rows={2}
-              className="w-full resize-y rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={`${fieldControlClass} min-h-[4.25rem] resize-y`}
               placeholder="דחיפות, השקה, מגבלות זמן…"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className={`space-y-2 ${fieldShellClass}`}>
             <label htmlFor="lead-notes" className="block text-sm font-medium text-slate-300">
               הערות <span className="font-normal text-slate-500">(אופציונלי)</span>
             </label>
@@ -300,7 +306,7 @@ export function LeadForm() {
               id="lead-notes"
               name="notes"
               rows={3}
-              className="w-full resize-y rounded-xl border-0 bg-slate-950/60 px-4 py-3 text-base text-white ring-1 ring-inset ring-white/10 transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50"
+              className={`${fieldControlClass} min-h-[5.5rem] resize-y`}
               placeholder="כל דבר נוסף שחשוב שאדע…"
             />
           </div>
@@ -354,7 +360,7 @@ export function LeadForm() {
             ) : (
               <motion.div
                 key="submit-branch"
-                className="space-y-3 md:space-y-3.5"
+                className="space-y-3 max-md:space-y-4 md:space-y-3.5"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
