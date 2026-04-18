@@ -6,8 +6,8 @@ import { CosmicField } from './CosmicField'
 const MotionLink = motion(Link)
 
 const logoMaskStyle = {
-  WebkitMaskImage: 'url(/the-witch-logo.png)',
-  maskImage: 'url(/the-witch-logo.png)',
+  WebkitMaskImage: 'url(/logo-the-witch.svg)',
+  maskImage: 'url(/logo-the-witch.svg)',
   WebkitMaskSize: 'contain',
   maskSize: 'contain',
   WebkitMaskRepeat: 'no-repeat',
@@ -65,10 +65,10 @@ export function Hero() {
           transition={{ duration: 0.6, ease: easeOut }}
         >
           <img
-            src="/the-witch-logo.png"
+            src="/logo-the-witch.svg"
             alt="The Witch"
-            width={1024}
-            height={1024}
+            width={697}
+            height={188}
             decoding="async"
             fetchPriority="high"
             className="mx-auto h-auto w-full max-w-[380px] object-contain select-none lg:max-w-[460px] xl:max-w-[520px]"
@@ -79,10 +79,10 @@ export function Hero() {
         <div className="flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl">
           <div className="block w-full shrink-0 md:hidden" dir="ltr" lang="en">
             <img
-              src="/the-witch-logo.png"
+              src="/logo-the-witch.svg"
               alt="The Witch"
-              width={1024}
-              height={1024}
+              width={697}
+              height={188}
               decoding="async"
               className="mx-auto h-auto w-full max-w-[260px] object-contain select-none"
               style={logoImgStyle}
