@@ -33,6 +33,16 @@ export function Navbar() {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/process" className={navLinkClassName}>
+                תהליך עבודה
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/faq" className={navLinkClassName}>
+                שאלות נפוצות
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/apply" className={navLinkClassName}>
                 בדיקת התאמה
               </NavLink>

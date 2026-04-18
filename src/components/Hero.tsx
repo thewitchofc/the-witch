@@ -25,11 +25,9 @@ const logoImgStyle = {
     'drop-shadow(0 0 10px rgba(168, 85, 247, 0.35)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.25)) drop-shadow(0 0 20px rgba(34, 211, 238, 0.25))',
 } as CSSProperties
 
-const headlineDesktop = 'אתרים שמביאים תוצאות.'
-const headlineMobile = 'אתר שמביא לך לקוחות.'
+const headline = 'אתרים שמביאים לך לקוחות.'
 
-const sublinesDesktop = ['בלי תבניות. בלי קיצורי דרך.'] as const
-const sublineMobile = 'מהיר. מדויק. עובד.'
+const sublines = ['פחות רעש, יותר תוצאות.'] as const
 
 const ctaLabel = 'בדיקת התאמה לפרויקט'
 
@@ -41,23 +39,42 @@ const disclaimerDesktop = [
 const easeOut = 'easeOut' as const
 
 const ctaRestShadow =
-  '0 4px 24px rgba(0, 0, 0, 0.28), 0 0 20px rgba(139, 92, 246, 0.12), 0 0 32px rgba(34, 211, 238, 0.06)'
+  '0 2px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.22), 0 0 28px rgba(34, 211, 238, 0.1)'
 const ctaHoverShadow =
-  '0 10px 36px rgba(0, 0, 0, 0.35), 0 0 32px rgba(167, 139, 250, 0.42), 0 0 56px rgba(34, 211, 238, 0.18)'
+  '0 8px 28px rgba(0, 0, 0, 0.45), 0 0 28px rgba(167, 139, 250, 0.35), 0 0 40px rgba(34, 211, 238, 0.16)'
 
-export function Hero() {
+type HeroLayout = 'default' | 'stacked'
+
+export function Hero({
+  layout = 'default',
+  showCosmicField = true,
+}: {
+  layout?: HeroLayout
+  /** כש־false, הרקע הקוסמי מגיע מההורה (למשל דף הבית על כל המסך) */
+  showCosmicField?: boolean
+}) {
+  const stacked = layout === 'stacked'
+
   return (
     <section
       id="home"
-      className="relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-x-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]"
+      className={
+        stacked
+          ? 'relative isolate flex min-h-0 w-full flex-1 flex-col overflow-x-hidden overflow-y-visible bg-transparent pt-24 text-white'
+          : 'relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-x-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
+      }
       dir="rtl"
       lang="he"
     >
-      <CosmicField />
+      {showCosmicField ? <CosmicField /> : null}
 
       <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
         <motion.div
-          className="mb-0 hidden w-full shrink-0 md:mb-10 md:block"
+          className={
+            stacked
+              ? 'mb-0 hidden w-full shrink-0 md:mb-4 md:block'
+              : 'mb-0 hidden w-full shrink-0 md:mb-10 md:block'
+          }
           lang="en"
           dir="ltr"
           initial={{ opacity: 0, y: -20 }}
@@ -71,12 +88,22 @@ export function Hero() {
             height={188}
             decoding="async"
             fetchPriority="high"
-            className="mx-auto h-auto w-full max-w-[380px] object-contain select-none lg:max-w-[460px] xl:max-w-[520px]"
+            className={
+              stacked
+                ? 'mx-auto h-auto w-full max-w-[280px] object-contain select-none md:max-w-[340px] lg:max-w-[400px]'
+                : 'mx-auto h-auto w-full max-w-[380px] object-contain select-none lg:max-w-[460px] xl:max-w-[520px]'
+            }
             style={logoImgStyle}
           />
         </motion.div>
 
-        <div className="flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl">
+        <div
+          className={
+            stacked
+              ? 'flex w-full max-w-full flex-col items-center justify-center gap-2 px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
+              : 'flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
+          }
+        >
           <div className="block w-full shrink-0 md:hidden" dir="ltr" lang="en">
             <img
               src="/logo-the-witch.svg"
@@ -84,7 +111,11 @@ export function Hero() {
               width={697}
               height={188}
               decoding="async"
-              className="mx-auto h-auto w-full max-w-[260px] object-contain select-none"
+              className={
+                stacked
+                  ? 'mx-auto h-auto w-full max-w-[200px] object-contain select-none'
+                  : 'mx-auto h-auto w-full max-w-[260px] object-contain select-none'
+              }
               style={logoImgStyle}
             />
           </div>
@@ -102,7 +133,7 @@ export function Hero() {
                   '0 0 20px rgba(168, 85, 247, 0.35), 0 0 40px rgba(34, 211, 238, 0.25)',
               }}
             >
-              {headlineMobile}
+              {headline}
             </span>
             <span
               className="hidden bg-gradient-to-l from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent md:inline"
@@ -111,7 +142,7 @@ export function Hero() {
                   '0 0 20px rgba(168, 85, 247, 0.35), 0 0 40px rgba(34, 211, 238, 0.25)',
               }}
             >
-              {headlineDesktop}
+              {headline}
             </span>
           </motion.h1>
 
@@ -121,11 +152,18 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.22, ease: easeOut }}
           >
-            <p className="bg-gradient-to-l from-cyan-200/78 via-purple-200/68 to-pink-300/72 bg-clip-text text-sm text-transparent sm:text-base md:hidden">
-              {sublineMobile}
-            </p>
+            <div className="space-y-2 md:hidden">
+              {sublines.map((line) => (
+                <p
+                  key={line}
+                  className="bg-gradient-to-l from-cyan-200/78 via-purple-200/68 to-pink-300/72 bg-clip-text text-sm text-transparent sm:text-base"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
             <div className="hidden space-y-2 md:block md:text-xl md:leading-relaxed">
-              {sublinesDesktop.map((line) => (
+              {sublines.map((line) => (
                 <p
                   key={line}
                   className="bg-gradient-to-l from-cyan-200/78 via-purple-200/68 to-pink-300/72 bg-clip-text text-transparent"
@@ -136,14 +174,15 @@ export function Hero() {
             </div>
           </motion.div>
 
-          <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:max-w-none">
+          <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
+            {/* הילה צמודה לכפתור — נראית כהמשך של מסגרת הגרדיאנט, לא כתם ברקע */}
             <div
-              className="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-r from-cyan-500 via-white/30 to-purple-500 opacity-50 blur-xl md:opacity-60 md:blur-2xl"
+              className="pointer-events-none absolute inset-[-5px] rounded-full bg-gradient-to-r from-cyan-400/45 via-violet-500/40 to-fuchsia-500/40 opacity-75 blur-md md:inset-[-6px] md:opacity-80 md:blur-lg"
               aria-hidden
             />
             <MotionLink
               to="/apply#contact"
-              className="relative z-10 flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-full border border-white/30 bg-slate-950/80 px-6 py-3 text-base font-medium text-white no-underline ring-0 backdrop-blur-sm transition-shadow duration-300 ease-out hover:border-white/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:min-h-[48px] md:w-auto md:border-transparent md:px-8 md:py-4 md:text-lg md:ring-1 md:ring-white/10 md:hover:ring-white/20"
+              className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1, boxShadow: ctaRestShadow }}
               transition={{ duration: 0.5, delay: 0.35, ease: easeOut }}
@@ -154,22 +193,26 @@ export function Hero() {
                 transition: { duration: 0.3, ease: easeOut },
               }}
             >
-              {ctaLabel}
+              <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
+                {ctaLabel}
+              </span>
             </MotionLink>
           </div>
 
-          <motion.p
-            className="hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-400 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.45, delay: 0.5, ease: easeOut }}
-          >
-            {disclaimerDesktop.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </motion.p>
+          {!stacked ? (
+            <motion.p
+              className="hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-400 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.45, delay: 0.5, ease: easeOut }}
+            >
+              {disclaimerDesktop.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </motion.p>
+          ) : null}
         </div>
       </div>
     </section>

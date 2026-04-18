@@ -9,8 +9,11 @@ function CosmicBackdrop() {
       className="pointer-events-none absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100vw)] -translate-x-1/2 blur-[100px]"
       aria-hidden
       style={{
-        background:
-          'radial-gradient(ellipse 90% 70% at 50% 0%, rgba(180, 120, 255, 0.32) 0%, transparent 58%), radial-gradient(ellipse 70% 55% at 18% 42%, rgba(236, 72, 153, 0.18) 0%, transparent 48%), radial-gradient(ellipse 65% 50% at 82% 58%, rgba(34, 211, 238, 0.2) 0%, transparent 50%)',
+        background: [
+          'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(180, 120, 255, 0.26) 0%, transparent 56%)',
+          'radial-gradient(ellipse 72% 58% at 26% 46%, rgba(236, 72, 153, 0.17) 0%, transparent 52%)',
+          'radial-gradient(ellipse 68% 52% at 74% 50%, rgba(34, 211, 238, 0.2) 0%, transparent 52%)',
+        ].join(', '),
       }}
       animate={reduceMotion ? { opacity: 0.68 } : { opacity: [0.62, 0.76, 0.64, 0.72, 0.62] }}
       transition={{
@@ -105,10 +108,15 @@ function Particles() {
 /** Same cosmic stack as Hero: base radial + aurora + particles */
 export function CosmicField() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
-      <CosmicBackdrop />
-      <Particles />
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      {/* Gradients/blur may extend past the box (-top on aurora); keep overflow visible so they are not clipped */}
+      <div className="absolute inset-0 overflow-visible">
+        <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
+        <CosmicBackdrop />
+      </div>
+      <div className="absolute inset-0 overflow-hidden">
+        <Particles />
+      </div>
     </div>
   )
 }

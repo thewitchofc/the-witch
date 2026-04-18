@@ -1,11 +1,11 @@
 const pillars = [
   {
     title: 'לא תבניות',
-    body: 'כל אתר נבנה מאפס — בלי מגבלות, בלי קיצורי דרך.',
+    body: 'כל אתר נבנה מאפס.\nבלי מגבלות ובלי קיצורי דרך.',
   },
   {
     title: 'חשיבה על תוצאה',
-    body: 'כל החלטה באתר נועדה להוביל לפעולה — לא רק להיראות טוב.',
+    body: 'כל החלטה באתר נועדה להוביל לפעולה.\nלא רק להיראות טוב.',
   },
   {
     title: 'דיוק בפרטים',
@@ -33,12 +33,10 @@ export function WhyItWorksDifferent() {
         {pillars.map((item) => (
           <div
             key={item.title}
-            className="rounded-2xl border border-white/5 bg-slate-950/40 p-6 text-center backdrop-blur-lg"
+            className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-md md:p-6"
           >
-            <h3 className="text-lg font-semibold text-white md:text-xl">{item.title}</h3>
-            <p className="mt-3 text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
-              {item.body}
-            </p>
+            <h3 className="mb-2 text-lg font-semibold text-white">{item.title}</h3>
+            <p className="whitespace-pre-line text-pretty text-sm leading-relaxed text-gray-300">{item.body}</p>
           </div>
         ))}
       </div>
