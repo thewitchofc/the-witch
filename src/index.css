@@ -31,3 +31,41 @@ body {
   max-width: 100%;
   background-color: #020617;
 }
+
+.witch-animation {
+  position: absolute;
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+  --w-left-0: -200px;
+  --w-left-1: 110%;
+  --w-top-0: 22%;
+  --w-top-1: 38%;
+  --w-bob: -25px;
+  --witch-dur: 18s;
+  animation: witchFly var(--witch-dur) linear infinite;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes witchFly {
+  0% {
+    left: var(--w-left-0);
+    top: var(--w-top-0);
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(var(--w-bob));
+  }
+  100% {
+    left: var(--w-left-1);
+    top: var(--w-top-1);
+    transform: translateY(0);
+  }
+}

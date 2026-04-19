@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useCallback, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { CosmicField } from './CosmicField'
@@ -33,6 +34,33 @@ const ctaHoverShadow =
 
 type HeroLayout = 'default' | 'stacked'
 
+function randomWitchFlight(): CSSProperties {
+  const dur = 18 + Math.random() * 16
+  const startPct = -(10 + Math.random() * 28)
+  const endPct = 100 + Math.random() * 22
+  const bob = -(10 + Math.random() * 26)
+
+  const top0 = 10 + Math.random() * 42
+  const diagonal = Math.random() < 0.78
+  let top1 = diagonal
+    ? top0 + (14 + Math.random() * 26) * (Math.random() < 0.5 ? -1 : 1)
+    : top0 + (Math.random() * 5 - 2.5)
+  top1 = Math.max(8, Math.min(58, top1))
+  if (diagonal && Math.abs(top1 - top0) < 8) {
+    top1 = top0 + (top1 >= top0 ? 10 : -10)
+    top1 = Math.max(8, Math.min(58, top1))
+  }
+
+  return {
+    ['--w-left-0' as string]: `${startPct}%`,
+    ['--w-left-1' as string]: `${endPct}%`,
+    ['--w-top-0' as string]: `${top0}%`,
+    ['--w-top-1' as string]: `${top1}%`,
+    ['--w-bob' as string]: `${bob}px`,
+    ['--witch-dur' as string]: `${dur}s`,
+  } as CSSProperties
+}
+
 export function Hero({
   layout = 'default',
   showCosmicField = true,
@@ -43,18 +71,39 @@ export function Hero({
 }) {
   const stacked = layout === 'stacked'
 
+  const [witchFlight, setWitchFlight] = useState(() => ({
+    key: 0,
+    style: randomWitchFlight(),
+  }))
+
+  const onWitchLap = useCallback(() => {
+    setWitchFlight((prev) => ({
+      key: prev.key + 1,
+      style: randomWitchFlight(),
+    }))
+  }, [])
+
   return (
     <section
       id="home"
       className={
         stacked
-          ? 'relative isolate flex min-h-0 w-full flex-1 flex-col overflow-x-hidden overflow-y-visible bg-transparent pt-24 text-white'
-          : 'relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-x-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
+          ? 'relative isolate flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-transparent pt-24 text-white'
+          : 'relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
       }
       dir="rtl"
       lang="he"
     >
       {showCosmicField ? <CosmicField /> : null}
+
+      <img
+        key={witchFlight.key}
+        src="/witch.png"
+        className="witch-animation"
+        style={witchFlight.style}
+        alt=""
+        onAnimationIteration={onWitchLap}
+      />
 
       <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
         <motion.div
@@ -88,8 +137,8 @@ export function Hero({
         <div
           className={
             stacked
-              ? 'flex w-full max-w-full flex-col items-center justify-center gap-2 px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
-              : 'flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
+              ? 'hero-content flex w-full max-w-full flex-col items-center justify-center gap-2 px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
+              : 'hero-content flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
           }
         >
           <div className="mt-3 block w-full shrink-0 md:hidden" dir="ltr" lang="en">
