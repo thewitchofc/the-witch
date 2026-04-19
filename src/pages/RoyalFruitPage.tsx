@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import heroImage from '../assets/royal-fruit-hero.png?url'
 import { CosmicField } from '../components/CosmicField'
-
-const heroImage = '/portfolio/royal-fruit-hero.png'
 
 const workItems = [
   'עיצוב ממשק משתמש (UI) נקי ורענן',
@@ -41,17 +40,18 @@ export function RoyalFruitPage() {
         dir="rtl"
         lang="he"
       >
-        <section className="relative flex min-h-[min(52vh,480px)] items-end justify-center overflow-hidden px-6 pb-14 pt-8 md:min-h-[56vh] md:items-center md:pb-20 md:pt-12">
-          <img
-            src={heroImage}
-            alt="אתר Royal Fruit — פירות וירקות טריים עד הבית"
-            className="absolute inset-0 h-full w-full object-cover"
-            width={1600}
-            height={900}
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-slate-950/82 to-slate-950/45" />
-          <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
+        <section className="flex min-h-[min(52vh,480px)] flex-col items-stretch justify-end px-0 pb-14 pt-8 md:min-h-[56vh] md:pb-20 md:pt-12">
+          <div className="w-full overflow-hidden border-y border-white/[0.07] bg-slate-950">
+            <img
+              src={heroImage}
+              alt="Royal Fruit — לוגו ומיתוג האתר"
+              className="h-[min(42vh,420px)] w-full object-cover object-center md:h-[min(48vh,480px)]"
+              width={1200}
+              height={630}
+              decoding="async"
+            />
+          </div>
+          <div className="relative z-10 mx-auto mt-10 w-full max-w-4xl px-6 text-center md:mt-12">
             <h1 className="text-balance text-3xl font-semibold tracking-tight text-white md:text-5xl">
               Royal Fruit
             </h1>

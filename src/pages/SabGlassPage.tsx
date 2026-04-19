@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CosmicField } from '../components/CosmicField'
+import { sabGlassOgImage } from '../data/clientOgImages'
 
-const heroImage = '/portfolio/sab-glass-hero.png'
+const heroImage = sabGlassOgImage
 const LIVE_SITE = 'https://sabglass.co.il/'
 
 const workItems = [

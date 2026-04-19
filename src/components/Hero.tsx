@@ -5,22 +5,10 @@ import { CosmicField } from './CosmicField'
 
 const MotionLink = motion(Link)
 
-const logoMaskStyle = {
-  WebkitMaskImage: 'url(/logo-the-witch.svg)',
-  maskImage: 'url(/logo-the-witch.svg)',
-  WebkitMaskSize: 'contain',
-  maskSize: 'contain',
-  WebkitMaskRepeat: 'no-repeat',
-  maskRepeat: 'no-repeat',
-  WebkitMaskPosition: 'center',
-  maskPosition: 'center',
-  WebkitMaskSourceType: 'luminance',
-  maskMode: 'luminance',
-} as CSSProperties
+/** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
+const logoSrc = '/logo.svg'
 
 const logoImgStyle = {
-  ...logoMaskStyle,
-  opacity: 1,
   filter:
     'drop-shadow(0 0 10px rgba(168, 85, 247, 0.35)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.25)) drop-shadow(0 0 20px rgba(34, 211, 238, 0.25))',
 } as CSSProperties
@@ -72,8 +60,8 @@ export function Hero({
         <motion.div
           className={
             stacked
-              ? 'mb-0 hidden w-full shrink-0 md:mb-4 md:block'
-              : 'mb-0 hidden w-full shrink-0 md:mb-10 md:block'
+              ? 'mb-0 mt-3 hidden w-full shrink-0 md:mb-4 md:mt-4 md:block'
+              : 'mb-0 mt-3 hidden w-full shrink-0 md:mb-10 md:mt-4 md:block'
           }
           lang="en"
           dir="ltr"
@@ -82,16 +70,16 @@ export function Hero({
           transition={{ duration: 0.6, ease: easeOut }}
         >
           <img
-            src="/logo-the-witch.svg"
+            src={logoSrc}
             alt="The Witch"
-            width={697}
-            height={188}
+            width={1690}
+            height={890}
             decoding="async"
             fetchPriority="high"
             className={
               stacked
-                ? 'mx-auto h-auto w-full max-w-[280px] object-contain select-none md:max-w-[340px] lg:max-w-[400px]'
-                : 'mx-auto h-auto w-full max-w-[380px] object-contain select-none lg:max-w-[460px] xl:max-w-[520px]'
+                ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
+                : 'mx-auto h-auto w-auto max-h-[min(30vh,190px)] object-contain object-center select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
             }
             style={logoImgStyle}
           />
@@ -104,17 +92,17 @@ export function Hero({
               : 'flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
           }
         >
-          <div className="block w-full shrink-0 md:hidden" dir="ltr" lang="en">
+          <div className="mt-3 block w-full shrink-0 md:hidden" dir="ltr" lang="en">
             <img
-              src="/logo-the-witch.svg"
+              src={logoSrc}
               alt="The Witch"
-              width={697}
-              height={188}
+              width={1690}
+              height={890}
               decoding="async"
               className={
                 stacked
-                  ? 'mx-auto h-auto w-full max-w-[200px] object-contain select-none'
-                  : 'mx-auto h-auto w-full max-w-[260px] object-contain select-none'
+                  ? 'mx-auto h-auto w-auto max-h-[min(25vh,148px)] object-contain object-center select-none'
+                  : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
               }
               style={logoImgStyle}
             />

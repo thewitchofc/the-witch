@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CosmicField } from '../components/CosmicField'
+import { lielEdriOgImage } from '../data/clientOgImages'
 
-const heroImage = '/portfolio/liel-edri-hero.png'
+const heroImage = lielEdriOgImage
 
 const workItems = [
   'מיתוג ויזואלי וטיפוגרפיה עדינה',

@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import royalFruitHero from '../assets/royal-fruit-hero.png?url'
+import { lielEdriOgImage, sabGlassOgImage, sachiRamenHeroImage } from '../data/clientOgImages'
 
 type PortfolioProject = {
   title: string
@@ -21,7 +23,7 @@ const projects: PortfolioProject[] = [
       'לא עוד אתר תדמית — אלא מערכת שמביאה לקוחות מגוגל. בנוי עם דגש על מהירות, SEO וחוויית משתמש שמובילה לפעולה.',
     outcome: 'תוצאה: ↑ חשיפה בגוגל + פניות חדשות',
     tags: ['SEO', 'המרות', 'ביצועים', 'קוד מלא'],
-    image: '/portfolio/sab-glass-hero.png',
+    image: sabGlassOgImage,
     imageAlt: 'מסך הבית של SAB Glass — מקלחוני זכוכית בהתאמה אישית',
     href: '/projects/sab-glass',
     featured: true,
@@ -33,7 +35,7 @@ const projects: PortfolioProject[] = [
       'אתר מכירתי שנבנה כדי להגדיל סל קנייה ולשפר המרות, עם חוויית משתמש חלקה ומערכת חיפוש חכמה.',
     outcome: 'תוצאה: ↑ סל קנייה + חוויית רכישה חלקה',
     tags: ['E-commerce', 'UX', 'המרות', 'חיפוש'],
-    image: '/portfolio/royal-fruit-hero.png',
+    image: royalFruitHero,
     imageAlt: 'מסך הבית של Royal Fruit — פירות וירקות טריים עד הבית',
     href: '/projects/royal-fruit',
   },
@@ -43,16 +45,16 @@ const projects: PortfolioProject[] = [
       'אתר שנבנה כדי להוביל להזמנה במהירות — עם מבנה ברור, ניווט מדויק ותצוגה שמדגישה את המנות ומניעה לפעולה.',
     outcome: 'תוצאה: ↑ מעבר מהיר להזמנה במובייל',
     tags: ['UX', 'Mobile First', 'המרות', 'תפריט'],
-    image: '/portfolio/sachi-ramen-hero.png',
+    image: sachiRamenHeroImage,
     imageAlt: 'מסך הבית של Sachi Ramen & Sushi — ראמן, סושי וקריאה להזמנה',
-    href: 'https://sachiramen-sushi.netlify.app/',
+    href: 'https://sachiramen-sushi.onrender.com/',
   },
   {
     title: 'Liel Edri Home Baking',
     description: 'אתר למותג אישי עם חוויית משתמש זורמת שמחזקת אמון ומובילה לפניות.',
     outcome: 'תוצאה: ↑ אמון + פניות דרך האתר',
     tags: ['מיתוג', 'UX', 'עיצוב', 'המרות'],
-    image: '/portfolio/liel-edri-hero.png',
+    image: lielEdriOgImage,
     imageAlt: 'מסך הבית של Liel Edri — קינוחי בוטיק ביתיים',
     href: '/projects/liel-edri',
   },
@@ -90,7 +92,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       aria-label={cardAriaLabel}
     >
       <div className="space-y-3">
-        <div className="overflow-hidden rounded-lg">
+        <div className="overflow-hidden rounded-lg bg-slate-950">
           <img
             src={project.image}
             alt={project.imageAlt}
@@ -98,7 +100,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             height={520}
             loading="lazy"
             decoding="async"
-            className="h-[200px] w-full object-cover md:h-[240px]"
+            className="h-[200px] w-full object-cover object-center md:h-[240px]"
           />
         </div>
         <div>
