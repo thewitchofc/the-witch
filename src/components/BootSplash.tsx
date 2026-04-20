@@ -81,7 +81,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                 />
                 <img
                   src="/logo.svg"
-                  alt=""
+                  alt="The Witch — לוגו"
                   width={1690}
                   height={890}
                   decoding="async"

@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 import heroImage from '../assets/royal-fruit-hero.png?url'
 import { CosmicField } from '../components/CosmicField'
+import { Seo } from '../components/Seo'
 
 const workItems = [
   'עיצוב ממשק משתמש (UI) נקי ורענן',
@@ -34,6 +36,11 @@ function Section({
 export function RoyalFruitPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+      <Seo
+        title="מקרה בוחן: Royal Fruit — The Witch"
+        description="אתר למסחר פירות וירקות טריים: קטלוג, הזמנות בוואטסאפ וחוויית קנייה נקייה. דגש על טריות ואמון."
+        path="/projects/royal-fruit"
+      />
       <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
@@ -92,7 +99,11 @@ export function RoyalFruitPage() {
             <p className="text-lg font-medium text-white md:text-xl">גם אתה רוצה אתר כזה?</p>
             <Link
               to="/apply#contact"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              onClick={() =>
+                trackEvent('cta_click', { cta_location: 'royal_fruit_footer', link_url: '/apply#contact' })
+              }
             >
               בדיקת התאמה לפרויקט
             </Link>

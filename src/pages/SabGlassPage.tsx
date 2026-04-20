@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 import { CosmicField } from '../components/CosmicField'
+import { Seo } from '../components/Seo'
 import { sabGlassOgImage } from '../data/clientOgImages'
 
+/** תמונת ירו בדף — OG אחיד לכל האתר (`DEFAULT_OG_IMAGE` ב־Seo) */
 const heroImage = sabGlassOgImage
 const LIVE_SITE = 'https://sabglass.co.il/'
 
@@ -40,6 +43,11 @@ function Section({
 export function SabGlassPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+      <Seo
+        title="מקרה בוחן: SAB Glass — The Witch"
+        description="אתר למקלחוני זכוכית בהתאמה אישית: UX להמרות, מבנה דפים, SEO בסיסי וטעינה מהירה. תוצאות ולא רק תדמית."
+        path="/projects/sab-glass"
+      />
       <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
@@ -70,6 +78,7 @@ export function SabGlassPage() {
               href={LIVE_SITE}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="צפייה באתר SAB Glass החי (נפתח בלשונית חדשה)"
               className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-full bg-white/10 px-8 py-3 text-base font-medium text-white ring-1 ring-white/25 backdrop-blur-sm transition hover:bg-white/15 hover:ring-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:mt-10"
             >
               צפה באתר →
@@ -173,7 +182,9 @@ export function SabGlassPage() {
             </h2>
             <Link
               to="/apply"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              onClick={() => trackEvent('cta_click', { cta_location: 'sab_glass_footer', link_url: '/apply' })}
             >
               בדיקת התאמה לפרויקט
             </Link>

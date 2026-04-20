@@ -1,5 +1,6 @@
 import { LeadForm } from '../components/LeadForm'
 import { CosmicField } from '../components/CosmicField'
+import { Seo } from '../components/Seo'
 import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
 export function ApplyPage() {
@@ -9,6 +10,12 @@ export function ApplyPage() {
       dir="rtl"
       lang="he"
     >
+      <h1 className="sr-only">בדיקת התאמה לפרויקט — שליחת פרטים, The Witch</h1>
+      <Seo
+        title="הגשת בקשה לפרויקט — The Witch"
+        description="מלאו טופס קצר לבדיקת התאמה: סוג העסק, יעדים ואתר קיים. אחזור אליכם עם המשך צעדים והערכת היקף."
+        path="/apply"
+      />
       <CosmicField />
       <WhyItWorksDifferent />
       <div

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CosmicField } from '../components/CosmicField'
+import { trackEvent } from '../lib/analytics'
+import { Seo } from '../components/Seo'
 
 const steps = [
   {
@@ -41,6 +43,11 @@ const lessIf = [
 export function ProcessPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+      <Seo
+        title="תהליך עבודה — The Witch"
+        description="איך נראה תהליך בניית אתר איתי: שיחת התאמה, אפיון, עיצוב, פיתוח ועלייה לאוויר. שלבים ברורים — בלי הפתעות ובלי קיצורי דרך."
+        path="/process"
+      />
       <CosmicField />
       <main
         id="process"
@@ -73,7 +80,7 @@ export function ProcessPage() {
                 שלב {index + 1}
               </p>
               <h2 className="mb-2 text-lg font-semibold text-white md:text-xl">{item.title}</h2>
-              <p className="text-pretty text-sm leading-relaxed text-gray-300 md:text-base md:leading-relaxed">
+              <p className="text-pretty text-sm leading-relaxed text-slate-300 md:text-base md:leading-relaxed">
                 {item.body}
               </p>
             </div>
@@ -90,7 +97,7 @@ export function ProcessPage() {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-8">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
               <h3 className="mb-4 text-center text-lg font-semibold text-white">כן מתאים לך אם</h3>
-              <ul className="list-disc space-y-3 ps-5 text-pretty text-right text-base leading-relaxed text-gray-300 marker:text-slate-400">
+              <ul className="list-disc space-y-3 ps-5 text-pretty text-right text-base leading-relaxed text-slate-300 marker:text-slate-400">
                 {yesIf.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
@@ -98,7 +105,7 @@ export function ProcessPage() {
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
               <h3 className="mb-4 text-center text-lg font-semibold text-white">פחות מתאים אם</h3>
-              <ul className="list-disc space-y-3 ps-5 text-pretty text-right text-base leading-relaxed text-gray-300 marker:text-slate-400">
+              <ul className="list-disc space-y-3 ps-5 text-pretty text-right text-base leading-relaxed text-slate-300 marker:text-slate-400">
                 {lessIf.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
@@ -114,7 +121,11 @@ export function ProcessPage() {
             </h2>
             <Link
               to="/apply#contact"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              onClick={() =>
+                trackEvent('cta_click', { cta_location: 'process_footer', link_url: '/apply#contact' })
+              }
             >
               בדיקת התאמה לפרויקט
             </Link>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useCallback, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 import { CosmicField } from './CosmicField'
 
 const MotionLink = motion(Link)
@@ -102,6 +103,7 @@ export function Hero({
         className="witch-animation"
         style={witchFlight.style}
         alt=""
+        aria-hidden
         onAnimationIteration={onWitchLap}
       />
 
@@ -219,7 +221,14 @@ export function Hero({
             />
             <MotionLink
               to="/apply#contact"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
               className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
+              onClick={() =>
+                trackEvent('cta_click', {
+                  cta_location: 'hero_primary',
+                  link_url: '/apply#contact',
+                })
+              }
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1, boxShadow: ctaRestShadow }}
               transition={{ duration: 0.5, delay: 0.35, ease: easeOut }}
@@ -238,7 +247,7 @@ export function Hero({
 
           {!stacked ? (
             <motion.p
-              className="hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-400 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
+              className="hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-300 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.45, delay: 0.5, ease: easeOut }}

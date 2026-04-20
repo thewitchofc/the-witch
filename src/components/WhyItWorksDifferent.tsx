@@ -36,7 +36,7 @@ export function WhyItWorksDifferent() {
             className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-md md:p-6"
           >
             <h3 className="mb-2 text-lg font-semibold text-white">{item.title}</h3>
-            <p className="whitespace-pre-line text-pretty text-sm leading-relaxed text-gray-300">{item.body}</p>
+            <p className="whitespace-pre-line text-pretty text-sm leading-relaxed text-slate-300">{item.body}</p>
           </div>
         ))}
       </div>

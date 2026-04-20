@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 
 const linkClass =
   'font-medium text-violet-300 underline decoration-violet-400/40 underline-offset-[5px] transition-colors hover:text-white hover:decoration-cyan-400/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70'
@@ -15,12 +16,12 @@ export function About() {
       <div
         className="mx-auto max-w-3xl rounded-2xl border border-white/5 bg-slate-950/30 px-6 py-12 text-center shadow-[0_0_40px_rgba(139,92,246,0.08)] backdrop-blur-lg md:px-8 md:py-16"
       >
-        <h2
+        <h1
           id="about-heading"
           className="text-balance text-3xl font-semibold leading-[1.15] tracking-tight text-white md:text-4xl md:leading-[1.12] lg:text-5xl"
         >
           לא כל עסק מתאים לעבוד איתי.
-        </h2>
+        </h1>
 
         <div className="mt-8 space-y-6 text-pretty text-base leading-relaxed text-slate-300 md:mt-10 md:text-lg md:leading-loose">
           <p>אני מפתחת אתרים עם מטרה אחת.</p>
@@ -72,7 +73,14 @@ export function About() {
           <div className="space-y-3 border-t border-white/[0.06] pt-8 md:space-y-4 md:pt-10">
             <p className="font-medium text-white">אם אתה מחפש אתר שמביא לקוחות,</p>
             <p className="text-slate-300">
-              <Link to="/apply#contact" className={linkClass}>
+              <Link
+                to="/apply#contact"
+                className={linkClass}
+                aria-label="מעבר לטופס בדיקת התאמה לפרויקט"
+                onClick={() =>
+                  trackEvent('cta_click', { cta_location: 'about_inline', link_url: '/apply#contact' })
+                }
+              >
                 תמלא את הטופס
               </Link>{' '}
               ונבדוק התאמה.

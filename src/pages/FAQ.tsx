@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { JsonLd } from "../components/JsonLd";
+import { Seo } from "../components/Seo";
+import { FAQ_ITEMS } from "../data/faqContent";
+import { trackEvent } from "../lib/analytics";
+import { buildFaqPageJsonLd } from "../seo/structuredData";
 
 const MotionLink = motion(Link);
 
@@ -11,34 +16,6 @@ const ctaHoverShadow =
 
 const ctaLabel = "בדיקת התאמה לפרויקט";
 
-const faqData = [
-  {
-    question: "כמה עולה אתר?",
-    answer:
-      "המחירים מתחילים מ־10,299 ש״ח ומעלה, בהתאם לסוג האתר והדרישות. כל פרויקט מתומחר לפי מה שצריך באמת.",
-  },
-  {
-    question: "כמה זמן לוקח לבנות אתר?",
-    answer:
-      "בין 2–6 שבועות בממוצע, תלוי במורכבות הפרויקט ובשיתוף הפעולה בתהליך.",
-  },
-  {
-    question: "למה לא WordPress או Wix?",
-    answer:
-      "אני בונה אתרים בקוד מלא, מה שמאפשר שליטה מלאה על ביצועים, עיצוב ומהירות בלי מגבלות של תבניות.",
-  },
-  {
-    question: "מי מתחזק את האתר אחרי העלייה לאוויר?",
-    answer:
-      "אפשר לקבל ליווי ותחזוקה או לעבוד עצמאית, האתר בנוי כך שיהיה יציב ונוח לשימוש.",
-  },
-  {
-    question: "איך אני יודע אם זה מתאים לי?",
-    answer:
-      "בשביל זה יש שיחת התאמה.\nאם יש התאמה, נתקדם.\nאם לא... אז לא וזה בסדר :)",
-  },
-];
-
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -47,7 +24,14 @@ export default function FAQ() {
   };
 
   return (
-    <section className="py-20 px-4 text-center">
+    <>
+      <JsonLd data={buildFaqPageJsonLd()} />
+      <Seo
+        title="שאלות נפוצות — The Witch"
+        description="מחירים, זמני פיתוח, WordPress מול קוד מלא, תחזוקה ועוד. תשובות קצרות לפני שמבקשים הצעת מחיר לאתר."
+        path="/faq"
+      />
+      <section className="py-20 px-4 text-center">
       <div className="max-w-3xl mx-auto">
 
         <h1 className="mb-12 text-3xl font-semibold text-white md:text-4xl">
@@ -56,37 +40,37 @@ export default function FAQ() {
 
         <div className="space-y-4 text-right">
 
-          {faqData.map((item, index) => (
-            <div
+          {FAQ_ITEMS.map((item, index) => (
+            <button
               key={index}
-              className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md cursor-pointer"
+              type="button"
+              className="w-full cursor-pointer rounded-2xl border border-white/10 bg-white/5 p-5 text-right backdrop-blur-md transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() => toggle(index)}
+              aria-expanded={openIndex === index}
             >
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between gap-3">
                 <h3 className="text-base font-medium text-white md:text-lg">
                   {item.question}
                 </h3>
-                <span className="text-2xl text-white shrink-0">
+                <span className="shrink-0 text-2xl text-white" aria-hidden>
                   {openIndex === index ? "−" : "+"}
                 </span>
               </div>
 
-              {openIndex === index && (
-                <p className="mt-3 whitespace-pre-line text-sm text-gray-300 leading-relaxed">
-                  {item.answer}
-                </p>
-              )}
-            </div>
+              {openIndex === index ? (
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-300">{item.answer}</p>
+              ) : null}
+            </button>
           ))}
 
         </div>
 
         <div className="mt-16 text-center">
-          <p className="mb-4 text-base text-gray-300 md:text-lg">
+          <p className="mb-4 text-base text-slate-300 md:text-lg">
             עדיין מתלבט?
           </p>
 
-          <p className="mb-6 text-base text-gray-400">
+          <p className="mb-6 text-base text-slate-300">
             ממלאים את השאלון ורואים אם זה מתאים.
           </p>
 
@@ -97,7 +81,14 @@ export default function FAQ() {
             />
             <MotionLink
               to="/apply#contact"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
               className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
+              onClick={() =>
+                trackEvent("cta_click", {
+                  cta_location: "faq_primary",
+                  link_url: "/apply#contact",
+                })
+              }
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1, boxShadow: ctaRestShadow }}
               transition={{ duration: 0.5, delay: 0.35, ease: "easeOut" }}
@@ -116,5 +107,6 @@ export default function FAQ() {
         </div>
       </div>
     </section>
+    </>
   );
 }

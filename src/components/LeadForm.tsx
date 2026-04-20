@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { trackEvent } from '../lib/analytics'
 
 function useIsMinMd(): boolean {
   return useSyncExternalStore(
@@ -44,9 +45,11 @@ const stepNavSecondaryClass =
 function HomeStyleContinueButton({
   disabled,
   onClick,
+  ariaLabel = 'המשך לשלב הבא בטופס',
 }: {
   disabled: boolean
   onClick: () => void
+  ariaLabel?: string
 }) {
   return (
     <div className="relative inline-flex max-w-full justify-center overflow-visible">
@@ -58,6 +61,7 @@ function HomeStyleContinueButton({
         type="button"
         disabled={disabled}
         onClick={onClick}
+        aria-label={ariaLabel}
         className="group relative z-10 flex w-full min-w-[9.5rem] max-w-full touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] text-base font-medium text-white no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.45),0_0_28px_rgba(167,139,250,0.35),0_0_40px_rgba(34,211,238,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 disabled:hover:shadow-[0_0_1px_rgba(255,255,255,0.12)] sm:min-w-[10.5rem]"
       >
         <span className="flex min-h-[48px] w-full flex-1 items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:min-h-[52px] md:px-8 md:py-4 md:text-lg">
@@ -429,6 +433,15 @@ export function LeadForm() {
     const body = buildWhatsAppBody(fd, budget)
     const waDigits = WHATSAPP_E164.replace(/\D/g, '')
     const url = `https://wa.me/${waDigits}?text=${encodeURIComponent(body)}`
+    trackEvent('form_submit', {
+      form_name: 'lead_match_whatsapp',
+      form_step: formStep,
+    })
+    trackEvent('whatsapp_click', {
+      surface: 'lead_form_submit',
+      pathname: window.location.pathname,
+      link_domain: 'wa.me',
+    })
     window.open(url, '_blank', 'noopener,noreferrer')
     setSubmitted(true)
   }
@@ -594,6 +607,7 @@ export function LeadForm() {
           <div className="flex justify-end pt-1">
             <HomeStyleContinueButton
               disabled={!readStep0Valid()}
+              ariaLabel="המשך לשלב אתר ורשתות חברתיות"
               onClick={() => readStep0Valid() && setFormStep(1)}
             />
           </div>
@@ -738,6 +752,7 @@ export function LeadForm() {
             </button>
             <HomeStyleContinueButton
               disabled={!readStep1Valid()}
+              ariaLabel="המשך לשלב תקציב והמשך"
               onClick={() => readStep1Valid() && setFormStep(2)}
             />
           </div>
@@ -912,6 +927,7 @@ export function LeadForm() {
                       href={QUICK_SOLUTION_URL}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label="פתיחת קישור חיצוני — פתרון מהיר (אתר אחר)"
                       className="group relative z-10 flex min-h-[52px] w-full min-w-0 touch-manipulation items-stretch rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] text-base font-medium text-white no-underline shadow-[0_2px_16px_rgba(0,0,0,0.4),0_0_20px_rgba(139,92,246,0.22),0_0_28px_rgba(34,211,238,0.1)] transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.45),0_0_28px_rgba(167,139,250,0.35),0_0_40px_rgba(34,211,238,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95"
                     >
                       <span className="flex min-h-0 w-full flex-1 items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:py-4">
@@ -943,6 +959,7 @@ export function LeadForm() {
                 <motion.button
                   type="submit"
                   disabled={!canSubmit}
+                  aria-label="שליחת בקשת בדיקת התאמה לוואטסאפ"
                   className={
                     canSubmit
                       ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] md:py-4'

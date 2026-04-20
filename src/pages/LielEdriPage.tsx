@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 import { CosmicField } from '../components/CosmicField'
+import { Seo } from '../components/Seo'
 import { lielEdriOgImage } from '../data/clientOgImages'
 
 const heroImage = lielEdriOgImage
@@ -36,6 +38,11 @@ function Section({
 export function LielEdriPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+      <Seo
+        title="מקרה בוחן: Liel Edri — The Witch"
+        description="אתר לקינוחי בוטיק ביתיים: מיתוג עדין, פנייה בוואטסאפ ואינסטגרם, והתאמה מלאה למובייל."
+        path="/projects/liel-edri"
+      />
       <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
@@ -98,7 +105,11 @@ export function LielEdriPage() {
             <p className="text-lg font-medium text-white md:text-xl">גם אתה רוצה אתר כזה?</p>
             <Link
               to="/apply#contact"
+              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              onClick={() =>
+                trackEvent('cta_click', { cta_location: 'liel_edri_footer', link_url: '/apply#contact' })
+              }
             >
               בדיקת התאמה לפרויקט
             </Link>

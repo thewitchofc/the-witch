@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import royalFruitHero from '../assets/royal-fruit-hero.png?url'
+import { trackEvent } from '../lib/analytics'
 import { lielEdriOgImage, sabGlassOgImage, sachiRamenHeroImage } from '../data/clientOgImages'
 
 type PortfolioProject = {
@@ -65,6 +66,11 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
   function openProject() {
     const { href } = project
+    trackEvent('portfolio_card_open', {
+      project_title: project.title,
+      destination: href,
+      internal: href.startsWith('/'),
+    })
     if (href.startsWith('/')) {
       navigate(href)
       return

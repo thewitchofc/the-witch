@@ -103,8 +103,8 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
             <p
               className={
                 stacked
-                  ? 'text-[10px] leading-snug text-gray-300 md:text-sm'
-                  : 'text-sm text-gray-300'
+                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
+                  : 'text-sm text-slate-300'
               }
             >
               אתרים שעולים מהר, בלי תקיעות ובלי עומס מיותר.
@@ -135,8 +135,8 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
             <p
               className={
                 stacked
-                  ? 'text-[10px] leading-snug text-gray-300 md:text-sm'
-                  : 'text-sm text-gray-300'
+                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
+                  : 'text-sm text-slate-300'
               }
             >
               כל אלמנט באתר נבנה כדי להביא לקוחות — לא רק להיראות יפה.
@@ -167,8 +167,8 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
             <p
               className={
                 stacked
-                  ? 'text-[10px] leading-snug text-gray-300 md:text-sm'
-                  : 'text-sm text-gray-300'
+                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
+                  : 'text-sm text-slate-300'
               }
             >
               אני לא רק בונה — אני חושבת כמו בעלת עסק.
