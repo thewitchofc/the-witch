@@ -1,4 +1,6 @@
 import { useId, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 
 const HEADING_ID = 'seo-home-witch-heading'
 
@@ -25,8 +27,19 @@ export function SeoContent() {
           המכשפה לבניית אתרים
         </h2>
         <p className="mt-4 text-pretty text-sm leading-relaxed text-white/70 sm:text-base sm:leading-relaxed">
-          המכשפה לבניית אתרים מתמחה ביצירת אתרים שמביאים לקוחות אמיתיים עם דגש על מהירות, חוויית משתמש
-          ו-SEO מתקדם.
+          <Link
+            to="/hamachshefa-bniyat-atarim"
+            className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={() =>
+              trackEvent('cta_click', {
+                cta_location: 'seo_content_home_intro',
+                link_url: '/hamachshefa-bniyat-atarim',
+              })
+            }
+          >
+            המכשפה לבניית אתרים
+          </Link>{' '}
+          מתמחה ביצירת אתרים שמביאים לקוחות אמיתיים עם דגש על מהירות, חוויית משתמש ו-SEO מתקדם.
         </p>
         <button
           type="button"
@@ -55,6 +68,22 @@ export function SeoContent() {
               פניות ויותר לקוחות.
             </p>
             <p>אם אתם מחפשים פתרון אמיתי לבניית אתר שעובד, המכשפה היא הבחירה הנכונה.</p>
+            <p className="text-white/60">
+              <Link
+                to="/hamachshefa-bniyat-atarim"
+                className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+                onClick={() =>
+                  trackEvent('cta_click', {
+                    cta_location: 'seo_content_home_expanded',
+                    link_url: '/hamachshefa-bniyat-atarim',
+                  })
+                }
+              >
+                המכשפה לבניית אתרים
+              </Link>
+              {' — '}
+              עמוד ייעודי עם פירוט נוסף על הגישה והשירות.
+            </p>
           </div>
         </div>
       </div>

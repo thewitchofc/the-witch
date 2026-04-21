@@ -26,7 +26,7 @@ const logoImgStyle = {
   ].join(' '),
 } as CSSProperties
 
-const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
+const headline = 'המכשפה לבניית אתרים שמביאים לקוחות'
 
 const sublines = [
   'מבנה, מהירות ומסרים שמובילים לפעולה אחת ברורה. בקוד מלא, בלי תבניות.',

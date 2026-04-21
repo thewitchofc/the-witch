@@ -33,6 +33,8 @@ const PrivacyPage = lazy(() =>
 const TermsPage = lazy(() =>
   import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })),
 )
+const HamachshefaPage = lazy(() => import('./pages/HamachshefaPage'))
+const HamachshefaArticleClientsPage = lazy(() => import('./pages/HamachshefaArticleClientsPage'))
 
 function RouteFallback() {
   return (
@@ -69,6 +71,11 @@ function App() {
             <Route path="/projects/royal-fruit" element={<RoyalFruitPage />} />
             <Route path="/projects/liel-edri" element={<LielEdriPage />} />
             <Route path="/apply" element={<ApplyPage />} />
+            <Route path="/hamachshefa-bniyat-atarim" element={<HamachshefaPage />} />
+            <Route
+              path="/hamachshefa-bniyat-atarim-eich-livchor-atar-shmevi-lakochot"
+              element={<HamachshefaArticleClientsPage />}
+            />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
           </Routes>

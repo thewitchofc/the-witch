@@ -32,6 +32,18 @@ export function SiteFooter() {
           >
             שיחת התאמה
           </Link>
+          <Link
+            to="/hamachshefa-bniyat-atarim"
+            className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={() =>
+              trackEvent('cta_click', {
+                cta_location: 'footer',
+                link_url: '/hamachshefa-bniyat-atarim',
+              })
+            }
+          >
+            המכשפה לבניית אתרים
+          </Link>
           <a
             href={GOOGLE_BUSINESS_REVIEW_URL}
             target="_blank"
