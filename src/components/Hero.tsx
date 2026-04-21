@@ -25,11 +25,11 @@ const headline = 'אתרים שמביאים לך לקוחות.'
 
 const sublines = ['פחות רעש, יותר תוצאות.'] as const
 
-const ctaLabel = 'בדיקת התאמה לפרויקט'
+const ctaLabel = 'בדיקת התאמה וקבלת כיוון'
 
 const disclaimerDesktop = [
-  'עובדת רק עם עסקים שמוכנים להשקיע בתוצאה.',
-  'הגבלה ל־4 פרויקטים בחודש.',
+  'מתאימה לעסקים שמוכנים להשקיע בתוצאה — לא ב״מחיר הכי נמוך״.',
+  'עד 4 פרויקטים בחודש, כדי לשמור על איכות וזמינות.',
 ] as const
 
 const easeOut = 'easeOut' as const
@@ -237,7 +237,7 @@ export function Hero({
           <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
             <MotionLink
               to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
+              aria-label="בדיקת התאמה לפרויקט וקבלת כיוון — מעבר לטופס"
               className="pointer-events-auto group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
               onClick={() =>
                 trackEvent('cta_click', {
@@ -280,3 +280,6 @@ export function Hero({
     </section>
   )
 }
+
+/** רקע Spline לדף הבית — טעינה מושהית ומובייל סטטי בלבד */
+export { HeroSpline } from './HeroSpline'

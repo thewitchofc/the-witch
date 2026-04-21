@@ -28,9 +28,10 @@ function CosmicBackdrop() {
 function Particles() {
   const reduceMotion = useReducedMotion()
 
+  /** פחות אלמנטים מונפשים = פחות עומס על ה־GPU (במיוחד יחד עם blur ברקע) */
   const particles = useMemo(
     () =>
-      Array.from({ length: 48 }, (_, i) => {
+      Array.from({ length: 28 }, (_, i) => {
         const xDrift = (Math.random() - 0.5) * 22
         const xMid = (Math.random() - 0.5) * 16
         const xLate = (Math.random() - 0.5) * 11

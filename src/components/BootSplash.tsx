@@ -3,8 +3,9 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 const easeOutCubic = [0.22, 1, 0.36, 1] as const
 
-const minMs = 820
-const minMsReduced = 280
+/** מינימום קצר יותר — הרגשת ״אתר כבד״ בכניסה */
+const minMs = 480
+const minMsReduced = 180
 
 /**
  * מסך טעינה קצר בכניסה לאתר — רקע קוסמי, לוגו, ואנימציית יציאה רכה.

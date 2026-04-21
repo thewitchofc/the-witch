@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSplineWebGLEmbedAllowed } from '../hooks/useSplineWebGLEmbedAllowed'
 
 const MIN_VIEWPORT_PX = 768
 
@@ -13,11 +14,14 @@ type LazySplineBackgroundProps = {
  * then defers network/work to idle time. Placeholder is CSS (::before on .spline-lazy-root).
  */
 export function LazySplineBackground({ src, rootClassName }: LazySplineBackgroundProps) {
+  const splineEmbedAllowed = useSplineWebGLEmbedAllowed()
   const [showIframe, setShowIframe] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const scheduledRef = useRef(false)
 
   useEffect(() => {
+    if (!splineEmbedAllowed) return
+
     const root = rootRef.current
     if (!root) return
 
@@ -81,11 +85,11 @@ export function LazySplineBackground({ src, rootClassName }: LazySplineBackgroun
       observer?.disconnect()
       clearIdle()
     }
-  }, [src])
+  }, [src, splineEmbedAllowed])
 
   return (
     <div ref={rootRef} className={`spline-lazy-root ${rootClassName}`.trim()} aria-hidden>
-      {showIframe ? (
+      {splineEmbedAllowed && showIframe ? (
         <iframe
           src={src}
           loading="lazy"

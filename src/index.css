@@ -61,18 +61,17 @@ body {
   min-height: 100dvh;
 }
 
-/* iframe אינטראקטיבי; ההורה עם none כדי שלא יילכדו קליקים מחוץ ל־iframe */
+/* iframe Spline — pointer-events מוגדר ב־`.spline-lazy-root iframe` בסוף הקובץ */
 .home-spline-bg iframe {
   display: block;
   width: 100%;
   height: 100%;
   min-height: 100%;
   border: 0;
-  pointer-events: auto;
   opacity: 0.36;
 }
 
-/* מעל ה־iframe ויזואלית — pointer-events: none כדי שהעכבר יגיע ל־Spline */
+/* מעל ה־iframe ויזואלית — overlay בלבד */
 .home-spline-bg::after {
   content: '';
   position: absolute;
@@ -110,7 +109,6 @@ body {
   height: 100%;
   min-height: 100%;
   border: 0;
-  pointer-events: auto;
   opacity: 0.36;
 }
 
@@ -142,10 +140,6 @@ body {
   .process-page-spline-bg,
   .apply-page-spline-bg,
   .faq-page-spline-bg {
-    display: none;
-  }
-
-  .home-spline-bg {
     display: none;
   }
 }
@@ -186,4 +180,9 @@ body {
     top: var(--w-top-1);
     transform: translateY(0);
   }
+}
+
+/* Disable interaction with Spline iframe */
+.spline-lazy-root iframe {
+  pointer-events: none;
 }

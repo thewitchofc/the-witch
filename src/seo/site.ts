@@ -1,5 +1,5 @@
 /** מקור האתר החי — SEO, OG, sitemap */
-export const SITE_ORIGIN = 'https://the-witch1.onrender.com'
+export const SITE_ORIGIN = 'https://thewitch.co.il'
 
 /** תמונת OG אחידה 1200×630 — טקסט: «בניית אתרים שמביאים לקוחות» */
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-default.png`

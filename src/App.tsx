@@ -1,18 +1,50 @@
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { GlobalJsonLd } from './components/GlobalJsonLd'
 import { Navbar } from './components/Navbar'
 import { SiteFooter } from './components/SiteFooter'
-import { AboutPage } from './pages/AboutPage'
-import { ApplyPage } from './pages/ApplyPage'
 import { HomePage } from './pages/HomePage'
-import { PortfolioPage } from './pages/PortfolioPage'
-import { LielEdriPage } from './pages/LielEdriPage'
-import { RoyalFruitPage } from './pages/RoyalFruitPage'
-import { SabGlassPage } from './pages/SabGlassPage'
-import { ProcessPage } from './pages/Process'
-import FAQ from './pages/FAQ'
-import { PrivacyPage } from './pages/PrivacyPage'
-import { TermsPage } from './pages/TermsPage'
+
+const AboutPage = lazy(() =>
+  import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+)
+const ApplyPage = lazy(() =>
+  import('./pages/ApplyPage').then((m) => ({ default: m.ApplyPage })),
+)
+const PortfolioPage = lazy(() =>
+  import('./pages/PortfolioPage').then((m) => ({ default: m.PortfolioPage })),
+)
+const LielEdriPage = lazy(() =>
+  import('./pages/LielEdriPage').then((m) => ({ default: m.LielEdriPage })),
+)
+const RoyalFruitPage = lazy(() =>
+  import('./pages/RoyalFruitPage').then((m) => ({ default: m.RoyalFruitPage })),
+)
+const SabGlassPage = lazy(() =>
+  import('./pages/SabGlassPage').then((m) => ({ default: m.SabGlassPage })),
+)
+const ProcessPage = lazy(() =>
+  import('./pages/Process').then((m) => ({ default: m.ProcessPage })),
+)
+const FAQ = lazy(() => import('./pages/FAQ'))
+const PrivacyPage = lazy(() =>
+  import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
+)
+const TermsPage = lazy(() =>
+  import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })),
+)
+
+function RouteFallback() {
+  return (
+    <div
+      className="flex min-h-[30vh] items-center justify-center bg-[#020617] px-4 text-sm text-slate-500"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      טוען…
+    </div>
+  )
+}
 
 function App() {
   return (
@@ -26,19 +58,21 @@ function App() {
       </a>
       <Navbar />
       <main id="main-content">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/process" element={<ProcessPage />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/projects/sab-glass" element={<SabGlassPage />} />
-          <Route path="/projects/royal-fruit" element={<RoyalFruitPage />} />
-          <Route path="/projects/liel-edri" element={<LielEdriPage />} />
-          <Route path="/apply" element={<ApplyPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/process" element={<ProcessPage />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/projects/sab-glass" element={<SabGlassPage />} />
+            <Route path="/projects/royal-fruit" element={<RoyalFruitPage />} />
+            <Route path="/projects/liel-edri" element={<LielEdriPage />} />
+            <Route path="/apply" element={<ApplyPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+          </Routes>
+        </Suspense>
       </main>
       <SiteFooter />
     </>
