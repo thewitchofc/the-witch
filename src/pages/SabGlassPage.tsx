@@ -5,7 +5,7 @@ import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
 import { sabGlassOgImage } from '../data/clientOgImages'
 
-/** תמונת ירו בדף — OG אחיד לכל האתר (`DEFAULT_OG_IMAGE` ב־Seo) */
+/** תמונת ירו בדף, OG אחיד לכל האתר (`DEFAULT_OG_IMAGE` ב־Seo) */
 const heroImage = sabGlassOgImage
 const LIVE_SITE = 'https://sabglass.co.il/'
 
@@ -34,7 +34,7 @@ export function SabGlassPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="מקרה בוחן: SAB Glass — The Witch"
+        title="מקרה בוחן: SAB Glass, The Witch"
         description="אתר למקלחוני זכוכית בהתאמה אישית: UX להמרות, מבנה דפים, SEO בסיסי וטעינה מהירה. תוצאות ולא רק תדמית."
         path="/projects/sab-glass"
       />
@@ -48,7 +48,7 @@ export function SabGlassPage() {
         <section className="relative flex min-h-[min(60vh,520px)] items-center justify-center overflow-hidden px-6 py-16 md:min-h-[62vh] md:py-24">
           <img
             src={heroImage}
-            alt="אתר SAB Glass — מקלחוני זכוכית בהתאמה אישית"
+            alt="אתר SAB Glass, מקלחוני זכוכית בהתאמה אישית"
             className="absolute inset-0 h-full w-full object-cover object-center"
             width={1600}
             height={900}
@@ -59,7 +59,7 @@ export function SabGlassPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-slate-950/30" />
           <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
             <h1 className="text-balance text-2xl font-semibold leading-snug tracking-tight text-white md:text-4xl md:leading-snug lg:text-5xl">
-              SAB Glass — אתר שמביא פניות, לא רק נראה טוב
+              SAB Glass, אתר שמביא פניות, לא רק נראה טוב
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-slate-100 md:mt-6 md:text-lg">
               מקלחוני זכוכית בהתאמה אישית עם אתר שבנוי להביא לקוחות חדשים מגוגל ולהמיר אותם לפניות.
@@ -78,13 +78,13 @@ export function SabGlassPage() {
 
         <Section id="problem" title="הבעיה">
           <p className="text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
-            העסק היה צריך נוכחות דיגיטלית שמייצרת פניות אמיתיות — לא עוד אתר תדמית שלא מביא תוצאות.
+            העסק היה צריך נוכחות דיגיטלית שמייצרת פניות אמיתיות, לא עוד אתר תדמית שלא מביא תוצאות.
           </p>
         </Section>
 
         <Section id="solution" title="הפתרון">
           <p className="text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
-            בניתי אתר מותאם אישית בקוד מלא, עם דגש על ביצועים, חוויית משתמש והנעה לפעולה. כל אלמנט נבנה מתוך מטרה אחת — להפוך מבקרים ללקוחות.
+            בניתי אתר מותאם אישית בקוד מלא, עם דגש על ביצועים, חוויית משתמש והנעה לפעולה. כל אלמנט נבנה מתוך מטרה אחת, להפוך מבקרים ללקוחות.
           </p>
         </Section>
 
@@ -107,7 +107,7 @@ export function SabGlassPage() {
             האתר התחיל להביא פניות חדשות ולהגדיל את הנוכחות של העסק בגוגל.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-slate-500">
-            (אם בעתיד יש נתונים — ניתן להוסיף כאן)
+            (אם בעתיד יש נתונים, ניתן להוסיף כאן)
           </p>
         </Section>
 
@@ -118,7 +118,7 @@ export function SabGlassPage() {
             </h2>
             <Link
               to="/apply"
-              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס"
+              aria-label="בדיקת התאמה לפרויקט, מעבר לטופס"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() => trackEvent('cta_click', { cta_location: 'sab_glass_footer', link_url: '/apply' })}
             >

@@ -5,8 +5,8 @@ export function PrivacyPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="מדיניות פרטיות — The Witch"
-        description="איסוף מידע, עוגיות, Google Analytics והעברת מידע לצדדים שלישיים — מדיניות פרטיות לאתר The Witch."
+        title="מדיניות פרטיות, The Witch"
+        description="איסוף מידע, עוגיות, Google Analytics והעברת מידע לצדדים שלישיים, מדיניות פרטיות לאתר The Witch."
         path="/privacy"
       />
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
@@ -37,8 +37,8 @@ export function PrivacyPage() {
               איזה מידע נאסף
             </h2>
             <ul className="list-inside list-disc space-y-2 marker:text-violet-400">
-              <li>מידע שתמסרו במילוי טפסים (למשל שם, טלפון, פרטי עסק) — לצורך תקשורת ובדיקת התאמה לפרויקט.</li>
-              <li>נתוני טכניקה בסיסיים הנאספים אוטומטית בגלישה (כגון סוג דפדפן, מערכת הפעלה ומזהי עוגיות) — לצורך אבטחה,
+              <li>מידע שתמסרו במילוי טפסים (למשל שם, טלפון, פרטי עסק), לצורך תקשורת ובדיקת התאמה לפרויקט.</li>
+              <li>נתוני טכניקה בסיסיים הנאספים אוטומטית בגלישה (כגון סוג דפדפן, מערכת הפעלה ומזהי עוגיות), לצורך אבטחה,
                 תפקוד ושיפור חוויית המשתמש.</li>
             </ul>
           </section>
@@ -58,7 +58,7 @@ export function PrivacyPage() {
             <p>
               בהסכמתכם, נטען שירות Google Analytics (GA4) של Google LLC לצורך סטטיסטיקות שימוש אנונימיות ומצומצמות. מדיניות
               Google חלה על עיבוד המידע בצד Google. ניתן לבטל הסכמה בכל עת על־ידי מחיקת נתוני האתר בדפדפן או שינוי
-              הגדרות פרטיות — עד לביקור חוזר ייתכן שוב באנר הסכמה.
+              הגדרות פרטיות, עד לביקור חוזר ייתכן שוב באנר הסכמה.
             </p>
           </section>
           <section aria-labelledby="privacy-retention">

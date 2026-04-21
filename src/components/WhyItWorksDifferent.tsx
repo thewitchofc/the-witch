@@ -16,7 +16,7 @@ const pillars = [
   },
 ] as const
 
-/** למה לבחור — אמון בלי התחננות */
+/** למה לבחור, אמון בלי התחננות */
 export function WhyItWorksDifferent() {
   return (
     <section
@@ -46,7 +46,7 @@ export function WhyItWorksDifferent() {
 
       <div className="mx-auto mt-14 max-w-xl md:mt-20">
         <p className="mb-5 text-balance text-center text-base leading-relaxed text-slate-300 md:text-lg">
-          אם זה נשמע כמו שפה משותפת — הצעד הבא הוא שיחה קצרה. בלי עלות ובלי התחייבות.
+          אם זה נשמע כמו שפה משותפת, הצעד הבא הוא שיחה קצרה. בלי עלות ובלי התחייבות.
         </p>
         <div className="flex justify-center">
           <Link

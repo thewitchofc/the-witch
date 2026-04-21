@@ -3,14 +3,14 @@ import { trackEvent } from '../lib/analytics'
 
 const caseStudy = {
   title: 'מקרה לדוגמה: SAB Glass',
-  problem: 'אתר תדמית שלא הביא פניות איכותיות מגוגל — מבקרים עזבו בלי לפנות.',
+  problem: 'אתר תדמית שלא הביא פניות איכותיות מגוגל, מבקרים עזבו בלי לפנות.',
   improved: 'מבנה דפים סביב המרה, ביצועים גבוהים, SEO בסיסי נכון וחוויית משתמש שמובילה לפעולה.',
   today: 'היום האתר משרת כערוץ פניות: מסלול ברור מחיפוש ועד טופס או וואטסאפ.',
   href: '/projects/sab-glass',
 } as const
 
 const principles = [
-  { title: 'מהירות גבוהה', body: 'טעינה קצרה, פחות חיכוך — יותר סיכוי שהמבקר יגיע לפעולה.' },
+  { title: 'מהירות גבוהה', body: 'טעינה קצרה, פחות חיכוך, יותר סיכוי שהמבקר יגיע לפעולה.' },
   { title: 'חוויית משתמש', body: 'ניווט, היררכיה וקריאות ויזואלית שמורידות עומס קוגניטיבי.' },
   { title: 'המרות', body: 'כל מסך נבנה סביב מטרה: פנייה, הזמנה או השארת פרטים.' },
   { title: 'SEO', body: 'מבנה, כותרות ותוכן שמסבירים למנועי חיפוש למי האתר מיועד.' },
@@ -19,7 +19,7 @@ const principles = [
 const technical = [
   {
     title: 'ציון ביצועים גבוה',
-    body: 'אופטימיזציה ל-Core Web Vitals ולמדדי Lighthouse — כיעד בכל פרויקט.',
+    body: 'אופטימיזציה ל-Core Web Vitals ולמדדי Lighthouse, כיעד בכל פרויקט.',
   },
   {
     title: 'זמן טעינה מהיר',
@@ -34,7 +34,7 @@ const technical = [
 const cardClass =
   'rounded-2xl border border-white/10 bg-white/5 p-4 text-right backdrop-blur-md ring-1 ring-white/[0.06] md:p-5'
 
-/** אמון מקצועי בלי עדויות לקוחות — מקרה לדוגמה, עקרונות ונתונים טכניים */
+/** אמון מקצועי בלי עדויות לקוחות, מקרה לדוגמה, עקרונות ונתונים טכניים */
 export function HowIBuildSitesSection() {
   return (
     <section
@@ -103,7 +103,7 @@ export function HowIBuildSitesSection() {
 
         <div className="mt-10 flex flex-col items-center gap-3 border-t border-white/10 pt-10 md:mt-12 md:gap-4 md:pt-12">
           <p className="max-w-lg text-balance text-center text-sm leading-relaxed text-slate-300 md:text-base">
-            אם זה נשמע כמו מה שהעסק שלכם צריך — בואו נבדוק התאמה בלי התחייבות.
+            אם זה נשמע כמו מה שהעסק שלכם צריך, בואו נבדוק התאמה בלי התחייבות.
           </p>
           <Link
             to="/apply#contact"

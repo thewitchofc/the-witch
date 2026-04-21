@@ -142,7 +142,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
                   : 'text-sm text-slate-300'
               }
             >
-              כל אלמנט באתר נבנה כדי להביא לקוחות — לא רק להיראות יפה.
+              כל אלמנט באתר נבנה כדי להביא לקוחות, לא רק להיראות יפה.
             </p>
           </div>
 
@@ -174,7 +174,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
                   : 'text-sm text-slate-300'
               }
             >
-              אני לא רק בונה — אני חושבת כמו בעלת עסק.
+              אני לא רק בונה, אני חושבת כמו בעלת עסק.
             </p>
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
                 })
               }
             >
-              שיחת התאמה חינם — לטופס קצר
+              שיחת התאמה חינם, לטופס קצר
             </Link>
           </div>
         ) : null}

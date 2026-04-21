@@ -37,7 +37,7 @@ export function RoyalFruitPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="מקרה בוחן: Royal Fruit — The Witch"
+        title="מקרה בוחן: Royal Fruit, The Witch"
         description="אתר למסחר פירות וירקות טריים: קטלוג, הזמנות בוואטסאפ וחוויית קנייה נקייה. דגש על טריות ואמון."
         path="/projects/royal-fruit"
       />
@@ -51,7 +51,7 @@ export function RoyalFruitPage() {
           <div className="w-full overflow-hidden border-y border-white/[0.07] bg-slate-950">
             <img
               src={heroImage}
-              alt="Royal Fruit — לוגו ומיתוג האתר"
+              alt="Royal Fruit, לוגו ומיתוג האתר"
               className="h-[min(42vh,420px)] w-full object-cover object-center md:h-[min(48vh,480px)]"
               width={1200}
               height={630}
@@ -99,7 +99,7 @@ export function RoyalFruitPage() {
             <p className="text-lg font-medium text-white md:text-xl">גם אתה רוצה אתר כזה?</p>
             <Link
               to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
+              aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() =>
                 trackEvent('cta_click', { cta_location: 'royal_fruit_footer', link_url: '/apply#contact' })

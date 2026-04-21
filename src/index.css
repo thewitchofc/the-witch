@@ -49,7 +49,7 @@ body {
   z-index: 0;
 }
 
-/* דף הבית — רקע Spline קבוע (מובייל: בלי iframe, רקע #020617 + CosmicField) */
+/* דף הבית, רקע Spline קבוע (מובייל: בלי iframe, רקע #020617 + CosmicField) */
 .home-spline-bg {
   position: fixed;
   inset: 0;
@@ -61,7 +61,7 @@ body {
   min-height: 100dvh;
 }
 
-/* iframe Spline — pointer-events מוגדר ב־`.spline-lazy-root iframe` בסוף הקובץ */
+/* iframe Spline, pointer-events מוגדר ב־`.spline-lazy-root iframe` בסוף הקובץ */
 .home-spline-bg iframe {
   display: block;
   width: 100%;
@@ -71,7 +71,7 @@ body {
   opacity: 0.36;
 }
 
-/* מעל ה־iframe ויזואלית — overlay בלבד */
+/* מעל ה־iframe ויזואלית, overlay בלבד */
 .home-spline-bg::after {
   content: '';
   position: absolute;
@@ -86,7 +86,7 @@ body {
   );
 }
 
-/* דפים: תהליך, בדיקת התאמה, שאלות נפוצות — רקע Spline על כל המסך (מוסתר מתחת ל־768px) */
+/* דפים: תהליך, בדיקת התאמה, שאלות נפוצות, רקע Spline על כל המסך (מוסתר מתחת ל־768px) */
 .process-page-spline-bg,
 .apply-page-spline-bg,
 .faq-page-spline-bg {
@@ -112,14 +112,14 @@ body {
   opacity: 0.36;
 }
 
-/* בדיקת התאמה — מוח/סצנה גדולים יותר במרכז המסך (חתוך ב־overflow של הקונטיינר) */
+/* בדיקת התאמה, מוח/סצנה גדולים יותר במרכז המסך (חתוך ב־overflow של הקונטיינר) */
 .apply-page-spline-bg iframe {
   opacity: 0.4;
   transform: scale(1.22);
   transform-origin: center center;
 }
 
-/* overlay מעל ה־iframe — רק ויזואלי, לא חוסם אינטראקציה */
+/* overlay מעל ה־iframe, רק ויזואלי, לא חוסם אינטראקציה */
 .process-page-spline-bg::after,
 .apply-page-spline-bg::after,
 .faq-page-spline-bg::after {
@@ -183,7 +183,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   z-index: 2;
 }
 
-/* Hero — חשיפה ב-CSS בלבד; `is-visible` מ־IntersectionObserver */
+/* Hero, חשיפה ב-CSS בלבד; `is-visible` מ־IntersectionObserver */
 .hero-reveal {
   opacity: 0;
   transform: translate3d(0, 20px, 0);
@@ -296,7 +296,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
     top: var(--w-top-1);
     transform: translateY(0);
   }
-  /* idle: ~38% מהמחזור ללא תנועה — פחות עומס GPU רציף */
+  /* idle: ~38% מהמחזור ללא תנועה, פחות עומס GPU רציף */
   100% {
     left: var(--w-left-1);
     top: var(--w-top-1);
@@ -307,4 +307,36 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
 /* Disable interaction with Spline iframe */
 .spline-lazy-root iframe {
   pointer-events: none;
+}
+
+/* BootSplash: אנימציות בלי framer-motion */
+@keyframes witch-boot-logo-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes witch-boot-logo-simple {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes witch-boot-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

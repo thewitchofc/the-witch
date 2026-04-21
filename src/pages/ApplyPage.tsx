@@ -1,8 +1,12 @@
-import { LeadForm } from '../components/LeadForm'
+import { lazy, Suspense } from 'react'
 import { CosmicField } from '../components/CosmicField'
 import { LazySplineBackground } from '../components/LazySplineBackground'
 import { Seo } from '../components/Seo'
 import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
+
+const LeadForm = lazy(() =>
+  import('../components/LeadForm').then((m) => ({ default: m.LeadForm })),
+)
 
 export function ApplyPage() {
   return (
@@ -11,9 +15,9 @@ export function ApplyPage() {
       dir="rtl"
       lang="he"
     >
-      <h1 className="sr-only">בדיקת התאמה לפרויקט — שליחת פרטים, The Witch</h1>
+      <h1 className="sr-only">בדיקת התאמה לפרויקט, שליחת פרטים, The Witch</h1>
       <Seo
-        title="הגשת בקשה לפרויקט — The Witch"
+        title="הגשת בקשה לפרויקט, The Witch"
         description="מלאו טופס קצר לבדיקת התאמה: סוג העסק, יעדים ואתר קיים. אחזור אליכם עם המשך צעדים והערכת היקף."
         path="/apply"
       />
@@ -28,7 +32,19 @@ export function ApplyPage() {
           id="contact"
           className="mx-auto w-full max-w-xl scroll-mt-24 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))] md:max-w-2xl md:pl-[max(2rem,env(safe-area-inset-left,0px))] md:pr-[max(2rem,env(safe-area-inset-right,0px))] lg:max-w-3xl"
         >
-          <LeadForm />
+          <Suspense
+            fallback={
+              <div
+                className="flex min-h-[280px] w-full items-center justify-center rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-12 text-sm text-slate-400"
+                aria-busy="true"
+                aria-live="polite"
+              >
+                טוען טופס…
+              </div>
+            }
+          >
+            <LeadForm />
+          </Suspense>
         </div>
       </div>
     </div>

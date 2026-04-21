@@ -1,4 +1,4 @@
-/** תוכן שאלות נפוצות — משותף לדף ול־Schema.org FAQPage */
+/** תוכן שאלות נפוצות, משותף לדף ול־Schema.org FAQPage */
 export const FAQ_ITEMS = [
   {
     question: 'כמה עולה אתר?',

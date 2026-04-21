@@ -6,7 +6,7 @@ type SeoProps = {
   description: string
   /** נתיב React Router, למשל `/` או `/about` */
   path: string
-  /** כתובת מלאה או נתיב יחסי לתמונת OG — יומר ל־URL מוחלט */
+  /** כתובת מלאה או נתיב יחסי לתמונת OG, יומר ל־URL מוחלט */
   ogImage?: string
 }
 

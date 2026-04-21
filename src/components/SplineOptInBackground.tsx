@@ -43,7 +43,7 @@ function SplineStaticBackdrop() {
 }
 
 /**
- * רקע Spline רק אחרי לחיצה — placeholder (רקע, blur, glow) + כפתור.
+ * רקע Spline רק אחרי לחיצה, placeholder (רקע, blur, glow) + כפתור.
  * כשאפקטים כבדים חסומים: רק fallback סטטי, בלי iframe וללא כפתור.
  */
 export function SplineOptInBackground({

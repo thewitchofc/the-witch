@@ -13,7 +13,7 @@ const SCROLL_DEPTHS = [25, 50, 75, 100] as const
 
 const TIME_ON_PAGE_MS = 30_000
 
-/** מעקב אחר ניווט, פרויקטים, גלילה, זמן בדף, כוונת יציאה — רק בהסכמה */
+/** מעקב אחר ניווט, פרויקטים, גלילה, זמן בדף, כוונת יציאה, רק בהסכמה */
 export function AnalyticsListener() {
   const { pathname } = useLocation()
   const { consent } = useAnalyticsConsent()
@@ -80,7 +80,7 @@ export function AnalyticsListener() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [pathname, consent])
 
-  /** כוונת יציאה — רק עכבר (מסך מגע: לא אמין, מדלגים) */
+  /** כוונת יציאה, רק עכבר (מסך מגע: לא אמין, מדלגים) */
   useEffect(() => {
     if (consent !== 'granted') return
     if (!window.matchMedia('(pointer: fine)').matches) return

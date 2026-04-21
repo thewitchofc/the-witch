@@ -1,5 +1,5 @@
 /**
- * תאימות לאחור — הלוגיקה המרכזית ב־`heavyEffectsGuard.ts`.
+ * תאימות לאחור, הלוגיקה המרכזית ב־`heavyEffectsGuard.ts`.
  */
 
 import {

@@ -1,10 +1,10 @@
-/** מקור האתר החי — SEO, OG, sitemap */
+/** מקור האתר החי, SEO, OG, sitemap */
 export const SITE_ORIGIN = 'https://thewitch.co.il'
 
-/** תמונת OG אחידה 1200×630 — טקסט: «בניית אתרים שמביאים לקוחות» */
+/** תמונת OG אחידה 1200×630, טקסט: «בניית אתרים שמביאים לקוחות» */
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-default.png`
 
-/** כתובת קנונית ו־og:url — ללא # (נקייה לשיתוף ולמנועי חיפוש) */
+/** כתובת קנונית ו־og:url, ללא # (נקייה לשיתוף ולמנועי חיפוש) */
 export function siteCanonicalUrl(pathname: string): string {
   const p = pathname.startsWith('/') ? pathname : `/${pathname}`
   if (p === '/' || p === '') return `${SITE_ORIGIN}/`

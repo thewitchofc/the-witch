@@ -11,9 +11,9 @@ type PortfolioProject = {
   image: string
   imageAlt: string
   href: string
-  /** פרויקט ראשי — רוחב מלא בדסקטופ, תג חי, CTA לאתר בפרודקשן */
+  /** פרויקט ראשי, רוחב מלא בדסקטופ, תג חי, CTA לאתר בפרודקשן */
   featured?: boolean
-  /** כשיש גם מקרה בוחן פנימי וגם אתר חי — הכרטיס מנווט למקרה הבוחן; הקישור החי נפרד */
+  /** כשיש גם מקרה בוחן פנימי וגם אתר חי, הכרטיס מנווט למקרה הבוחן; הקישור החי נפרד */
   liveSiteUrl?: string
 }
 
@@ -21,11 +21,11 @@ const projects: PortfolioProject[] = [
   {
     title: 'SAB Glass',
     description:
-      'לא עוד אתר תדמית — אלא מערכת שמביאה לקוחות מגוגל. בנוי עם דגש על מהירות, SEO וחוויית משתמש שמובילה לפעולה.',
+      'לא עוד אתר תדמית, אלא מערכת שמביאה לקוחות מגוגל. בנוי עם דגש על מהירות, SEO וחוויית משתמש שמובילה לפעולה.',
     outcome: 'תוצאה: ↑ חשיפה בגוגל + פניות חדשות',
     tags: ['SEO', 'המרות', 'ביצועים', 'קוד מלא'],
     image: sabGlassOgImage,
-    imageAlt: 'מסך הבית של SAB Glass — מקלחוני זכוכית בהתאמה אישית',
+    imageAlt: 'מסך הבית של SAB Glass, מקלחוני זכוכית בהתאמה אישית',
     href: '/projects/sab-glass',
     featured: true,
     liveSiteUrl: 'https://sabglass.co.il/',
@@ -37,17 +37,17 @@ const projects: PortfolioProject[] = [
     outcome: 'תוצאה: ↑ סל קנייה + חוויית רכישה חלקה',
     tags: ['E-commerce', 'UX', 'המרות', 'חיפוש'],
     image: royalFruitHero,
-    imageAlt: 'מסך הבית של Royal Fruit — פירות וירקות טריים עד הבית',
+    imageAlt: 'מסך הבית של Royal Fruit, פירות וירקות טריים עד הבית',
     href: '/projects/royal-fruit',
   },
   {
     title: 'Sachi Ramen & Sushi',
     description:
-      'אתר שנבנה כדי להוביל להזמנה במהירות — עם מבנה ברור, ניווט מדויק ותצוגה שמדגישה את המנות ומניעה לפעולה.',
+      'אתר שנבנה כדי להוביל להזמנה במהירות, עם מבנה ברור, ניווט מדויק ותצוגה שמדגישה את המנות ומניעה לפעולה.',
     outcome: 'תוצאה: ↑ מעבר מהיר להזמנה במובייל',
     tags: ['UX', 'Mobile First', 'המרות', 'תפריט'],
     image: sachiRamenHeroImage,
-    imageAlt: 'מסך הבית של Sachi Ramen & Sushi — ראמן, סושי וקריאה להזמנה',
+    imageAlt: 'מסך הבית של Sachi Ramen & Sushi, ראמן, סושי וקריאה להזמנה',
     href: 'https://sachiramen-sushi.onrender.com/',
   },
   {
@@ -56,7 +56,7 @@ const projects: PortfolioProject[] = [
     outcome: 'תוצאה: ↑ אמון + פניות דרך האתר',
     tags: ['מיתוג', 'UX', 'עיצוב', 'המרות'],
     image: lielEdriOgImage,
-    imageAlt: 'מסך הבית של Liel Edri — קינוחי בוטיק ביתיים',
+    imageAlt: 'מסך הבית של Liel Edri, קינוחי בוטיק ביתיים',
     href: '/projects/liel-edri',
   },
 ]
@@ -80,8 +80,8 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
   const isExternalHref = !project.href.startsWith('/')
   const cardAriaLabel = isExternalHref
-    ? `${project.title} — פתיחת האתר (נפתח בלשונית חדשה)`
-    : `${project.title} — פתיחת הפרויקט`
+    ? `${project.title}, פתיחת האתר (נפתח בלשונית חדשה)`
+    : `${project.title}, פתיחת הפרויקט`
 
   return (
     <div

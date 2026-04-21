@@ -45,8 +45,8 @@ export function ProcessPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="תהליך עבודה — The Witch"
-        description="איך נראה תהליך בניית אתר איתי: שיחת התאמה, אפיון, עיצוב, פיתוח ועלייה לאוויר. שלבים ברורים — בלי הפתעות ובלי קיצורי דרך."
+        title="תהליך עבודה, The Witch"
+        description="איך נראה תהליך בניית אתר איתי: שיחת התאמה, אפיון, עיצוב, פיתוח ועלייה לאוויר. שלבים ברורים, בלי הפתעות ובלי קיצורי דרך."
         path="/process"
       />
       <CosmicField />
@@ -126,7 +126,7 @@ export function ProcessPage() {
             </h2>
             <Link
               to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
+              aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() =>
                 trackEvent('cta_click', { cta_location: 'process_footer', link_url: '/apply#contact' })

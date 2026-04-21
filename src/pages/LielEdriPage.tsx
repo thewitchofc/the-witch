@@ -39,7 +39,7 @@ export function LielEdriPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="מקרה בוחן: Liel Edri — The Witch"
+        title="מקרה בוחן: Liel Edri, The Witch"
         description="אתר לקינוחי בוטיק ביתיים: מיתוג עדין, פנייה בוואטסאפ ואינסטגרם, והתאמה מלאה למובייל."
         path="/projects/liel-edri"
       />
@@ -52,7 +52,7 @@ export function LielEdriPage() {
         <section className="relative flex min-h-[min(52vh,480px)] items-end justify-center overflow-hidden px-6 pb-14 pt-8 md:min-h-[56vh] md:items-center md:pb-20 md:pt-12">
           <img
             src={heroImage}
-            alt="אתר Liel Edri — קינוחי בוטיק ביתיים"
+            alt="אתר Liel Edri, קינוחי בוטיק ביתיים"
             className="absolute inset-0 h-full w-full object-cover"
             width={1600}
             height={900}
@@ -76,13 +76,13 @@ export function LielEdriPage() {
 
         <Section id="problem" title="הבעיה">
           <p className="text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
-            היה צורך באתר שישדר בוטיק, אמון וטריות — ויוביל בקלות לפניות ולהזמנות בוואטסאפ, בלי חיכוך ובלי רעש ויזואלי.
+            היה צורך באתר שישדר בוטיק, אמון וטריות, ויוביל בקלות לפניות ולהזמנות בוואטסאפ, בלי חיכוך ובלי רעש ויזואלי.
           </p>
         </Section>
 
         <Section id="solution" title="הפתרון">
           <p className="text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
-            נבנה אתר נקי ואלגנטי עם צילום מזון חזק, היררכיה ברורה ואינטגרציה מהירה לוואטסאפ ולאינסטגרם — כדי שהמבקר ירגיש מיד את איכות המותג.
+            נבנה אתר נקי ואלגנטי עם צילום מזון חזק, היררכיה ברורה ואינטגרציה מהירה לוואטסאפ ולאינסטגרם, כדי שהמבקר ירגיש מיד את איכות המותג.
           </p>
         </Section>
 
@@ -105,7 +105,7 @@ export function LielEdriPage() {
             <p className="text-lg font-medium text-white md:text-xl">גם אתה רוצה אתר כזה?</p>
             <Link
               to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
+              aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() =>
                 trackEvent('cta_click', { cta_location: 'liel_edri_footer', link_url: '/apply#contact' })

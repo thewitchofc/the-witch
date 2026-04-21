@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { trackEvent } from '../lib/analytics'
+import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 import { CosmicField } from './CosmicField'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 
@@ -25,23 +26,20 @@ const logoImgStyle = {
   ].join(' '),
 } as CSSProperties
 
-const headline = 'אתרים שמביאים לך לקוחות — לא רק ביקורים.'
+const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
 
 const sublines = [
   'מבנה, מהירות ומסרים שמובילים לפעולה אחת ברורה. בקוד מלא, בלי תבניות.',
 ] as const
 
-const ctaLabel = 'שיחת התאמה חינם — בלי התחייבות'
-
-const ctaMicrocopy =
-  'מילוי קצר בטופס · תשובה עסקית תוך ימי עבודה · בלי מחייבים לשום דבר'
+const ctaLabel = 'שיחת התאמה חינם, בלי התחייבות'
 
 const disclaimerDesktop = [
-  'מתאימה לעסקים שמוכנים להשקיע בתוצאה — לא ב״מחיר הכי נמוך״.',
+  'מתאימה לעסקים שמוכנים להשקיע בתוצאה, לא ב״מחיר הכי נמוך״.',
   'עד 4 פרויקטים בחודש, כדי לשמור על איכות וזמינות.',
 ] as const
 
-/** טקסט לבן — glow לבן עדין + עומק קל כדי שיישאר קריא על רקע עמוס */
+/** טקסט לבן, glow לבן עדין + עומק קל כדי שיישאר קריא על רקע עמוס */
 const heroHeadlineGlyphStyle = {
   WebkitTextStroke: '0.35px rgba(248, 250, 252, 0.22)',
   paintOrder: 'stroke fill',
@@ -143,17 +141,8 @@ export function Hero({
     return () => obs.disconnect()
   }, [])
 
-  const [witchFlight, setWitchFlight] = useState(() => ({
-    key: 0,
-    style: witchFlightStyle(0),
-  }))
-
-  const onWitchLap = useCallback(() => {
-    setWitchFlight((prev) => ({
-      key: prev.key + 1,
-      style: witchFlightStyle(prev.key + 1),
-    }))
-  }, [])
+  /** ללא onAnimationIteration, עדכון state בכל מחזור גרם לרינדורים חוזרים ולעומס ב-Lighthouse */
+  const witchMotionStyle = useMemo(() => witchFlightStyle(0), [])
 
   return (
     <section
@@ -170,15 +159,13 @@ export function Hero({
       {showCosmicField ? <CosmicField /> : null}
 
       <img
-        key={witchFlight.key}
         src="/witch.png"
         className={
           witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
         }
-        style={witchFlight.style}
+        style={witchMotionStyle}
         alt=""
         aria-hidden
-        onAnimationIteration={onWitchLap}
       />
 
       <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
@@ -276,12 +263,12 @@ export function Hero({
             </div>
           </div>
 
-          <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
+          <div className="relative mx-auto mt-3 flex w-full max-w-[min(100%,320px)] flex-col items-center overflow-visible sm:max-w-[360px] md:mt-0 md:max-w-none md:w-fit">
             <Link
               ref={ctaRevealRef}
               to="/apply#contact"
-              aria-label="שיחת התאמה חינם לפרויקט — מעבר לטופס יצירת קשר"
-              className="hero-cta-reveal pointer-events-auto group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
+              aria-label="שיחת התאמה חינם לפרויקט, מעבר לטופס יצירת קשר"
+              className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
               onClick={() =>
                 trackEvent('cta_click', {
                   cta_location: 'hero_primary',
@@ -289,13 +276,11 @@ export function Hero({
                 })
               }
             >
-              <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-5 py-3 text-center text-[15px] font-semibold leading-snug text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 sm:px-6 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
-                {ctaLabel}
+              <span className={`${primaryCtaInnerClass} md:py-4 md:text-lg`}>
+                <span className="md:hidden">שיחת התאמה חינם</span>
+                <span className="hidden md:inline">{ctaLabel}</span>
               </span>
             </Link>
-            <p className="pointer-events-none mx-auto mt-2 max-w-[280px] text-balance text-center text-[11px] leading-relaxed text-slate-400 sm:text-xs md:max-w-md">
-              {ctaMicrocopy}
-            </p>
           </div>
 
           {!stacked ? (
@@ -316,5 +301,5 @@ export function Hero({
   )
 }
 
-/** רקע Spline לדף הבית — טעינה לפי בחירה (״הפעל אפקט״) */
+/** רקע Spline לדף הבית, טעינה לפי בחירה (״הפעל אפקט״) */
 export { HeroSpline } from './HeroSpline'

@@ -1,5 +1,5 @@
 /**
- * מתי לדלג על Spline, אנימציות כבדות וכו׳ — בלי להסתמך רק על UA / Lighthouse.
+ * מתי לדלג על Spline, אנימציות כבדות וכו׳, בלי להסתמך רק על UA / Lighthouse.
  * סנכרן עם הסקריפט המוקדם ב-index.html (אותה לוגיקה ב-vanilla).
  */
 
@@ -39,7 +39,7 @@ function auditUserAgentHeavySignals(): boolean {
 
 /**
  * האם פרמטרי URL בלבד מכריחים חסימה (`psi`, `nospline`).
- * `search` — עם או בלי `?` בתחילה.
+ * `search`, עם או בלי `?` בתחילה.
  */
 export function parseHeavyEffectsFromSearch(search: string): boolean {
   const raw = search.startsWith('?') ? search.slice(1) : search
@@ -92,7 +92,7 @@ export function isHeavyEffectsDomDatasetOn(): boolean {
   return document.documentElement.dataset[BLOCK_HEAVY_EFFECTS_DATASET] === '1'
 }
 
-/** resize / reduced-motion / Network Information — ל-useSyncExternalStore */
+/** resize / reduced-motion / Network Information, ל-useSyncExternalStore */
 export function subscribeHeavyEffectsRelevantChanges(onChange: () => void): () => void {
   if (typeof window === 'undefined') return () => {}
 

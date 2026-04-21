@@ -5,7 +5,7 @@ export function TermsPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
-        title="תנאי שימוש — The Witch"
+        title="תנאי שימוש, The Witch"
         description="תנאי שימוש באתר The Witch: שירותי מידע, קישורים חיצוניים, הגבלת אחריות וקניין רוחני."
         path="/terms"
       />
@@ -20,7 +20,7 @@ export function TermsPage() {
         <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white md:text-4xl">תנאי שימוש</h1>
         <div className="space-y-6 text-sm leading-relaxed text-slate-300 md:text-base">
           <p>
-            ברוכים הבאים לאתר The Witch. השימוש באתר כפוף לתנאים אלה. אם אינכם מסכימים לתנאים — הימנעו משימוש באתר.
+            ברוכים הבאים לאתר The Witch. השימוש באתר כפוף לתנאים אלה. אם אינכם מסכימים לתנאים, הימנעו משימוש באתר.
           </p>
           <section aria-labelledby="terms-nature">
             <h2 id="terms-nature" className="mb-3 text-xl font-semibold text-white">
@@ -36,7 +36,7 @@ export function TermsPage() {
               קניין רוחני
             </h2>
             <p>
-              כל התכנים באתר — לרבות טקסטים, עיצוב, לוגו, קוד ממשק ותמונות — מוגנים בזכויות יוצרים ובזכויות סמיכות
+              כל התכנים באתר, לרבות טקסטים, עיצוב, לוגו, קוד ממשק ותמונות, מוגנים בזכויות יוצרים ובזכויות סמיכות
               למפעיל, אלא אם צוין אחרת. אין להעתיק, לשכפל או לעשות שימוש מסחרי ללא רשות מראש ובכתב.
             </p>
           </section>

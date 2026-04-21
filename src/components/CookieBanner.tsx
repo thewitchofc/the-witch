@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
 
-/** באנר הסכמה לעוגיות ול־Google Analytics — טעינת GA רק אחרי «אישור» */
+/** באנר הסכמה לעוגיות ול־Google Analytics, טעינת GA רק אחרי «אישור» */
 export function CookieBanner() {
   const { consent, accept, decline } = useAnalyticsConsent()
 
