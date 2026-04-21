@@ -1,11 +1,16 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { type ReactNode, useEffect, useState } from 'react'
+import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
+import { useIsMobileViewport } from '../hooks/useIsMobileViewport'
+import { shouldBlockHeavyEffects } from '../lib/heavyEffectsGuard'
 
 const easeOutCubic = [0.22, 1, 0.36, 1] as const
 
 /** מינימום קצר יותר — הרגשת ״אתר כבד״ בכניסה */
 const minMs = 480
 const minMsReduced = 180
+/** מובייל: פחות זמן מעל התוכן + פחות אנימציות = פחות TBT */
+const minMsMobile = 280
 
 /**
  * מסך טעינה קצר בכניסה לאתר — רקע קוסמי, לוגו, ואנימציית יציאה רכה.
@@ -13,13 +18,25 @@ const minMsReduced = 180
  */
 export function BootSplash({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion()
-  const [visible, setVisible] = useState(true)
+  const isMobile = useIsMobileViewport()
+  const blocked = useHeavyEffectsBlocked()
+  const [visible, setVisible] = useState(() =>
+    typeof window !== 'undefined' ? !shouldBlockHeavyEffects(window.location.search) : true,
+  )
+
+  const simpleSplash = reduceMotion || isMobile || blocked
 
   useEffect(() => {
-    const ms = reduceMotion ? minMsReduced : minMs
+    if (blocked) setVisible(false)
+  }, [blocked])
+
+  useEffect(() => {
+    if (!visible) return
+    let ms = reduceMotion ? minMsReduced : minMs
+    if (isMobile && !reduceMotion) ms = minMsMobile
     const id = window.setTimeout(() => setVisible(false), ms)
     return () => window.clearTimeout(id)
-  }, [reduceMotion])
+  }, [visible, reduceMotion, isMobile])
 
   return (
     <>
@@ -34,7 +51,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#020617] text-white"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0.2 : 0.55, ease: easeOutCubic }}
+            transition={{ duration: simpleSplash ? 0.2 : 0.55, ease: easeOutCubic }}
           >
             {/* אורות רקע — דומה ל־CosmicField */}
             <div
@@ -51,7 +68,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                   ].join(', '),
                 }}
               />
-              {!reduceMotion ? (
+              {!simpleSplash ? (
                 <motion.div
                   className="absolute inset-0 opacity-[0.35]"
                   style={{
@@ -62,15 +79,30 @@ export function BootSplash({ children }: { children: ReactNode }) {
                   animate={{ opacity: [0.28, 0.42, 0.3] }}
                   transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 />
-              ) : null}
+              ) : (
+                <div
+                  className="absolute inset-0 opacity-[0.32]"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.45), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 40% 80%, rgba(196,181,253,0.35), transparent)',
+                    backgroundSize: '100% 100%',
+                  }}
+                  aria-hidden
+                />
+              )}
             </div>
 
             <div className="relative z-10 flex flex-col items-center gap-8 px-6">
               <motion.div
                 className="relative"
-                initial={{ opacity: 0, y: 12, filter: 'blur(8px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: reduceMotion ? 0.15 : 0.65, ease: easeOutCubic }}
+                initial={
+                  simpleSplash ? { opacity: 0 } : { opacity: 0, y: 12, filter: 'blur(8px)' }
+                }
+                animate={simpleSplash ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{
+                  duration: simpleSplash ? 0.18 : 0.65,
+                  ease: easeOutCubic,
+                }}
               >
                 <div
                   className="absolute inset-[-14px] rounded-[2rem] opacity-80 blur-xl"
@@ -95,7 +127,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                 className="flex flex-col items-center gap-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: reduceMotion ? 0 : 0.25, duration: 0.45 }}
+                transition={{ delay: simpleSplash ? 0 : 0.25, duration: simpleSplash ? 0.25 : 0.45 }}
               >
                 <p
                   className="font-sans text-sm tracking-wide text-slate-400"
@@ -103,7 +135,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                 >
                   טוענים את החוויה…
                 </p>
-                {!reduceMotion ? (
+                {!simpleSplash ? (
                   <div className="flex h-1 w-44 overflow-hidden rounded-full bg-white/10 sm:w-52">
                     <motion.div
                       className="h-full rounded-full bg-gradient-to-l from-cyan-400 via-violet-400 to-fuchsia-500"

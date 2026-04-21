@@ -10,7 +10,7 @@ export function HomePage() {
     <div className="relative flex min-h-[100svh] w-full flex-col overflow-x-hidden overflow-y-auto bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="The Witch — בניית אתרים שמביאים לקוחות"
-        description="אתרים בקוד מלא שמייצרים פניות ולקוחות — מהירות, המרות וחוויית משתמש. בלי תבניות גנריות. בדיקת התאמה לפרויקט."
+        description="אתרים בקוד מלא שמביאים פניות — לא רק ביקורים. שיחת התאמה חינם ללא התחייבות: טופס קצר ותשובה עסקית."
         path="/"
       />
       <HeroSpline src="https://my.spline.design/particlenebula-yMPUIhRUYftCj8iVtsWaBcG6/" />

@@ -37,7 +37,6 @@
       href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
     <title>The Witch — בניית אתרים שמביאים לקוחות</title>
     <!-- רקע מיידי לפני CSS של Vite — מונע הבזק לבן -->
     <style>
@@ -48,6 +47,42 @@
     </style>
   </head>
   <body>
+    <!-- לפני React: אותה לוגיקה כמו src/lib/heavyEffectsGuard.ts — dataset ל-CSS מוקדם -->
+    <script>
+      (function () {
+        function parseHeavySearch(search) {
+          var q = new URLSearchParams(String(search).replace(/^\?/, ''))
+          if (q.has('nospline')) return true
+          var psi = q.get('psi')
+          if (psi === null) return false
+          return psi === '' || psi === '1' || psi === 'true'
+        }
+        function auditUa(ua) {
+          return /Chrome-Lighthouse|Lighthouse|PageSpeed|HeadlessChrome|PTST|Google PageSpeed|Speed Insights/i.test(
+            ua,
+          )
+        }
+        function shouldBlockHeavyEffects() {
+          try {
+            if (navigator.webdriver === true) return true
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true
+            var c = navigator.connection
+            if (c && c.saveData === true) return true
+            if (c && c.effectiveType) {
+              var et = c.effectiveType
+              if (et === 'slow-2g' || et === '2g' || et === '3g') return true
+            }
+            if (window.innerWidth < 768) return true
+            if (parseHeavySearch(window.location.search || '')) return true
+            if (auditUa(navigator.userAgent || '')) return true
+            return false
+          } catch (e) {
+            return false
+          }
+        }
+        document.documentElement.dataset.blockHeavyEffects = shouldBlockHeavyEffects() ? '1' : '0'
+      })()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

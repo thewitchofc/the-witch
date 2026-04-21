@@ -450,23 +450,24 @@ export function LeadForm() {
     >
       <div className="w-full min-w-0">
         <h2 className="mb-2 text-center text-xl font-semibold tracking-tight text-white sm:mb-3 sm:text-2xl">
-          בדיקת התאמה לפרויקט
+          רוצים אתר שמביא פניות? בואו נבדוק התאמה
         </h2>
         {!submitted && (
           <>
-            <p className="mx-auto mb-6 max-w-md text-balance text-center text-sm leading-snug text-slate-400 sm:mb-8 sm:text-base md:mb-10 md:max-w-2xl">
-              זה לוקח פחות מדקה ומאפשר לנו להבין אם יש התאמה
+            <p className="mx-auto mb-5 max-w-md text-balance text-center text-sm leading-snug text-slate-300 sm:mb-6 sm:text-base md:mb-8 md:max-w-2xl md:text-lg">
+              טופס קצר (פחות מדקה). אחזור עם כיוון ברור — מתאים או לא, בלי התחייבות וללא עלות.
             </p>
-            <p className="mb-6 text-center text-base font-medium leading-snug text-slate-200 sm:text-lg md:mb-7">
-              אני לא עובדת עם כולם.
+            <p className="mb-5 text-center text-base font-semibold leading-snug text-white sm:text-lg md:mb-6">
+              אני לא עובדת עם כולם — בכוונה.
             </p>
-            <div className="mb-8 space-y-4 text-center text-sm leading-relaxed text-slate-400 sm:mb-10 sm:text-base md:space-y-5">
+            <div className="mb-8 space-y-3 text-center text-sm leading-relaxed text-slate-400 sm:mb-10 sm:text-base md:space-y-4">
               <p>
-                אני מקבלת עד 4 פרויקטים בחודש
-                <br />
-                כדי לשמור על רמה גבוהה באמת.
+                עד <span className="font-medium text-slate-200">4 פרויקטים בחודש</span> כדי לשמור על איכות
+                וזמינות אמיתית.
               </p>
-              <p className="text-balance text-slate-300">אם זה חשוב לך, עדיף לא לחכות.</p>
+              <p className="text-balance text-slate-300">
+                אם האתר אמור להביא לקוחות ולא רק ״להיראות יפה״ — זה המקום להתחיל.
+              </p>
             </div>
           </>
         )}
@@ -483,8 +484,10 @@ export function LeadForm() {
               transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
               className="rounded-2xl border border-white/[0.1] bg-slate-950/55 px-8 py-14 text-center text-pretty ring-1 ring-white/[0.06] sm:px-10 sm:py-16"
             >
-              <p className="text-lg font-medium text-white sm:text-xl">הפרטים נשלחו.</p>
-              <p className="mt-4 text-base leading-relaxed text-slate-300 sm:text-lg">אחזור אליך בהקדם.</p>
+              <p className="text-lg font-medium text-white sm:text-xl">הפרטים התקבלו — תודה.</p>
+              <p className="mt-4 text-base leading-relaxed text-slate-300 sm:text-lg">
+                אעבור עליהם ואחזור אליך בימי עבודה הקרובים עם המשך צעדים או שאלות ממוקדות.
+              </p>
             </motion.div>
           ) : (
             <motion.form

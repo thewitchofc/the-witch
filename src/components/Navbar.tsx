@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 
 const navLinkBase =
   'max-md:text-xs md:text-sm transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70'
@@ -16,7 +17,21 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl justify-center px-4 py-3 md:px-6 md:py-4">
         <nav aria-label="ניווט ראשי">
-          <ul className="flex flex-wrap items-center justify-center gap-4 md:flex-nowrap md:gap-8">
+          <ul className="flex flex-wrap items-center justify-center gap-3 md:flex-nowrap md:gap-6 lg:gap-8">
+            <li className="order-first flex w-full basis-full justify-center md:order-none md:w-auto md:basis-auto md:justify-end">
+              <Link
+                to="/apply"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.35)] ring-1 ring-white/15 transition hover:opacity-95 hover:shadow-[0_0_28px_rgba(34,211,238,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 md:px-6 md:text-base"
+                onClick={() =>
+                  trackEvent('cta_click', {
+                    cta_location: 'navbar_primary',
+                    link_url: '/apply',
+                  })
+                }
+              >
+                שיחת התאמה חינם
+              </Link>
+            </li>
             <li>
               <NavLink to="/" end className={navLinkClassName}>
                 דף הבית
@@ -40,11 +55,6 @@ export function Navbar() {
             <li>
               <NavLink to="/faq" className={navLinkClassName}>
                 שאלות נפוצות
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/apply" className={navLinkClassName}>
-                בדיקת התאמה
               </NavLink>
             </li>
           </ul>

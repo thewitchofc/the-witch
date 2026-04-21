@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
@@ -12,7 +13,22 @@ export function SiteFooter() {
         <p className="order-2 text-slate-300 md:order-1">
           © {year} The Witch — כל הזכויות שמורות
         </p>
-        <nav aria-label="קישורים משפטיים" className="order-1 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:order-2">
+        <nav
+          aria-label="קישורי תחתית"
+          className="order-1 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:order-2"
+        >
+          <Link
+            to="/apply"
+            className="font-semibold text-cyan-200 underline-offset-2 transition hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={() =>
+              trackEvent('cta_click', {
+                cta_location: 'footer',
+                link_url: '/apply',
+              })
+            }
+          >
+            שיחת התאמה
+          </Link>
           <Link
             to="/privacy"
             className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"

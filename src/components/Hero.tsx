@@ -1,11 +1,15 @@
-import { motion } from 'framer-motion'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { trackEvent } from '../lib/analytics'
 import { CosmicField } from './CosmicField'
+import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 
-const MotionLink = motion(Link)
+const WITCH_SECTION_IO: IntersectionObserverInit = {
+  root: null,
+  rootMargin: '-48px 0px -12% 0px',
+  threshold: 0.08,
+}
 
 /** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
 const logoSrc = '/logo.svg'
@@ -21,23 +25,21 @@ const logoImgStyle = {
   ].join(' '),
 } as CSSProperties
 
-const headline = 'אתרים שמביאים לך לקוחות.'
+const headline = 'אתרים שמביאים לך לקוחות — לא רק ביקורים.'
 
-const sublines = ['פחות רעש, יותר תוצאות.'] as const
+const sublines = [
+  'מבנה, מהירות ומסרים שמובילים לפעולה אחת ברורה. בקוד מלא, בלי תבניות.',
+] as const
 
-const ctaLabel = 'בדיקת התאמה וקבלת כיוון'
+const ctaLabel = 'שיחת התאמה חינם — בלי התחייבות'
+
+const ctaMicrocopy =
+  'מילוי קצר בטופס · תשובה עסקית תוך ימי עבודה · בלי מחייבים לשום דבר'
 
 const disclaimerDesktop = [
   'מתאימה לעסקים שמוכנים להשקיע בתוצאה — לא ב״מחיר הכי נמוך״.',
   'עד 4 פרויקטים בחודש, כדי לשמור על איכות וזמינות.',
 ] as const
-
-const easeOut = 'easeOut' as const
-
-const ctaRestShadow =
-  '0 2px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.22), 0 0 28px rgba(34, 211, 238, 0.1)'
-const ctaHoverShadow =
-  '0 8px 28px rgba(0, 0, 0, 0.45), 0 0 28px rgba(167, 139, 250, 0.35), 0 0 40px rgba(34, 211, 238, 0.16)'
 
 /** טקסט לבן — glow לבן עדין + עומק קל כדי שיישאר קריא על רקע עמוס */
 const heroHeadlineGlyphStyle = {
@@ -66,17 +68,24 @@ const heroSublineGlyphStyle = {
 
 type HeroLayout = 'default' | 'stacked'
 
-function randomWitchFlight(): CSSProperties {
-  const dur = 18 + Math.random() * 16
-  const startPct = -(10 + Math.random() * 28)
-  const endPct = 100 + Math.random() * 22
-  const bob = -(10 + Math.random() * 26)
+function unitRand(seed: number): number {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453
+  return x - Math.floor(x)
+}
 
-  const top0 = 10 + Math.random() * 42
-  const diagonal = Math.random() < 0.78
+function witchFlightStyle(key: number): CSSProperties {
+  const r = (n: number) => unitRand(key * 9973 + n)
+  /* מחזור כולל 12–18s (טיסה + idle ב-keyframes) */
+  const dur = 12 + r(1) * 6
+  const startPct = -(6 + r(2) * 18)
+  const endPct = 100 + r(3) * 12
+  const bob = -(5 + r(4) * 12)
+
+  const top0 = 10 + r(5) * 42
+  const diagonal = r(6) < 0.78
   let top1 = diagonal
-    ? top0 + (14 + Math.random() * 26) * (Math.random() < 0.5 ? -1 : 1)
-    : top0 + (Math.random() * 5 - 2.5)
+    ? top0 + (8 + r(7) * 14) * (r(8) < 0.5 ? -1 : 1)
+    : top0 + (r(9) * 4 - 2)
   top1 = Math.max(8, Math.min(58, top1))
   if (diagonal && Math.abs(top1 - top0) < 8) {
     top1 = top0 + (top1 >= top0 ? 10 : -10)
@@ -102,21 +111,53 @@ export function Hero({
   showCosmicField?: boolean
 }) {
   const stacked = layout === 'stacked'
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const [witchFlying, setWitchFlying] = useState(false)
+
+  const logoDesktopRevealRef = useRef<HTMLDivElement>(null)
+  const logoMobileRevealRef = useRef<HTMLDivElement>(null)
+  const headlineRevealRef = useRef<HTMLHeadingElement>(null)
+  const sublineRevealRef = useRef<HTMLDivElement>(null)
+  const ctaRevealRef = useRef<HTMLAnchorElement>(null)
+  const disclaimerRevealRef = useRef<HTMLParagraphElement>(null)
+
+  useRevealIsVisible(logoDesktopRevealRef)
+  useRevealIsVisible(logoMobileRevealRef)
+  useRevealIsVisible(headlineRevealRef)
+  useRevealIsVisible(sublineRevealRef)
+  useRevealIsVisible(ctaRevealRef)
+  useRevealIsVisible(disclaimerRevealRef)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const obs = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        setWitchFlying(true)
+        obs.disconnect()
+      }
+    }, WITCH_SECTION_IO)
+
+    obs.observe(section)
+    return () => obs.disconnect()
+  }, [])
 
   const [witchFlight, setWitchFlight] = useState(() => ({
     key: 0,
-    style: randomWitchFlight(),
+    style: witchFlightStyle(0),
   }))
 
   const onWitchLap = useCallback(() => {
     setWitchFlight((prev) => ({
       key: prev.key + 1,
-      style: randomWitchFlight(),
+      style: witchFlightStyle(prev.key + 1),
     }))
   }, [])
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       className={
         stacked
@@ -131,7 +172,9 @@ export function Hero({
       <img
         key={witchFlight.key}
         src="/witch.png"
-        className="witch-animation"
+        className={
+          witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
+        }
         style={witchFlight.style}
         alt=""
         aria-hidden
@@ -139,17 +182,15 @@ export function Hero({
       />
 
       <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
-        <motion.div
+        <div
+          ref={logoDesktopRevealRef}
           className={
             stacked
-              ? 'mb-0 mt-3 hidden w-full shrink-0 md:mb-4 md:mt-4 md:block'
-              : 'mb-0 mt-3 hidden w-full shrink-0 md:mb-10 md:mt-4 md:block'
+              ? 'hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full shrink-0 md:mb-4 md:mt-4 md:block'
+              : 'hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full shrink-0 md:mb-10 md:mt-4 md:block'
           }
           lang="en"
           dir="ltr"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: easeOut }}
         >
           <img
             src={logoSrc}
@@ -165,7 +206,7 @@ export function Hero({
             }
             style={logoImgStyle}
           />
-        </motion.div>
+        </div>
 
         <div
           className={
@@ -174,7 +215,12 @@ export function Hero({
               : 'hero-content flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
           }
         >
-          <div className="mt-3 block w-full shrink-0 md:hidden" dir="ltr" lang="en">
+          <div
+            ref={logoMobileRevealRef}
+            className="hero-reveal hero-reveal--from-top hero-reveal--duration-lg mt-3 block w-full shrink-0 md:hidden"
+            dir="ltr"
+            lang="en"
+          >
             <img
               src={logoSrc}
               alt="The Witch"
@@ -190,11 +236,9 @@ export function Hero({
             />
           </div>
 
-          <motion.h1
-            className="mx-auto w-full max-w-[260px] text-balance font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.1, ease: easeOut }}
+          <h1
+            ref={headlineRevealRef}
+            className="hero-reveal hero-reveal--delay-1 mx-auto w-full max-w-[260px] text-balance font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]"
           >
             <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
               {headline}
@@ -202,13 +246,11 @@ export function Hero({
             <span className="hidden text-white md:inline" style={heroHeadlineGlyphStyle}>
               {headline}
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            className="mx-auto w-full max-w-[260px] text-pretty font-normal leading-relaxed md:max-w-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.22, ease: easeOut }}
+          <div
+            ref={sublineRevealRef}
+            className="hero-reveal hero-reveal--fade-only hero-reveal--delay-2 mx-auto w-full max-w-[260px] text-pretty font-normal leading-relaxed md:max-w-none"
           >
             <div className="space-y-2 md:hidden">
               {sublines.map((line) => (
@@ -232,48 +274,41 @@ export function Hero({
                 </p>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
-            <MotionLink
+            <Link
+              ref={ctaRevealRef}
               to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט וקבלת כיוון — מעבר לטופס"
-              className="pointer-events-auto group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
+              aria-label="שיחת התאמה חינם לפרויקט — מעבר לטופס יצירת קשר"
+              className="hero-cta-reveal pointer-events-auto group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
               onClick={() =>
                 trackEvent('cta_click', {
                   cta_location: 'hero_primary',
                   link_url: '/apply#contact',
                 })
               }
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1, boxShadow: ctaRestShadow }}
-              transition={{ duration: 0.5, delay: 0.35, ease: easeOut }}
-              whileHover={{
-                scale: 1.03,
-                y: -2,
-                boxShadow: ctaHoverShadow,
-                transition: { duration: 0.3, ease: easeOut },
-              }}
             >
-              <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
+              <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-5 py-3 text-center text-[15px] font-semibold leading-snug text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 sm:px-6 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
                 {ctaLabel}
               </span>
-            </MotionLink>
+            </Link>
+            <p className="pointer-events-none mx-auto mt-2 max-w-[280px] text-balance text-center text-[11px] leading-relaxed text-slate-400 sm:text-xs md:max-w-md">
+              {ctaMicrocopy}
+            </p>
           </div>
 
           {!stacked ? (
-            <motion.p
-              className="hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-300 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.45, delay: 0.5, ease: easeOut }}
+            <p
+              ref={disclaimerRevealRef}
+              className="hero-reveal hero-reveal--fade-only hero-reveal--delay-4 hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-300 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
             >
               {disclaimerDesktop.map((line) => (
                 <span key={line} className="block">
                   {line}
                 </span>
               ))}
-            </motion.p>
+            </p>
           ) : null}
         </div>
       </div>
@@ -281,5 +316,5 @@ export function Hero({
   )
 }
 
-/** רקע Spline לדף הבית — טעינה מושהית ומובייל סטטי בלבד */
+/** רקע Spline לדף הבית — טעינה לפי בחירה (״הפעל אפקט״) */
 export { HeroSpline } from './HeroSpline'

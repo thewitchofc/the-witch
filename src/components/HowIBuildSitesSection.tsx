@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 
 const caseStudy = {
   title: 'מקרה לדוגמה: SAB Glass',
@@ -98,6 +99,24 @@ export function HowIBuildSitesSection() {
               <p className="text-xs leading-relaxed text-slate-400 md:text-sm">{t.body}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 flex flex-col items-center gap-3 border-t border-white/10 pt-10 md:mt-12 md:gap-4 md:pt-12">
+          <p className="max-w-lg text-balance text-center text-sm leading-relaxed text-slate-300 md:text-base">
+            אם זה נשמע כמו מה שהעסק שלכם צריך — בואו נבדוק התאמה בלי התחייבות.
+          </p>
+          <Link
+            to="/apply#contact"
+            className="pointer-events-auto inline-flex min-h-[48px] items-center justify-center rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 px-6 py-3 text-base font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.3)] ring-1 ring-white/15 transition hover:opacity-95 hover:shadow-[0_0_32px_rgba(34,211,238,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 md:px-8 md:py-3.5 md:text-lg"
+            onClick={() =>
+              trackEvent('cta_click', {
+                cta_location: 'how_build_section',
+                link_url: '/apply#contact',
+              })
+            }
+          >
+            שיחת התאמה חינם
+          </Link>
         </div>
       </div>
     </section>

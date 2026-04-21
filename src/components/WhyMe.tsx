@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
+
 const cardIconWrapDefault = 'mb-3 flex justify-center'
 const cardIconWrapStacked = 'mb-1 flex justify-center md:mb-3'
 
@@ -175,6 +178,23 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
             </p>
           </div>
         </div>
+
+        {stacked ? (
+          <div className="pointer-events-auto mt-4 flex justify-center md:mt-6">
+            <Link
+              to="/apply#contact"
+              className="inline-flex min-h-[44px] items-center text-sm font-semibold text-cyan-200 underline-offset-4 transition hover:text-white hover:underline md:text-base"
+              onClick={() =>
+                trackEvent('cta_click', {
+                  cta_location: 'why_me_stacked',
+                  link_url: '/apply#contact',
+                })
+              }
+            >
+              שיחת התאמה חינם — לטופס קצר
+            </Link>
+          </div>
+        ) : null}
       </div>
     </section>
   )
