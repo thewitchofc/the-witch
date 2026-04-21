@@ -15,13 +15,13 @@ function useIsMinMd(): boolean {
 }
 
 const fieldShellClass =
-  'rounded-2xl border border-white/10 bg-slate-950/40 p-4 ring-1 ring-white/[0.06] sm:p-5 md:px-6 lg:px-7'
+  'rounded-2xl border border-white/[0.14] bg-slate-950/78 p-4 ring-1 ring-white/[0.08] backdrop-blur-md sm:p-5 md:px-6 lg:px-7'
 
 const fieldShellErrorClass =
-  'rounded-2xl border border-red-500/50 bg-slate-950/40 p-4 ring-1 ring-red-500/35 sm:p-5 md:px-6 lg:px-7'
+  'rounded-2xl border border-red-500/50 bg-slate-950/78 p-4 ring-1 ring-red-500/35 backdrop-blur-md sm:p-5 md:px-6 lg:px-7'
 
 const fieldControlClass =
-  'mt-2 w-full rounded-lg border-0 bg-slate-900/35 px-3 py-3 text-base text-white transition placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/45 sm:px-4 sm:py-3.5 md:px-5'
+  'mt-2 w-full rounded-lg border border-white/[0.1] bg-slate-950/72 px-3 py-3 text-base text-white shadow-inner shadow-black/30 transition placeholder:text-slate-300/90 hover:border-white/[0.14] focus:outline-none focus:border-white/[0.22] focus:ring-1 focus:ring-white/[0.12] sm:px-4 sm:py-3.5 md:px-5'
 
 const BUDGET_BELOW = 'below' as const
 
@@ -41,7 +41,7 @@ const FORM_STEP_LABELS = ['פרטים ועסק', 'אתר ורשתות', 'תקצ�
 const stepNavSecondaryClass =
   'min-h-[48px] touch-manipulation rounded-xl border border-white/[0.14] bg-slate-900/45 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-white/[0.22] hover:bg-slate-800/55 hover:text-white sm:min-h-0'
 
-/** זהה ל־CTA בדף הבית (Hero) — מסגרת גרדיאנט, פנים כהה, הילה */
+/** זהה ל־CTA בדף הבית (Hero) — מסגרת גרדיאנט, פנים כהה */
 function HomeStyleContinueButton({
   disabled,
   onClick,
@@ -53,10 +53,6 @@ function HomeStyleContinueButton({
 }) {
   return (
     <div className="relative inline-flex max-w-full justify-center overflow-visible">
-      <div
-        className="pointer-events-none absolute inset-[-5px] rounded-full bg-gradient-to-r from-cyan-400/45 via-violet-500/40 to-fuchsia-500/40 opacity-75 blur-md md:inset-[-6px] md:opacity-80 md:blur-lg"
-        aria-hidden
-      />
       <button
         type="button"
         disabled={disabled}
@@ -919,10 +915,6 @@ export function LeadForm() {
                   className="flex justify-center"
                 >
                   <div className="relative mx-auto flex w-full max-w-full justify-center overflow-visible">
-                    <div
-                      className="pointer-events-none absolute inset-[-5px] rounded-full bg-gradient-to-r from-cyan-400/45 via-violet-500/40 to-fuchsia-500/40 opacity-75 blur-md md:inset-[-6px] md:opacity-80 md:blur-lg"
-                      aria-hidden
-                    />
                     <a
                       href={QUICK_SOLUTION_URL}
                       target="_blank"

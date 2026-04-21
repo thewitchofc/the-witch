@@ -32,6 +32,124 @@ body {
   background-color: #020617;
 }
 
+/* טעינה מושהית של Spline — placeholder עדין (ללא כהייה כבדה) */
+.spline-lazy-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 100%, rgb(15 23 42 / 0.28) 0%, transparent 58%),
+    #020617;
+}
+
+.spline-lazy-root iframe {
+  position: relative;
+  z-index: 0;
+}
+
+/* דף הבית — רקע Spline קבוע (מובייל: בלי iframe, רקע #020617 + CosmicField) */
+.home-spline-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
+/* iframe אינטראקטיבי; ההורה עם none כדי שלא יילכדו קליקים מחוץ ל־iframe */
+.home-spline-bg iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border: 0;
+  pointer-events: auto;
+  opacity: 0.36;
+}
+
+/* מעל ה־iframe ויזואלית — pointer-events: none כדי שהעכבר יגיע ל־Spline */
+.home-spline-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(2 6 23 / 0.34) 0%,
+    rgb(2 6 23 / 0.2) 22%,
+    transparent 48%
+  );
+}
+
+/* דפים: תהליך, בדיקת התאמה, שאלות נפוצות — רקע Spline על כל המסך (מוסתר מתחת ל־768px) */
+.process-page-spline-bg,
+.apply-page-spline-bg,
+.faq-page-spline-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.process-page-spline-bg iframe,
+.apply-page-spline-bg iframe,
+.faq-page-spline-bg iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border: 0;
+  pointer-events: auto;
+  opacity: 0.36;
+}
+
+/* בדיקת התאמה — מוח/סצנה גדולים יותר במרכז המסך (חתוך ב־overflow של הקונטיינר) */
+.apply-page-spline-bg iframe {
+  opacity: 0.4;
+  transform: scale(1.22);
+  transform-origin: center center;
+}
+
+/* overlay מעל ה־iframe — רק ויזואלי, לא חוסם אינטראקציה */
+.process-page-spline-bg::after,
+.apply-page-spline-bg::after,
+.faq-page-spline-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(2 6 23 / 0.36) 0%,
+    rgb(2 6 23 / 0.2) 24%,
+    transparent 50%
+  );
+}
+
+@media (max-width: 767px) {
+  .process-page-spline-bg,
+  .apply-page-spline-bg,
+  .faq-page-spline-bg {
+    display: none;
+  }
+
+  .home-spline-bg {
+    display: none;
+  }
+}
+
 .witch-animation {
   position: absolute;
   width: 160px;

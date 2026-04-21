@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { CosmicField } from '../components/CosmicField'
+import { LazySplineBackground } from '../components/LazySplineBackground'
 import { trackEvent } from '../lib/analytics'
 import { Seo } from '../components/Seo'
 
@@ -49,6 +50,10 @@ export function ProcessPage() {
         path="/process"
       />
       <CosmicField />
+      <LazySplineBackground
+        rootClassName="process-page-spline-bg"
+        src="https://my.spline.design/glowingplanetparticles-oUUwHSA0ohcwhOOZ2hxahafJ/"
+      />
       <main
         id="process"
         className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-4 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:px-6 md:pb-32"

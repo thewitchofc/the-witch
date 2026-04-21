@@ -65,8 +65,8 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
     <section
       className={
         stacked
-          ? 'flex-shrink-0 px-3 py-3 text-center md:px-4 md:py-6'
-          : 'px-4 py-16 text-center md:py-20'
+          ? 'pointer-events-none flex-shrink-0 px-3 py-3 text-center md:px-4 md:py-6'
+          : 'pointer-events-none px-4 py-16 text-center md:py-20'
       }
     >
       <div className="mx-auto max-w-5xl">

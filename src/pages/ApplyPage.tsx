@@ -1,5 +1,6 @@
 import { LeadForm } from '../components/LeadForm'
 import { CosmicField } from '../components/CosmicField'
+import { LazySplineBackground } from '../components/LazySplineBackground'
 import { Seo } from '../components/Seo'
 import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
@@ -17,12 +18,18 @@ export function ApplyPage() {
         path="/apply"
       />
       <CosmicField />
-      <WhyItWorksDifferent />
-      <div
-        id="contact"
-        className="relative z-10 mx-auto w-full max-w-xl scroll-mt-24 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] md:max-w-2xl lg:max-w-3xl sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))] md:pl-[max(2rem,env(safe-area-inset-left,0px))] md:pr-[max(2rem,env(safe-area-inset-right,0px))]"
-      >
-        <LeadForm />
+      <LazySplineBackground
+        rootClassName="apply-page-spline-bg"
+        src="https://my.spline.design/particleaibrain-LcC5GIbOSWChW6OLPMzjZN2h/"
+      />
+      <div className="relative z-10 flex w-full flex-col items-center">
+        <WhyItWorksDifferent />
+        <div
+          id="contact"
+          className="mx-auto w-full max-w-xl scroll-mt-24 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))] md:max-w-2xl md:pl-[max(2rem,env(safe-area-inset-left,0px))] md:pr-[max(2rem,env(safe-area-inset-right,0px))] lg:max-w-3xl"
+        >
+          <LeadForm />
+        </div>
       </div>
     </div>
   )

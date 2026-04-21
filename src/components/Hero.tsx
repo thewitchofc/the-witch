@@ -11,8 +11,14 @@ const MotionLink = motion(Link)
 const logoSrc = '/logo.svg'
 
 const logoImgStyle = {
-  filter:
-    'drop-shadow(0 0 10px rgba(168, 85, 247, 0.35)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.25)) drop-shadow(0 0 20px rgba(34, 211, 238, 0.25))',
+  filter: [
+    'drop-shadow(0 0 18px rgba(168, 85, 247, 0.55))',
+    'drop-shadow(0 0 36px rgba(139, 92, 246, 0.4))',
+    'drop-shadow(0 0 56px rgba(168, 85, 247, 0.22))',
+    'drop-shadow(0 0 22px rgba(34, 211, 238, 0.45))',
+    'drop-shadow(0 0 44px rgba(34, 211, 238, 0.28))',
+    'drop-shadow(0 0 20px rgba(244, 114, 182, 0.32))',
+  ].join(' '),
 } as CSSProperties
 
 const headline = 'אתרים שמביאים לך לקוחות.'
@@ -32,6 +38,31 @@ const ctaRestShadow =
   '0 2px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.22), 0 0 28px rgba(34, 211, 238, 0.1)'
 const ctaHoverShadow =
   '0 8px 28px rgba(0, 0, 0, 0.45), 0 0 28px rgba(167, 139, 250, 0.35), 0 0 40px rgba(34, 211, 238, 0.16)'
+
+/** טקסט לבן — glow לבן עדין + עומק קל כדי שיישאר קריא על רקע עמוס */
+const heroHeadlineGlyphStyle = {
+  WebkitTextStroke: '0.35px rgba(248, 250, 252, 0.22)',
+  paintOrder: 'stroke fill',
+  textShadow: [
+    '0 0 1px rgba(255, 255, 255, 0.5)',
+    '0 0 14px rgba(255, 255, 255, 0.32)',
+    '0 0 32px rgba(248, 250, 252, 0.2)',
+    '0 0 52px rgba(241, 245, 249, 0.12)',
+    '0 2px 14px rgba(2, 6, 23, 0.45)',
+    '0 1px 0 rgba(2, 6, 23, 0.2)',
+  ].join(', '),
+} as const satisfies CSSProperties
+
+const heroSublineGlyphStyle = {
+  WebkitTextStroke: '0.28px rgba(248, 250, 252, 0.18)',
+  paintOrder: 'stroke fill',
+  textShadow: [
+    '0 0 1px rgba(255, 255, 255, 0.42)',
+    '0 0 12px rgba(255, 255, 255, 0.26)',
+    '0 0 28px rgba(248, 250, 252, 0.16)',
+    '0 2px 10px rgba(2, 6, 23, 0.4)',
+  ].join(', '),
+} as const satisfies CSSProperties
 
 type HeroLayout = 'default' | 'stacked'
 
@@ -89,8 +120,8 @@ export function Hero({
       id="home"
       className={
         stacked
-          ? 'relative isolate flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-transparent pt-24 text-white'
-          : 'relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
+          ? 'pointer-events-none relative isolate flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-transparent pt-24 text-white'
+          : 'pointer-events-none relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
       }
       dir="rtl"
       lang="he"
@@ -165,22 +196,10 @@ export function Hero({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1, ease: easeOut }}
           >
-            <span
-              className="bg-gradient-to-l from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent md:hidden"
-              style={{
-                textShadow:
-                  '0 0 20px rgba(168, 85, 247, 0.35), 0 0 40px rgba(34, 211, 238, 0.25)',
-              }}
-            >
+            <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
               {headline}
             </span>
-            <span
-              className="hidden bg-gradient-to-l from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent md:inline"
-              style={{
-                textShadow:
-                  '0 0 20px rgba(168, 85, 247, 0.35), 0 0 40px rgba(34, 211, 238, 0.25)',
-              }}
-            >
+            <span className="hidden text-white md:inline" style={heroHeadlineGlyphStyle}>
               {headline}
             </span>
           </motion.h1>
@@ -195,7 +214,8 @@ export function Hero({
               {sublines.map((line) => (
                 <p
                   key={line}
-                  className="bg-gradient-to-l from-cyan-200/78 via-purple-200/68 to-pink-300/72 bg-clip-text text-sm text-transparent sm:text-base"
+                  className="text-sm text-white/95 sm:text-base"
+                  style={heroSublineGlyphStyle}
                 >
                   {line}
                 </p>
@@ -205,7 +225,8 @@ export function Hero({
               {sublines.map((line) => (
                 <p
                   key={line}
-                  className="bg-gradient-to-l from-cyan-200/78 via-purple-200/68 to-pink-300/72 bg-clip-text text-transparent"
+                  className="text-white/95"
+                  style={heroSublineGlyphStyle}
                 >
                   {line}
                 </p>
@@ -214,15 +235,10 @@ export function Hero({
           </motion.div>
 
           <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
-            {/* הילה צמודה לכפתור — נראית כהמשך של מסגרת הגרדיאנט, לא כתם ברקע */}
-            <div
-              className="pointer-events-none absolute inset-[-5px] rounded-full bg-gradient-to-r from-cyan-400/45 via-violet-500/40 to-fuchsia-500/40 opacity-75 blur-md md:inset-[-6px] md:opacity-80 md:blur-lg"
-              aria-hidden
-            />
             <MotionLink
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
-              className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
+              className="pointer-events-auto group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-shadow duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 md:inline-flex md:w-auto"
               onClick={() =>
                 trackEvent('cta_click', {
                   cta_location: 'hero_primary',

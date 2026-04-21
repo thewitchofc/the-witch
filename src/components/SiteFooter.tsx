@@ -4,7 +4,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer
-      className="border-t border-white/10 bg-slate-950/90 py-8 text-slate-300 backdrop-blur-sm"
+      className="relative z-10 border-t border-white/10 bg-slate-950/90 py-8 text-slate-300 backdrop-blur-sm"
       dir="rtl"
       lang="he"
     >

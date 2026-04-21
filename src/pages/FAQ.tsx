@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { CosmicField } from "../components/CosmicField";
+import { LazySplineBackground } from "../components/LazySplineBackground";
 import { JsonLd } from "../components/JsonLd";
 import { Seo } from "../components/Seo";
 import { FAQ_ITEMS } from "../data/faqContent";
@@ -31,8 +33,15 @@ export default function FAQ() {
         description="מחירים, זמני פיתוח, WordPress מול קוד מלא, תחזוקה ועוד. תשובות קצרות לפני שמבקשים הצעת מחיר לאתר."
         path="/faq"
       />
-      <section className="py-20 px-4 text-center">
-      <div className="max-w-3xl mx-auto">
+      <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+        <CosmicField />
+        <LazySplineBackground
+          rootClassName="faq-page-spline-bg"
+          src="https://my.spline.design/orb-AEB9qDyTCETQRwLNVsPUap7g/"
+        />
+        <div className="relative z-10">
+          <section className="py-20 px-4 text-center">
+            <div className="mx-auto max-w-3xl">
 
         <h1 className="mb-12 text-3xl font-semibold text-white md:text-4xl">
           שאלות נפוצות
@@ -75,10 +84,6 @@ export default function FAQ() {
           </p>
 
           <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
-            <div
-              className="pointer-events-none absolute inset-[-5px] rounded-full bg-gradient-to-r from-cyan-400/45 via-violet-500/40 to-fuchsia-500/40 opacity-75 blur-md md:inset-[-6px] md:opacity-80 md:blur-lg"
-              aria-hidden
-            />
             <MotionLink
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט — מעבר לטופס יצירת קשר"
@@ -105,8 +110,10 @@ export default function FAQ() {
             </MotionLink>
           </div>
         </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </section>
     </>
   );
 }

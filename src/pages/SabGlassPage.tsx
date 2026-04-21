@@ -17,20 +17,10 @@ const workItems = [
   'התאמה מלאה למובייל',
 ] as const
 
-function Section({
-  id,
-  title,
-  children,
-  wide,
-}: {
-  id?: string
-  title: string
-  children: ReactNode
-  wide?: boolean
-}) {
+function Section({ id, title, children }: { id?: string; title: string; children: ReactNode }) {
   return (
     <section id={id} className="border-t border-white/[0.06] px-6 py-14 md:py-20">
-      <div className={wide ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'}>
+      <div className="mx-auto max-w-3xl">
         <h2 className="mb-4 text-xl font-semibold tracking-tight text-white md:mb-5 md:text-2xl">
           {title}
         </h2>
@@ -119,60 +109,6 @@ export function SabGlassPage() {
           <p className="mt-4 text-sm leading-relaxed text-slate-500">
             (אם בעתיד יש נתונים — ניתן להוסיף כאן)
           </p>
-        </Section>
-
-        <Section id="visuals" title="ויזואל" wide>
-          <p className="mb-8 text-pretty text-sm leading-relaxed text-slate-400 md:text-base">
-            מבט על האתר בדסקטופ ובמובייל — אותו מותג, חוויה עקבית בכל מסך.
-          </p>
-          <div className="grid gap-6 md:grid-cols-2 md:gap-8">
-            <figure className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 ring-1 ring-white/[0.04]">
-              <img
-                src={heroImage}
-                alt="SAB Glass — תצוגת דסקטופ"
-                width={1200}
-                height={720}
-                loading="lazy"
-                decoding="async"
-                className="aspect-[16/10] w-full object-cover object-top"
-              />
-              <figcaption className="border-t border-white/5 px-4 py-3 text-center text-xs text-slate-400 md:text-sm">
-                דסקטופ
-              </figcaption>
-            </figure>
-            <figure className="flex flex-col items-center overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 ring-1 ring-white/[0.04]">
-              <div className="w-full max-w-[280px] p-4 md:max-w-[320px]">
-                <div className="overflow-hidden rounded-[1.75rem] border border-white/15 bg-slate-900 shadow-xl ring-4 ring-slate-950/80">
-                  <img
-                    src={heroImage}
-                    alt="SAB Glass — תצוגת מובייל"
-                    width={720}
-                    height={1280}
-                    loading="lazy"
-                    decoding="async"
-                    className="aspect-[9/16] w-full object-cover object-[center_8%]"
-                  />
-                </div>
-              </div>
-              <figcaption className="mt-auto w-full border-t border-white/5 px-4 py-3 text-center text-xs text-slate-400 md:text-sm">
-                מובייל
-              </figcaption>
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 ring-1 ring-white/[0.04] md:col-span-2">
-              <img
-                src={heroImage}
-                alt="SAB Glass — מבט רחב על דף הבית"
-                width={1600}
-                height={640}
-                loading="lazy"
-                decoding="async"
-                className="aspect-[21/9] w-full object-cover object-[center_25%] md:aspect-[24/9]"
-              />
-              <figcaption className="border-t border-white/5 px-4 py-3 text-center text-xs text-slate-400 md:text-sm">
-                מבט רחב על הירו והמסרים
-              </figcaption>
-            </figure>
-          </div>
         </Section>
 
         <section className="border-t border-white/[0.06] px-6 py-14 md:py-20">
