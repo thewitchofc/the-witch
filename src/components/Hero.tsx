@@ -26,7 +26,7 @@ const logoImgStyle = {
   ].join(' '),
 } as CSSProperties
 
-const headline = 'המכשפה לבניית אתרים שמביאים לקוחות'
+const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
 
 const sublines = [
   'מבנה, מהירות ומסרים שמובילים לפעולה אחת ברורה. בקוד מלא, בלי תבניות.',
@@ -150,7 +150,7 @@ export function Hero({
       id="home"
       className={
         stacked
-          ? 'pointer-events-none relative isolate flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-transparent pt-24 text-white'
+          ? 'pointer-events-none relative isolate flex min-h-0 w-full flex-1 flex-col overflow-x-hidden overflow-y-visible bg-transparent pt-24 text-white'
           : 'pointer-events-none relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
       }
       dir="rtl"
@@ -204,7 +204,7 @@ export function Hero({
         >
           <div
             ref={logoMobileRevealRef}
-            className="hero-reveal hero-reveal--from-top hero-reveal--duration-lg mt-3 block w-full shrink-0 md:hidden"
+            className="hero-reveal hero-reveal--fade-only hero-reveal--duration-lg mt-3 block w-full shrink-0 md:hidden"
             dir="ltr"
             lang="en"
           >

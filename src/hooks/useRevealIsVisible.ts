@@ -3,7 +3,8 @@ import { type RefObject, useEffect } from 'react'
 const DEFAULT_IO: IntersectionObserverInit = {
   root: null,
   rootMargin: '-56px 0px -8% 0px',
-  threshold: 0.12,
+  /** 0.01 — אלמנטים קטנים/חתוכים בקצה (לוגו מובייל + overflow ב-Hero) עדיין מקבלים is-visible */
+  threshold: 0.01,
 }
 
 let sharedObserver: IntersectionObserver | null = null

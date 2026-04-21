@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSplineWebGLEmbedAllowed } from '../hooks/useSplineWebGLEmbedAllowed'
 import { trackEvent } from '../lib/analytics'
 
@@ -9,6 +9,8 @@ export type SplineOptInBackgroundProps = {
   /** למשל `home-spline-bg`, `apply-page-spline-bg` */
   rootClassName: string
   activateLabel?: string
+  /** כש־true: טוען את ה־iframe מיד בכניסה (אם `useSplineWebGLEmbedAllowed`), בלי כפתור */
+  autoActivate?: boolean
 }
 
 /** רקע סטטי (גרדיאנטים) במקום Spline כשאפקטים כבדים חסומים או לפני opt-in */
@@ -43,19 +45,34 @@ function SplineStaticBackdrop() {
 }
 
 /**
- * רקע Spline רק אחרי לחיצה, placeholder (רקע, blur, glow) + כפתור.
+ * רקע Spline: placeholder (רקע, blur, glow) עד הפעלה.
+ * `autoActivate` — טעינת iframe בכניסה כשמותר WebGL; אחרת כפתור ״הפעל אפקט״.
  * כשאפקטים כבדים חסומים: רק fallback סטטי, בלי iframe וללא כפתור.
  */
 export function SplineOptInBackground({
   src,
   rootClassName,
   activateLabel = DEFAULT_ACTIVATE_LABEL,
+  autoActivate = false,
 }: SplineOptInBackgroundProps) {
   const splineAllowed = useSplineWebGLEmbedAllowed()
   const [activated, setActivated] = useState(false)
+  const autoActivationLogged = useRef(false)
+
+  useEffect(() => {
+    if (!autoActivate || !splineAllowed) return
+    const id = window.requestAnimationFrame(() => {
+      setActivated(true)
+      if (!autoActivationLogged.current) {
+        autoActivationLogged.current = true
+        trackEvent('spline_opt_in_activate', { surface: rootClassName, activation: 'auto' })
+      }
+    })
+    return () => window.cancelAnimationFrame(id)
+  }, [autoActivate, splineAllowed, rootClassName])
 
   const onActivate = useCallback(() => {
-    trackEvent('spline_opt_in_activate', { surface: rootClassName })
+    trackEvent('spline_opt_in_activate', { surface: rootClassName, activation: 'click' })
     setActivated(true)
   }, [rootClassName])
 
@@ -79,7 +96,7 @@ export function SplineOptInBackground({
         ) : null}
       </div>
 
-      {splineAllowed && !activated ? (
+      {splineAllowed && !activated && !autoActivate ? (
         <div
           className="pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-1/2 z-40 flex w-full max-w-md -translate-x-1/2 justify-center px-4"
           role="presentation"
