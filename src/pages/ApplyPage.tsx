@@ -11,7 +11,7 @@ const LeadForm = lazy(() =>
 export function ApplyPage() {
   return (
     <div
-      className="relative isolate flex min-h-[100svh] w-full flex-col items-center justify-start overflow-x-clip bg-[#020617] pb-12 pt-20 text-white touch-manipulation md:justify-center md:pb-20 lg:pb-24 supports-[min-height:100dvh]:min-h-[100dvh]"
+      className="relative isolate flex min-h-[100svh] w-full flex-col items-center justify-start overflow-hidden bg-[#020617] pb-12 pt-20 text-white touch-manipulation md:justify-center md:pb-20 lg:pb-24 supports-[min-height:100dvh]:min-h-[100dvh]"
       dir="rtl"
       lang="he"
     >

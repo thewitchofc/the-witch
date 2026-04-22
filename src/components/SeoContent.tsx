@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
 
 const HEADING_ID = 'seo-home-witch-heading'
@@ -27,7 +27,7 @@ export function SeoContent() {
           המכשפה לבניית אתרים
         </h2>
         <p className="mt-4 text-pretty text-sm leading-relaxed text-white/70 sm:text-base sm:leading-relaxed">
-          <Link
+          <CustomLink
             to="/hamachshefa-bniyat-atarim"
             className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
             onClick={() =>
@@ -38,7 +38,7 @@ export function SeoContent() {
             }
           >
             המכשפה לבניית אתרים
-          </Link>{' '}
+          </CustomLink>{' '}
           מתמחה ביצירת אתרים שמביאים לקוחות אמיתיים עם דגש על מהירות, חוויית משתמש ו-SEO מתקדם.
         </p>
         <button
@@ -69,7 +69,7 @@ export function SeoContent() {
             </p>
             <p>אם אתם מחפשים פתרון אמיתי לבניית אתר שעובד, המכשפה היא הבחירה הנכונה.</p>
             <p className="text-white/60">
-              <Link
+              <CustomLink
                 to="/hamachshefa-bniyat-atarim"
                 className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
                 onClick={() =>
@@ -80,7 +80,7 @@ export function SeoContent() {
                 }
               >
                 המכשפה לבניית אתרים
-              </Link>
+              </CustomLink>
               {' — '}
               עמוד ייעודי עם פירוט נוסף על הגישה והשירות.
             </p>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { CustomLink } from '../components/CustomLink'
 import { trackEvent } from '../lib/analytics'
 import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
@@ -32,7 +32,7 @@ function Section({ id, title, children }: { id?: string; title: string; children
 
 export function SabGlassPage() {
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="מקרה בוחן: SAB Glass, The Witch"
         description="אתר למקלחוני זכוכית בהתאמה אישית: UX להמרות, מבנה דפים, SEO בסיסי וטעינה מהירה. תוצאות ולא רק תדמית."
@@ -116,14 +116,14 @@ export function SabGlassPage() {
             <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">
               רוצה תוצאה כזו?
             </h2>
-            <Link
+            <CustomLink
               to="/apply"
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() => trackEvent('cta_click', { cta_location: 'sab_glass_footer', link_url: '/apply' })}
             >
               בדיקת התאמה לפרויקט
-            </Link>
+            </CustomLink>
           </div>
         </section>
       </main>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { CustomLink } from '../components/CustomLink'
 import { trackEvent } from '../lib/analytics'
 import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
@@ -37,7 +37,7 @@ function Section({
 
 export function LielEdriPage() {
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="מקרה בוחן: Liel Edri, The Witch"
         description="אתר לקינוחי בוטיק ביתיים: מיתוג עדין, פנייה בוואטסאפ ואינסטגרם, והתאמה מלאה למובייל."
@@ -103,7 +103,7 @@ export function LielEdriPage() {
         <section className="px-6 pb-4 pt-8 md:pt-12">
           <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-slate-950/50 px-6 py-10 text-center ring-1 ring-white/[0.04] md:px-10 md:py-12">
             <p className="text-lg font-medium text-white md:text-xl">גם אתה רוצה אתר כזה?</p>
-            <Link
+            <CustomLink
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
@@ -112,7 +112,7 @@ export function LielEdriPage() {
               }
             >
               בדיקת התאמה לפרויקט
-            </Link>
+            </CustomLink>
           </div>
         </section>
       </main>

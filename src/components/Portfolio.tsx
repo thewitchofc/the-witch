@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { usePageTransition } from '../context/PageTransitionContext'
 import royalFruitHero from '../assets/royal-fruit-hero.png?url'
 import { trackEvent } from '../lib/analytics'
 import { lielEdriOgImage, sabGlassOgImage, sachiRamenHeroImage } from '../data/clientOgImages'
@@ -62,7 +62,7 @@ const projects: PortfolioProject[] = [
 ]
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
-  const navigate = useNavigate()
+  const { go } = usePageTransition()
 
   function openProject() {
     const { href } = project
@@ -72,7 +72,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       internal: href.startsWith('/'),
     })
     if (href.startsWith('/')) {
-      navigate(href)
+      go(href)
       return
     }
     window.open(href, '_blank', 'noopener,noreferrer')

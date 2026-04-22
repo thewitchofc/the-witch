@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { CustomLink } from './CustomLink'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
 
 /** באנר הסכמה לעוגיות ול־Google Analytics, טעינת GA רק אחרי «אישור» */
@@ -22,12 +22,12 @@ export function CookieBanner() {
           <span className="text-white">Google Analytics</span> למדידת תנועה אנונימית. פרטים במדיניות הפרטיות.
         </p>
         <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
-          <Link
+          <CustomLink
             to="/privacy"
             className="text-center text-sm font-medium text-cyan-300 underline-offset-2 hover:text-cyan-200 hover:underline"
           >
             מדיניות פרטיות
-          </Link>
+          </CustomLink>
           <div className="flex gap-2 sm:gap-3">
             <button
               type="button"

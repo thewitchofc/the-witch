@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
 
 const ARTICLE_PATH = '/hamachshefa-bniyat-atarim-eich-livchor-atar-shmevi-lakochot' as const
@@ -13,18 +13,18 @@ export default function HamachshefaArticleClientsPage() {
       />
 
       <div
-        className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]"
+        className="relative isolate min-h-[100svh] w-full bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]"
         dir="rtl"
         lang="he"
       >
         <article className="mx-auto max-w-3xl px-6 pb-20 pt-24 text-white md:pt-28">
           <p className="mb-8 text-center text-sm text-white/50">
-            <Link
+            <CustomLink
               to="/hamachshefa-bniyat-atarim"
               className="font-medium text-cyan-300/90 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
             >
               המכשפה לבניית אתרים
-            </Link>
+            </CustomLink>
             <span aria-hidden> · </span>
             מאמר
           </p>
@@ -55,12 +55,12 @@ export default function HamachshefaArticleClientsPage() {
           </div>
 
           <p className="mt-12 text-center">
-            <Link
+            <CustomLink
               to="/apply"
               className="inline-block rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80"
             >
               בדיקת התאמה לפרויקט
-            </Link>
+            </CustomLink>
           </p>
         </article>
       </div>

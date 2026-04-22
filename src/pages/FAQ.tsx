@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { CustomLink } from "../components/CustomLink";
 import { CosmicField } from "../components/CosmicField";
 import { LazySplineBackground } from "../components/LazySplineBackground";
 import { JsonLd } from "../components/JsonLd";
@@ -31,7 +31,7 @@ export default function FAQ() {
         description="מחירים, זמני פיתוח, WordPress מול קוד מלא, תחזוקה ועוד. תשובות קצרות לפני שמבקשים הצעת מחיר לאתר."
         path="/faq"
       />
-      <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+      <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
         <CosmicField />
         <LazySplineBackground
           rootClassName="faq-page-spline-bg"
@@ -82,7 +82,7 @@ export default function FAQ() {
           </p>
 
           <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
-            <Link
+            <CustomLink
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-[transform,box-shadow] duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 hover:-translate-y-0.5 hover:scale-[1.03] md:inline-flex md:w-auto"
@@ -101,7 +101,7 @@ export default function FAQ() {
               <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
                 {ctaLabel}
               </span>
-            </Link>
+            </CustomLink>
           </div>
         </div>
             </div>

@@ -3,13 +3,13 @@ import { Seo } from '../components/Seo'
 
 export function PrivacyPage() {
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="relative isolate min-h-[100svh] w-full bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="מדיניות פרטיות, The Witch"
         description="איסוף מידע, עוגיות, Google Analytics והעברת מידע לצדדים שלישיים, מדיניות פרטיות לאתר The Witch."
         path="/privacy"
       />
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
         <CosmicField />
       </div>
       <main

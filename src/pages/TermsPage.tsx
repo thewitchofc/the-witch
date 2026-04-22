@@ -3,13 +3,13 @@ import { Seo } from '../components/Seo'
 
 export function TermsPage() {
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="relative isolate min-h-[100svh] w-full bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="תנאי שימוש, The Witch"
         description="תנאי שימוש באתר The Witch: שירותי מידע, קישורים חיצוניים, הגבלת אחריות וקניין רוחני."
         path="/terms"
       />
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
         <CosmicField />
       </div>
       <main

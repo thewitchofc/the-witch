@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
 
 export default function HamachshefaPage() {
@@ -11,7 +11,7 @@ export default function HamachshefaPage() {
       />
 
       <div
-        className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]"
+        className="relative isolate min-h-[100svh] w-full bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]"
         dir="rtl"
         lang="he"
       >
@@ -37,12 +37,12 @@ export default function HamachshefaPage() {
             מתחרים.
           </p>
 
-          <Link
+          <CustomLink
             to="/apply"
             className="inline-block rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:opacity-90"
           >
             בדיקת התאמה לפרויקט
-          </Link>
+          </CustomLink>
         </main>
       </div>
     </>

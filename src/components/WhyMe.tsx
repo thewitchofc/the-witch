@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
+import { useRef } from 'react'
+import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
+import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 
 const cardIconWrapDefault = 'mb-3 flex justify-center'
 const cardIconWrapStacked = 'mb-1 flex justify-center md:mb-3'
@@ -60,9 +62,84 @@ function IconBriefcase({ className }: { className?: string }) {
   )
 }
 
+type WhyMeCardItem = {
+  icon: (props: { className?: string }) => React.JSX.Element
+  title: string
+  body: string
+}
+
+const whyMeCards: readonly WhyMeCardItem[] = [
+  {
+    icon: IconBolt,
+    title: 'מהירות אמיתית',
+    body: 'אתרים שעולים מהר, בלי תקיעות ובלי עומס מיותר.',
+  },
+  {
+    icon: IconTarget,
+    title: 'בנוי להמיר',
+    body: 'כל אלמנט באתר נבנה כדי להביא לקוחות, לא רק להיראות יפה.',
+  },
+  {
+    icon: IconBriefcase,
+    title: 'חשיבה עסקית',
+    body: 'אני לא רק בונה, אני חושבת כמו בעלת עסק.',
+  },
+] as const
+
+function WhyMeRevealCard({
+  index,
+  stacked,
+  cardIconWrap,
+  item,
+}: {
+  index: number
+  stacked: boolean
+  cardIconWrap: string
+  item: WhyMeCardItem
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useRevealIsVisible(ref)
+  const Icon = item.icon
+  const iconClass = stacked ? 'h-6 w-6 text-violet-300 md:h-8 md:w-8' : 'h-8 w-8 text-violet-300'
+
+  return (
+    <div
+      ref={ref}
+      className={
+        stacked
+          ? 'hero-reveal rounded-xl border border-white/10 bg-white/5 p-2.5 backdrop-blur-md md:rounded-2xl md:p-6'
+          : 'hero-reveal rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md md:p-6'
+      }
+      style={{ transitionDelay: `${index * 80}ms` }}
+    >
+      <div className={cardIconWrap}>
+        <Icon className={iconClass} />
+      </div>
+      <h3
+        className={
+          stacked
+            ? 'mb-0.5 text-[11px] font-semibold leading-tight text-white md:mb-2 md:text-lg'
+            : 'mb-2 text-lg font-semibold text-white'
+        }
+      >
+        {item.title}
+      </h3>
+      <p
+        className={
+          stacked ? 'text-[10px] leading-snug text-slate-300 md:text-sm' : 'text-sm text-slate-300'
+        }
+      >
+        {item.body}
+      </p>
+    </div>
+  )
+}
+
 export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant }) {
   const stacked = variant === 'stacked'
   const cardIconWrap = stacked ? cardIconWrapStacked : cardIconWrapDefault
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useRevealIsVisible(headingRef)
 
   return (
     <section
@@ -74,114 +151,31 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
     >
       <div className="mx-auto max-w-5xl">
         <h2
+          ref={headingRef}
           className={
             stacked
-              ? 'mb-3 text-sm font-semibold text-white md:mb-6 md:text-2xl'
-              : 'mb-12 text-xl font-semibold text-white md:text-3xl'
+              ? 'hero-reveal mb-3 text-sm font-semibold text-white md:mb-6 md:text-2xl'
+              : 'hero-reveal mb-12 text-xl font-semibold text-white md:text-3xl'
           }
         >
           לא עוד אתר. מערכת שמביאה תוצאות.
         </h2>
 
         <div className={stacked ? 'grid grid-cols-3 gap-2 md:gap-8' : 'grid gap-8 md:grid-cols-3'}>
-          <div
-            className={
-              stacked
-                ? 'rounded-xl border border-white/10 bg-white/5 p-2.5 backdrop-blur-md md:rounded-2xl md:p-6'
-                : 'rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md md:p-6'
-            }
-          >
-            <div className={cardIconWrap}>
-              <IconBolt className={stacked ? 'h-6 w-6 text-violet-300 md:h-8 md:w-8' : 'h-8 w-8 text-violet-300'} />
-            </div>
-            <h3
-              className={
-                stacked
-                  ? 'mb-0.5 text-[11px] font-semibold leading-tight text-white md:mb-2 md:text-lg'
-                  : 'mb-2 text-lg font-semibold text-white'
-              }
-            >
-              מהירות אמיתית
-            </h3>
-            <p
-              className={
-                stacked
-                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
-                  : 'text-sm text-slate-300'
-              }
-            >
-              אתרים שעולים מהר, בלי תקיעות ובלי עומס מיותר.
-            </p>
-          </div>
-
-          <div
-            className={
-              stacked
-                ? 'rounded-xl border border-white/10 bg-white/5 p-2.5 backdrop-blur-md md:rounded-2xl md:p-6'
-                : 'rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md md:p-6'
-            }
-          >
-            <div className={cardIconWrap}>
-              <IconTarget
-                className={stacked ? 'h-6 w-6 text-violet-300 md:h-8 md:w-8' : 'h-8 w-8 text-violet-300'}
-              />
-            </div>
-            <h3
-              className={
-                stacked
-                  ? 'mb-0.5 text-[11px] font-semibold leading-tight text-white md:mb-2 md:text-lg'
-                  : 'mb-2 text-lg font-semibold text-white'
-              }
-            >
-              בנוי להמיר
-            </h3>
-            <p
-              className={
-                stacked
-                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
-                  : 'text-sm text-slate-300'
-              }
-            >
-              כל אלמנט באתר נבנה כדי להביא לקוחות, לא רק להיראות יפה.
-            </p>
-          </div>
-
-          <div
-            className={
-              stacked
-                ? 'rounded-xl border border-white/10 bg-white/5 p-2.5 backdrop-blur-md md:rounded-2xl md:p-6'
-                : 'rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md md:p-6'
-            }
-          >
-            <div className={cardIconWrap}>
-              <IconBriefcase
-                className={stacked ? 'h-6 w-6 text-violet-300 md:h-8 md:w-8' : 'h-8 w-8 text-violet-300'}
-              />
-            </div>
-            <h3
-              className={
-                stacked
-                  ? 'mb-0.5 text-[11px] font-semibold leading-tight text-white md:mb-2 md:text-lg'
-                  : 'mb-2 text-lg font-semibold text-white'
-              }
-            >
-              חשיבה עסקית
-            </h3>
-            <p
-              className={
-                stacked
-                  ? 'text-[10px] leading-snug text-slate-300 md:text-sm'
-                  : 'text-sm text-slate-300'
-              }
-            >
-              אני לא רק בונה, אני חושבת כמו בעלת עסק.
-            </p>
-          </div>
+          {whyMeCards.map((item, index) => (
+            <WhyMeRevealCard
+              key={item.title}
+              index={index}
+              stacked={stacked}
+              cardIconWrap={cardIconWrap}
+              item={item}
+            />
+          ))}
         </div>
 
         {stacked ? (
           <div className="pointer-events-auto mt-4 flex justify-center md:mt-6">
-            <Link
+            <CustomLink
               to="/apply#contact"
               className="inline-flex min-h-[44px] items-center text-sm font-semibold text-cyan-200 underline-offset-4 transition hover:text-white hover:underline md:text-base"
               onClick={() =>
@@ -192,7 +186,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
               }
             >
               שיחת התאמה חינם, לטופס קצר
-            </Link>
+            </CustomLink>
           </div>
         ) : null}
       </div>

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { GlobalJsonLd } from './components/GlobalJsonLd'
+import { PageTransition } from './components/PageTransition'
 import { Navbar } from './components/Navbar'
 import { SiteFooter } from './components/SiteFooter'
 import { HomePage } from './pages/HomePage'
@@ -39,7 +40,7 @@ const HamachshefaArticleClientsPage = lazy(() => import('./pages/HamachshefaArti
 function RouteFallback() {
   return (
     <div
-      className="flex min-h-[30vh] items-center justify-center bg-[#020617] px-4 text-sm text-slate-500"
+      className="flex min-h-[30vh] min-w-0 w-full max-w-full items-center justify-center bg-[#020617] px-4 text-sm text-slate-500"
       aria-busy="true"
       aria-live="polite"
     >
@@ -59,8 +60,9 @@ function App() {
         דלג לתוכן הראשי
       </a>
       <Navbar />
-      <main id="main-content">
+      <main id="main-content" className="min-w-0 w-full max-w-full">
         <Suspense fallback={<RouteFallback />}>
+          <PageTransition />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />

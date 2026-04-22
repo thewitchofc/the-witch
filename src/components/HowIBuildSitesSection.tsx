@@ -1,5 +1,8 @@
-import { Link } from 'react-router-dom'
+import { useRef } from 'react'
+import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
+import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
+import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const caseStudy = {
   title: 'מקרה לדוגמה: SAB Glass',
@@ -36,6 +39,9 @@ const cardClass =
 
 /** אמון מקצועי בלי עדויות לקוחות, מקרה לדוגמה, עקרונות ונתונים טכניים */
 export function HowIBuildSitesSection() {
+  const sectionCtaRef = useRef<HTMLAnchorElement>(null)
+  useRevealIsVisible(sectionCtaRef)
+
   return (
     <section
       className="pointer-events-none shrink-0 px-3 pb-10 pt-2 text-white md:px-4 md:pb-14 md:pt-4"
@@ -68,12 +74,12 @@ export function HowIBuildSitesSection() {
             </div>
           </dl>
           <div className="mt-4 flex justify-center md:justify-start">
-            <Link
+            <CustomLink
               to={caseStudy.href}
               className="pointer-events-auto inline-flex min-h-[44px] items-center justify-center rounded-full border border-cyan-400/35 bg-slate-950/60 px-5 py-2.5 text-sm font-medium text-cyan-200 ring-1 ring-white/10 transition hover:border-cyan-400/50 hover:bg-slate-900/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:text-base"
             >
               לקריאת מקרה הבוחן המלא
-            </Link>
+            </CustomLink>
           </div>
         </div>
 
@@ -105,9 +111,10 @@ export function HowIBuildSitesSection() {
           <p className="max-w-lg text-balance text-center text-sm leading-relaxed text-slate-300 md:text-base">
             אם זה נשמע כמו מה שהעסק שלכם צריך, בואו נבדוק התאמה בלי התחייבות.
           </p>
-          <Link
+          <CustomLink
+            ref={sectionCtaRef}
             to="/apply#contact"
-            className="pointer-events-auto inline-flex min-h-[48px] items-center justify-center rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 px-6 py-3 text-base font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.3)] ring-1 ring-white/15 transition hover:opacity-95 hover:shadow-[0_0_32px_rgba(34,211,238,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 md:px-8 md:py-3.5 md:text-lg"
+            className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
             onClick={() =>
               trackEvent('cta_click', {
                 cta_location: 'how_build_section',
@@ -115,8 +122,8 @@ export function HowIBuildSitesSection() {
               })
             }
           >
-            שיחת התאמה חינם
-          </Link>
+            <span className={`${primaryCtaInnerClass} md:py-3.5 md:text-lg`}>שיחת התאמה חינם</span>
+          </CustomLink>
         </div>
       </div>
     </section>

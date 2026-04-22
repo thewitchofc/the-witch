@@ -20,18 +20,22 @@ function SplineStaticBackdrop() {
       className="pointer-events-none absolute inset-0 z-[2] overflow-hidden"
       aria-hidden
     >
-      <div
-        className="absolute -top-[42%] left-1/2 h-[92%] w-[min(135%,108vw)] -translate-x-1/2 opacity-[0.58] blur-[76px]"
-        style={{
-          background: [
-            'radial-gradient(ellipse 72% 58% at 50% 0%, rgba(167, 139, 250, 0.38) 0%, transparent 56%)',
-            'radial-gradient(ellipse 58% 48% at 72% 42%, rgba(34, 211, 238, 0.2) 0%, transparent 54%)',
-            'radial-gradient(ellipse 52% 44% at 22% 52%, rgba(244, 114, 182, 0.16) 0%, transparent 50%)',
-          ].join(', '),
-        }}
-      />
+      <div className="absolute -top-[42%] inset-x-0 h-[92%] w-full overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.58] blur-[76px] will-change-[transform,filter]"
+          style={{
+            background: [
+              'radial-gradient(ellipse 72% 58% at 50% 0%, rgba(167, 139, 250, 0.38) 0%, transparent 56%)',
+              'radial-gradient(ellipse 58% 48% at 72% 42%, rgba(34, 211, 238, 0.2) 0%, transparent 54%)',
+              'radial-gradient(ellipse 52% 44% at 22% 52%, rgba(244, 114, 182, 0.16) 0%, transparent 50%)',
+            ].join(', '),
+          }}
+        />
+      </div>
       <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_50%_88%,rgba(15,23,42,0.55),transparent_62%)] opacity-90" />
-      <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[4px]" />
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[4px] will-change-[transform,filter]" />
+      </div>
       <div
         className="absolute inset-0 opacity-[0.22]"
         style={{
@@ -98,17 +102,19 @@ export function SplineOptInBackground({
 
       {splineAllowed && !activated && !autoActivate ? (
         <div
-          className="pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-1/2 z-40 flex w-full max-w-md -translate-x-1/2 justify-center px-4"
+          className="pointer-events-none fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom,0px))] z-40 flex justify-center px-4"
           role="presentation"
         >
-          <button
-            type="button"
-            onClick={onActivate}
-            className="pointer-events-auto touch-manipulation rounded-full border border-white/20 bg-slate-950/75 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_24px_rgba(139,92,246,0.25),0_0_48px_rgba(34,211,238,0.12)] ring-1 ring-inset ring-white/10 backdrop-blur-md transition hover:border-cyan-400/35 hover:bg-slate-900/85 hover:shadow-[0_0_28px_rgba(139,92,246,0.32)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:opacity-95 md:px-6 md:py-3 md:text-base"
-            aria-label="הפעלת אפקט רקע תלת־ממדי (נטען תוכן כבד)"
-          >
-            {activateLabel}
-          </button>
+          <div className="flex w-full max-w-md justify-center">
+            <button
+              type="button"
+              onClick={onActivate}
+              className="pointer-events-auto touch-manipulation rounded-full border border-white/20 bg-slate-950/75 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_24px_rgba(139,92,246,0.25),0_0_48px_rgba(34,211,238,0.12)] ring-1 ring-inset ring-white/10 backdrop-blur-md transition hover:border-cyan-400/35 hover:bg-slate-900/85 hover:shadow-[0_0_28px_rgba(139,92,246,0.32)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:opacity-95 md:px-6 md:py-3 md:text-base"
+              aria-label="הפעלת אפקט רקע תלת־ממדי (נטען תוכן כבד)"
+            >
+              {activateLabel}
+            </button>
+          </div>
         </div>
       ) : null}
     </>

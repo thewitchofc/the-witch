@@ -81,7 +81,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
             aria-hidden
           >
             <div
-              className="absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100vw)] -translate-x-1/2 blur-[100px]"
+              className="absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100%)] -translate-x-1/2 blur-[100px]"
               style={{
                 background: [
                   'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(180, 120, 255, 0.28) 0%, transparent 56%)',

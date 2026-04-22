@@ -7,24 +7,32 @@ import { BootSplash } from './components/BootSplash'
 import { CookieBanner } from './components/CookieBanner'
 import { HeavyEffectsDomSync } from './components/HeavyEffectsDomSync'
 import { AnalyticsConsentProvider } from './context/AnalyticsConsentContext'
+import { PageTransitionProvider } from './context/PageTransitionContext'
 import { applyHeavyEffectsDomFlag } from './lib/heavyEffectsGuard'
+import { installOverflowAudit } from './dev/overflowAudit'
 import './index.css'
 import App from './App.tsx'
 
 applyHeavyEffectsDomFlag()
+const stopOverflowAudit = installOverflowAudit()
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => stopOverflowAudit())
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <HeavyEffectsDomSync />
-        <AnalyticsConsentProvider>
-          <BootSplash>
-            <AnalyticsListener />
-            <App />
-          </BootSplash>
-          <CookieBanner />
-        </AnalyticsConsentProvider>
+        <PageTransitionProvider>
+          <HeavyEffectsDomSync />
+          <AnalyticsConsentProvider>
+            <BootSplash>
+              <AnalyticsListener />
+              <App />
+            </BootSplash>
+            <CookieBanner />
+          </AnalyticsConsentProvider>
+        </PageTransitionProvider>
       </BrowserRouter>
     </HelmetProvider>
   </StrictMode>,

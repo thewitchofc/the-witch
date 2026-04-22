@@ -1,10 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 import { CosmicField } from './CosmicField'
+import { scrollIsolationDebug } from '../lib/scrollIsolationDebug'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
+import { useHeroScrollFade } from '../hooks/useHeroScrollFade'
+import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
+
+const Logo3D = lazy(() =>
+  import('./Logo3D').then((m) => ({ default: m.Logo3D })),
+)
 
 const WITCH_SECTION_IO: IntersectionObserverInit = {
   root: null,
@@ -15,16 +23,35 @@ const WITCH_SECTION_IO: IntersectionObserverInit = {
 /** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
 const logoSrc = '/logo.svg'
 
-const logoImgStyle = {
+const logoTransform = 'perspective(600px) rotateX(6deg) rotateY(-3deg) scale(1.02)'
+
+const logoTransition = 'filter 350ms ease, transform 350ms ease'
+
+const logoBaseStyle: CSSProperties = {
   filter: [
-    'drop-shadow(0 0 18px rgba(168, 85, 247, 0.55))',
-    'drop-shadow(0 0 36px rgba(139, 92, 246, 0.4))',
-    'drop-shadow(0 0 56px rgba(168, 85, 247, 0.22))',
-    'drop-shadow(0 0 22px rgba(34, 211, 238, 0.45))',
-    'drop-shadow(0 0 44px rgba(34, 211, 238, 0.28))',
-    'drop-shadow(0 0 20px rgba(244, 114, 182, 0.32))',
+    'drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))',
+    'drop-shadow(0 0 28px rgba(168, 85, 247, 0.2))',
   ].join(' '),
-} as CSSProperties
+  transform: logoTransform,
+  transformOrigin: 'center center',
+  transition: logoTransition,
+  imageRendering: 'auto',
+}
+
+const logoEffectStyle: CSSProperties = {
+  filter: [
+    'drop-shadow(1px 1px 0 rgba(168, 85, 247, 1))',
+    'drop-shadow(3px 3px 0 rgba(120, 60, 220, 0.9))',
+    'drop-shadow(5px 5px 1px rgba(80, 30, 180, 0.75))',
+    'drop-shadow(7px 7px 2px rgba(60, 20, 140, 0.6))',
+    'drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))',
+    'drop-shadow(0 0 28px rgba(168, 85, 247, 0.2))',
+  ].join(' '),
+  transform: logoTransform,
+  transformOrigin: 'center center',
+  transition: logoTransition,
+  imageRendering: 'auto',
+}
 
 const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
 
@@ -110,7 +137,13 @@ export function Hero({
 }) {
   const stacked = layout === 'stacked'
   const sectionRef = useRef<HTMLElement | null>(null)
+  const scrollFadeLayerRef = useRef<HTMLDivElement | null>(null)
   const [witchFlying, setWitchFlying] = useState(false)
+  const [logoHovered, setLogoHovered] = useState(false)
+  const [enableLogo3D, setEnableLogo3D] = useState(false)
+  const blockHeavy = useHeavyEffectsBlocked()
+  const { pathname } = useLocation()
+  const isHomeRoute = pathname === '/'
 
   const logoDesktopRevealRef = useRef<HTMLDivElement>(null)
   const logoMobileRevealRef = useRef<HTMLDivElement>(null)
@@ -125,6 +158,16 @@ export function Hero({
   useRevealIsVisible(sublineRevealRef)
   useRevealIsVisible(ctaRevealRef)
   useRevealIsVisible(disclaimerRevealRef)
+
+  useHeroScrollFade(sectionRef, scrollFadeLayerRef)
+
+  const desktopLogoImgClass = stacked
+    ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
+    : 'mx-auto h-auto w-auto max-h-[min(30vh,190px)] object-contain object-center select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
+
+  const desktopLogoShellClass = stacked
+    ? 'relative mx-auto block aspect-[169/89] w-full max-h-[min(28vh,172px)] select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
+    : 'relative mx-auto block aspect-[169/89] w-full max-h-[min(30vh,190px)] select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
 
   useEffect(() => {
     const section = sectionRef.current
@@ -144,157 +187,211 @@ export function Hero({
   /** ללא onAnimationIteration, עדכון state בכל מחזור גרם לרינדורים חוזרים ולעומס ב-Lighthouse */
   const witchMotionStyle = useMemo(() => witchFlightStyle(0), [])
 
+  const showLogo3D =
+    enableLogo3D &&
+    !blockHeavy &&
+    isHomeRoute &&
+    scrollIsolationDebug.enableLogo3D
+
   return (
     <section
       ref={sectionRef}
       id="home"
       className={
         stacked
-          ? 'pointer-events-none relative isolate flex min-h-0 w-full flex-1 flex-col overflow-x-hidden overflow-y-visible bg-transparent pt-24 text-white'
-          : 'pointer-events-none relative isolate flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
+          ? 'pointer-events-none relative isolate flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden bg-transparent pt-24 text-white'
+          : 'pointer-events-none relative isolate flex min-h-[100svh] w-full min-w-0 scroll-mt-24 flex-col overflow-hidden bg-[#020617] pt-24 text-white supports-[min-height:100dvh]:min-h-[100dvh]'
       }
       dir="rtl"
       lang="he"
     >
-      {showCosmicField ? <CosmicField /> : null}
+      <div
+        ref={scrollFadeLayerRef}
+        className="hero-scroll-fade-layer relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
+      >
+        {showCosmicField ? <CosmicField /> : null}
 
-      <img
-        src="/witch.png"
-        className={
-          witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
-        }
-        style={witchMotionStyle}
-        alt=""
-        aria-hidden
-      />
-
-      <div className="relative z-10 flex min-h-0 w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
-        <div
-          ref={logoDesktopRevealRef}
+        <img
+          src="/witch.png"
           className={
-            stacked
-              ? 'hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full shrink-0 md:mb-4 md:mt-4 md:block'
-              : 'hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full shrink-0 md:mb-10 md:mt-4 md:block'
+            witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
           }
-          lang="en"
-          dir="ltr"
-        >
-          <img
-            src={logoSrc}
-            alt="The Witch"
-            width={1690}
-            height={890}
-            decoding="async"
-            fetchPriority="high"
+          style={witchMotionStyle}
+          alt=""
+          aria-hidden
+        />
+
+        <div className="relative z-10 flex min-h-0 w-full min-w-0 max-w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
+          <div
+            ref={logoDesktopRevealRef}
             className={
               stacked
-                ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
-                : 'mx-auto h-auto w-auto max-h-[min(30vh,190px)] object-contain object-center select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
+                ? 'pointer-events-auto hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full min-w-0 max-w-full shrink-0 md:mb-4 md:mt-4 md:block'
+                : 'pointer-events-auto hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full min-w-0 max-w-full shrink-0 md:mb-10 md:mt-4 md:block'
             }
-            style={logoImgStyle}
-          />
-        </div>
-
-        <div
-          className={
-            stacked
-              ? 'hero-content flex w-full max-w-full flex-col items-center justify-center gap-2 px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
-              : 'hero-content flex w-full max-w-full flex-col items-center justify-center gap-5 px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
-          }
-        >
-          <div
-            ref={logoMobileRevealRef}
-            className="hero-reveal hero-reveal--fade-only hero-reveal--duration-lg mt-3 block w-full shrink-0 md:hidden"
-            dir="ltr"
             lang="en"
+            dir="ltr"
           >
-            <img
-              src={logoSrc}
-              alt="The Witch"
-              width={1690}
-              height={890}
-              decoding="async"
-              className={
-                stacked
-                  ? 'mx-auto h-auto w-auto max-h-[min(25vh,148px)] object-contain object-center select-none'
-                  : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
-              }
-              style={logoImgStyle}
-            />
+            {showLogo3D ? (
+              <Suspense
+                fallback={
+                  <img
+                    src={logoSrc}
+                    alt="The Witch logo"
+                    width={1690}
+                    height={890}
+                    decoding="async"
+                    fetchPriority="high"
+                    className={desktopLogoImgClass}
+                    style={logoBaseStyle}
+                  />
+                }
+              >
+                <Logo3D className={desktopLogoShellClass} />
+              </Suspense>
+            ) : !blockHeavy ? (
+              <button
+                type="button"
+                className="block w-full cursor-pointer border-0 bg-transparent p-0"
+                aria-label="הצג לוגו תלת־ממד"
+                onClick={() => {
+                  setEnableLogo3D(true)
+                  trackEvent('logo_3d_opt_in', {
+                    surface: 'hero_desktop',
+                    layout: stacked ? 'stacked' : 'default',
+                  })
+                }}
+              >
+                <img
+                  src={logoSrc}
+                  alt="The Witch logo"
+                  width={1690}
+                  height={890}
+                  decoding="async"
+                  fetchPriority="high"
+                  className={desktopLogoImgClass}
+                  style={logoHovered ? logoEffectStyle : logoBaseStyle}
+                  onMouseEnter={() => setLogoHovered(true)}
+                  onMouseLeave={() => setLogoHovered(false)}
+                />
+              </button>
+            ) : (
+              <img
+                src={logoSrc}
+                alt="The Witch logo"
+                width={1690}
+                height={890}
+                decoding="async"
+                fetchPriority="high"
+                className={desktopLogoImgClass}
+                style={logoHovered ? logoEffectStyle : logoBaseStyle}
+                onMouseEnter={() => setLogoHovered(true)}
+                onMouseLeave={() => setLogoHovered(false)}
+              />
+            )}
           </div>
-
-          <h1
-            ref={headlineRevealRef}
-            className="hero-reveal hero-reveal--delay-1 mx-auto w-full max-w-[260px] text-balance font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]"
-          >
-            <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
-              {headline}
-            </span>
-            <span className="hidden text-white md:inline" style={heroHeadlineGlyphStyle}>
-              {headline}
-            </span>
-          </h1>
 
           <div
-            ref={sublineRevealRef}
-            className="hero-reveal hero-reveal--fade-only hero-reveal--delay-2 mx-auto w-full max-w-[260px] text-pretty font-normal leading-relaxed md:max-w-none"
+            className={
+              stacked
+                ? 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 break-words px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
+                : 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 break-words px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
+            }
           >
-            <div className="space-y-2 md:hidden">
-              {sublines.map((line) => (
-                <p
-                  key={line}
-                  className="text-sm text-white/95 sm:text-base"
-                  style={heroSublineGlyphStyle}
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-            <div className="hidden space-y-2 md:block md:text-xl md:leading-relaxed">
-              {sublines.map((line) => (
-                <p
-                  key={line}
-                  className="text-white/95"
-                  style={heroSublineGlyphStyle}
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative mx-auto mt-3 flex w-full max-w-[min(100%,320px)] flex-col items-center overflow-visible sm:max-w-[360px] md:mt-0 md:max-w-none md:w-fit">
-            <Link
-              ref={ctaRevealRef}
-              to="/apply#contact"
-              aria-label="שיחת התאמה חינם לפרויקט, מעבר לטופס יצירת קשר"
-              className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
-              onClick={() =>
-                trackEvent('cta_click', {
-                  cta_location: 'hero_primary',
-                  link_url: '/apply#contact',
-                })
-              }
+            <div
+              ref={logoMobileRevealRef}
+              className="pointer-events-auto hero-reveal hero-reveal--fade-only hero-reveal--duration-lg mt-3 block w-full min-w-0 max-w-full shrink-0 md:hidden"
+              dir="ltr"
+              lang="en"
             >
-              <span className={`${primaryCtaInnerClass} md:py-4 md:text-lg`}>
-                <span className="md:hidden">שיחת התאמה חינם</span>
-                <span className="hidden md:inline">{ctaLabel}</span>
+              <img
+                src={logoSrc}
+                alt="The Witch"
+                width={1690}
+                height={890}
+                decoding="async"
+                className={
+                  stacked
+                    ? 'mx-auto h-auto w-auto max-h-[min(25vh,148px)] object-contain object-center select-none'
+                    : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
+                }
+                style={logoBaseStyle}
+              />
+            </div>
+
+            <h1
+              ref={headlineRevealRef}
+              className="hero-reveal hero-reveal--delay-1 mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]"
+            >
+              <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
+                {headline}
               </span>
-            </Link>
-          </div>
+              <span className="hidden text-white md:inline" style={heroHeadlineGlyphStyle}>
+                {headline}
+              </span>
+            </h1>
 
-          {!stacked ? (
-            <p
-              ref={disclaimerRevealRef}
-              className="hero-reveal hero-reveal--fade-only hero-reveal--delay-4 hidden w-full max-w-full text-pretty text-xs leading-relaxed text-slate-300 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
+            <div
+              ref={sublineRevealRef}
+              className="hero-reveal hero-reveal--fade-only hero-reveal--delay-2 mx-auto w-full min-w-0 max-w-[260px] text-pretty break-words font-normal leading-relaxed md:max-w-none"
             >
-              {disclaimerDesktop.map((line) => (
-                <span key={line} className="block">
-                  {line}
+              <div className="space-y-2 md:hidden">
+                {sublines.map((line) => (
+                  <p
+                    key={line}
+                    className="min-w-0 max-w-full break-words text-sm text-white/95 sm:text-base"
+                    style={heroSublineGlyphStyle}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+              <div className="hidden space-y-2 md:block md:text-xl md:leading-relaxed">
+                {sublines.map((line) => (
+                  <p
+                    key={line}
+                    className="min-w-0 max-w-full break-words text-white/95"
+                    style={heroSublineGlyphStyle}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative mx-auto mt-3 flex w-full min-w-0 max-w-[min(100%,320px)] flex-col items-center overflow-visible sm:max-w-[360px] md:mt-0 md:max-w-none md:w-fit">
+              <CustomLink
+                ref={ctaRevealRef}
+                to="/apply#contact"
+                aria-label="שיחת התאמה חינם לפרויקט, מעבר לטופס יצירת קשר"
+                className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
+                onClick={() =>
+                  trackEvent('cta_click', {
+                    cta_location: 'hero_primary',
+                    link_url: '/apply#contact',
+                  })
+                }
+              >
+                <span className={`${primaryCtaInnerClass} md:py-4 md:text-lg`}>
+                  <span className="md:hidden">שיחת התאמה חינם</span>
+                  <span className="hidden md:inline">{ctaLabel}</span>
                 </span>
-              ))}
-            </p>
-          ) : null}
+              </CustomLink>
+            </div>
+
+            {!stacked ? (
+              <p
+                ref={disclaimerRevealRef}
+                className="hero-reveal hero-reveal--fade-only hero-reveal--delay-4 hidden w-full min-w-0 max-w-full text-pretty break-words text-xs leading-relaxed text-slate-300 [text-shadow:0_1px_16px_rgba(2,6,23,0.45)] sm:text-sm md:block"
+              >
+                {disclaimerDesktop.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

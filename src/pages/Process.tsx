@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom'
+import { useRef } from 'react'
+import { CustomLink } from '../components/CustomLink'
 import { CosmicField } from '../components/CosmicField'
 import { LazySplineBackground } from '../components/LazySplineBackground'
 import { trackEvent } from '../lib/analytics'
 import { Seo } from '../components/Seo'
+import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 
 const steps = [
   {
@@ -41,9 +43,32 @@ const lessIf = [
   'רוצים ״עוד דף נחיתה גנרי״ בלי חשיבה על המרות.',
 ] as const
 
-export function ProcessPage() {
+function ProcessStepCard({ index, item }: { index: number; item: (typeof steps)[number] }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useRevealIsVisible(ref)
+
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div
+      ref={ref}
+      className="hero-reveal rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-md md:p-6"
+    >
+      <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+        שלב {index + 1}
+      </p>
+      <h2 className="mb-2 text-lg font-semibold text-white md:text-xl">{item.title}</h2>
+      <p className="text-pretty text-sm leading-relaxed text-slate-300 md:text-base md:leading-relaxed">
+        {item.body}
+      </p>
+    </div>
+  )
+}
+
+export function ProcessPage() {
+  const footerCtaRef = useRef<HTMLAnchorElement>(null)
+  useRevealIsVisible(footerCtaRef)
+
+  return (
+    <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="תהליך עבודה, The Witch"
         description="איך נראה תהליך בניית אתר איתי: שיחת התאמה, אפיון, עיצוב, פיתוח ועלייה לאוויר. שלבים ברורים, בלי הפתעות ובלי קיצורי דרך."
@@ -61,36 +86,35 @@ export function ProcessPage() {
         lang="he"
         aria-labelledby="process-page-heading"
       >
-        <h1
-          id="process-page-heading"
-          className="mb-6 text-balance text-center text-2xl font-semibold tracking-tight text-white md:mb-8 md:text-4xl"
-        >
-          איך נראה תהליך עבודה איתי?
-        </h1>
+        <section className="mx-auto mb-14 max-w-5xl md:mb-20">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-x-12 md:gap-y-14">
+            <div className="md:col-span-5">
+              <div className="md:sticky md:top-[20%] md:z-10 md:max-w-md md:py-2 md:ps-2">
+                <h1
+                  id="process-page-heading"
+                  className="mb-6 text-balance text-center text-2xl font-semibold tracking-tight text-white md:mb-8 md:text-start md:text-4xl"
+                >
+                  איך נראה תהליך עבודה איתי?
+                </h1>
 
-        <div className="mx-auto mb-14 max-w-2xl space-y-1.5 text-center text-base leading-snug text-slate-300 md:mb-16 md:text-lg md:leading-relaxed">
-          <p className="text-pretty">כל פרויקט נבנה בשלבים ברורים, בלי הפתעות ובלי קיצורי דרך.</p>
-          <p className="text-pretty">
-            כך אתם יודעים מה קורה מתי, ואני יכולה לשמור על איכות מקצה לקצה.
-          </p>
-        </div>
-
-        <div className="mx-auto grid max-w-3xl grid-cols-1 gap-6 md:gap-7">
-          {steps.map((item, index) => (
-            <div
-              key={item.title}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-md md:p-6"
-            >
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
-                שלב {index + 1}
-              </p>
-              <h2 className="mb-2 text-lg font-semibold text-white md:text-xl">{item.title}</h2>
-              <p className="text-pretty text-sm leading-relaxed text-slate-300 md:text-base md:leading-relaxed">
-                {item.body}
-              </p>
+                <div className="mx-auto max-w-2xl space-y-1.5 text-center text-base leading-snug text-slate-300 md:mx-0 md:text-start md:text-lg md:leading-relaxed">
+                  <p className="text-pretty">כל פרויקט נבנה בשלבים ברורים, בלי הפתעות ובלי קיצורי דרך.</p>
+                  <p className="text-pretty">
+                    כך אתם יודעים מה קורה מתי, ואני יכולה לשמור על איכות מקצה לקצה.
+                  </p>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+
+            <div className="md:col-span-7">
+              <div className="mx-auto grid max-w-3xl grid-cols-1 gap-6 md:mx-0 md:max-w-none md:gap-7">
+                {steps.map((item, index) => (
+                  <ProcessStepCard key={item.title} index={index} item={item} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="mx-auto max-w-5xl py-20" aria-labelledby="process-fit-heading">
           <h2
@@ -124,16 +148,17 @@ export function ProcessPage() {
             <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">
               מוכנים להתחיל?
             </h2>
-            <Link
+            <CustomLink
+              ref={footerCtaRef}
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
-              className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 transition hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+              className="final-cta-reveal mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-slate-950/80 px-8 py-3 text-base font-medium text-white ring-1 ring-white/15 hover:bg-slate-900/90 hover:ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
               onClick={() =>
                 trackEvent('cta_click', { cta_location: 'process_footer', link_url: '/apply#contact' })
               }
             >
               בדיקת התאמה לפרויקט
-            </Link>
+            </CustomLink>
           </div>
         </section>
       </main>

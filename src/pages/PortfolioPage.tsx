@@ -5,7 +5,7 @@ import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
 export function PortfolioPage() {
   return (
-    <div className="relative isolate min-h-[100svh] w-full overflow-x-clip bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="תיק עבודות, The Witch"
         description="פרויקטים שבנויים להביא תוצאות: אתרים למסעדות, חנויות, מותגי בוטיק ועסקים מקומיים. עיצוב, קוד ומהירות טעינה."

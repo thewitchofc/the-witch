@@ -27,10 +27,14 @@ function unitRand(seed: number): number {
 function StaticCosmicBackdrop() {
   return (
     <div
-      className="pointer-events-none absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100vw)] -translate-x-1/2 opacity-[0.7] blur-[72px]"
+      className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
       aria-hidden
-      style={{ background: auroraBackground }}
-    />
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.7] blur-[72px] will-change-[transform,filter]"
+        style={{ background: auroraBackground }}
+      />
+    </div>
   )
 }
 
@@ -38,17 +42,21 @@ function CosmicBackdrop() {
   const reduceMotion = useReducedMotion()
 
   return (
-    <motion.div
-      className="pointer-events-none absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100vw)] -translate-x-1/2 blur-[100px]"
+    <div
+      className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
       aria-hidden
-      style={{ background: auroraBackground }}
-      animate={reduceMotion ? { opacity: 0.68 } : { opacity: [0.62, 0.76, 0.64, 0.72, 0.62] }}
-      transition={{
-        duration: reduceMotion ? 0 : 22,
-        repeat: reduceMotion ? 0 : Infinity,
-        ease: 'easeInOut',
-      }}
-    />
+    >
+      <motion.div
+        className="pointer-events-none absolute inset-0 blur-[100px] will-change-[transform,filter]"
+        style={{ background: auroraBackground }}
+        animate={reduceMotion ? { opacity: 0.68 } : { opacity: [0.62, 0.76, 0.64, 0.72, 0.62] }}
+        transition={{
+          duration: reduceMotion ? 0 : 22,
+          repeat: reduceMotion ? 0 : Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+    </div>
   )
 }
 
@@ -172,37 +180,43 @@ export function CosmicFieldImpl() {
   const particlesOnly = !home && active
 
   return (
-    <div ref={rootRef} className="pointer-events-none absolute inset-0" aria-hidden>
-      <div className="absolute inset-0 overflow-visible">
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
-        {(!active || !fullHome) && <StaticCosmicBackdrop />}
-        {particlesOnly ? (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-[1]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.75, ease: fadeEase }}
-          >
-            <div className="absolute inset-0 overflow-hidden">
-              <Particles />
-            </div>
-          </motion.div>
-        ) : null}
-        {fullHome ? (
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-[1]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.85, ease: fadeEase }}
-          >
-            <div className="absolute inset-0 overflow-visible">
-              <CosmicBackdrop />
-            </div>
-            <div className="absolute inset-0 overflow-hidden">
-              <Particles />
-            </div>
-          </motion.div>
-        ) : null}
+    <div
+      ref={rootRef}
+      className="pointer-events-none absolute inset-0 isolate overflow-hidden"
+      aria-hidden
+    >
+      <div className="cosmic-scroll-parallax pointer-events-none absolute inset-x-0 top-[-7%] h-[114%] overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
+          {(!active || !fullHome) && <StaticCosmicBackdrop />}
+          {particlesOnly ? (
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-[1]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.75, ease: fadeEase }}
+            >
+              <div className="absolute inset-0 overflow-hidden">
+                <Particles />
+              </div>
+            </motion.div>
+          ) : null}
+          {fullHome ? (
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-[1]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.85, ease: fadeEase }}
+            >
+              <div className="absolute inset-0 overflow-hidden">
+                <CosmicBackdrop />
+              </div>
+              <div className="absolute inset-0 overflow-hidden">
+                <Particles />
+              </div>
+            </motion.div>
+          ) : null}
+        </div>
       </div>
     </div>
   )
