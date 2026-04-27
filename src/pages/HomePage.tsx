@@ -11,7 +11,7 @@ export function HomePage() {
     <div className="relative flex min-h-[100svh] w-full min-w-0 flex-col bg-[#020617] supports-[min-height:100dvh]:min-h-[100dvh]">
       <Seo
         title="The Witch, בניית אתרים שמביאים לקוחות"
-        description="אתרים בקוד מלא שמביאים פניות, לא רק ביקורים. שיחת התאמה חינם ללא התחייבות: טופס קצר."
+        description="The Witch בונה אתרים בקוד מלא לעסקים שרוצים אתר מהיר, מדויק וממיר: אסטרטגיה, עיצוב, פיתוח וחוויית משתמש שמובילה לפנייה."
         path="/"
       />
       {/* CosmicField מתחת; Spline (נקודות/נבולה אינטראקטיבית) מעל — שני הברים היו z-0 ולכן ה-Cosmic כיסה את ה-iframe */}
