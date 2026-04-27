@@ -21,6 +21,7 @@ type PortfolioProject = {
   featured?: boolean
   /** כשיש גם מקרה בוחן פנימי וגם אתר חי, הכרטיס מנווט למקרה הבוחן; הקישור החי נפרד */
   liveSiteUrl?: string
+  imageObjectClassName?: string
 }
 
 const projects: PortfolioProject[] = [
@@ -67,6 +68,7 @@ const projects: PortfolioProject[] = [
     imageAlt: 'מסך הבית של SAB Glass, מקלחוני זכוכית בהתאמה אישית',
     href: '/projects/sab-glass',
     liveSiteUrl: 'https://sabglass.co.il/',
+    imageObjectClassName: 'object-cover object-[9.5%_50%]',
   },
 ]
 
@@ -119,7 +121,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             sizes={featured ? '(max-width: 768px) 100vw, 58vw' : '(max-width: 768px) 100vw, 50vw'}
             loading="lazy"
             decoding="async"
-            className={`w-full object-cover object-center transition duration-500 group-hover:scale-[1.04] ${
+            className={`w-full ${project.imageObjectClassName ?? 'object-cover object-center'} transition duration-500 group-hover:scale-[1.04] ${
               featured ? 'h-[260px] md:h-full md:min-h-[360px]' : 'h-[220px] md:h-[250px]'
             }`}
           />

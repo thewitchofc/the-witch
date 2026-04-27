@@ -35,7 +35,7 @@ export function SabGlassPage() {
         workItems={workItems}
         ctaLocation="sab_glass_case_study"
         liveSiteUrl={LIVE_SITE}
-        imageObjectClassName="object-cover object-[0%_50%]"
+        imageObjectClassName="object-cover object-[9.5%_50%]"
       />
     </div>
   )

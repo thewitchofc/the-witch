@@ -1,5 +1,6 @@
 import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
+import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const ARTICLE_PATH = '/hamachshefa-bniyat-atarim-eich-livchor-atar-shmevi-lakochot' as const
 
@@ -57,9 +58,9 @@ export default function HamachshefaArticleClientsPage() {
           <p className="mt-12 text-center">
             <CustomLink
               to="/apply"
-              className="inline-block rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80"
+              className={primaryCtaOuterClass}
             >
-              בדיקת התאמה לפרויקט
+              <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
             </CustomLink>
           </p>
         </article>

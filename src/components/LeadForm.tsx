@@ -16,14 +16,22 @@ const fieldShellClass =
 const fieldShellErrorClass =
   'rounded-2xl border border-red-500/50 bg-slate-950/78 p-4 ring-1 ring-red-500/35 backdrop-blur-md sm:p-5 md:px-6 lg:px-7'
 
+const compactFieldShellClass =
+  'rounded-2xl border border-white/[0.12] bg-slate-950/58 p-4 ring-1 ring-white/[0.05] backdrop-blur-md sm:p-5'
+
 const fieldControlClass =
   'mt-2 w-full rounded-lg border border-white/[0.1] bg-slate-950/72 px-3 py-3 text-base text-white shadow-inner shadow-black/30 transition placeholder:text-slate-300/90 hover:border-white/[0.14] focus:outline-none focus:border-white/[0.22] focus:ring-1 focus:ring-white/[0.12] sm:px-4 sm:py-3.5 md:px-5'
+
+const compactTextAreaClass =
+  'mt-3 w-full rounded-2xl border border-white/[0.12] bg-slate-950/62 px-4 py-3 text-base leading-relaxed text-white shadow-inner shadow-black/25 transition placeholder:text-slate-300/80 hover:border-white/[0.18] focus:border-cyan-300/35 focus:outline-none focus:ring-1 focus:ring-cyan-300/20'
 
 const BUDGET_BELOW = 'below' as const
 
 /** מינימום תווים לטקסט חופשי (עדיין עובר heuristics ב־plausibleFreetext) */
 const GOAL_FREETEXT_MIN = 3
 const WHY_NOW_FREETEXT_MIN = 3
+
+const LEAD_FORM_SUBMITTED_STORAGE_KEY = 'the-witch:lead-form-submitted'
 
 const budgetChoices = [
   { value: '10k-20k', label: '10K–20K' },
@@ -284,9 +292,26 @@ function plausibleSocialBusinessCard(ig: string, fb: string): boolean {
   return Boolean(i || f)
 }
 
-export function LeadForm() {
+function readLeadFormSubmittedOnDevice(): boolean {
+  try {
+    return window.localStorage.getItem(LEAD_FORM_SUBMITTED_STORAGE_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+function markLeadFormSubmittedOnDevice(): void {
+  try {
+    window.localStorage.setItem(LEAD_FORM_SUBMITTED_STORAGE_KEY, 'true')
+  } catch {
+    // אם האחסון חסום, הטופס עדיין נשלח; פשוט לא נוכל להגביל מקומית.
+  }
+}
+
+export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => void }) {
   const [budget, setBudget] = useState<string>('')
   const [submitted, setSubmitted] = useState(false)
+  const [submittedOnDevice, setSubmittedOnDevice] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
   const [nameDraft, setNameDraft] = useState({ firstName: '', lastName: '' })
   const [phoneDraft, setPhoneDraft] = useState('')
@@ -312,6 +337,10 @@ export function LeadForm() {
   const skipStepScrollRef = useRef(true)
   const isLowBudget = budget === BUDGET_BELOW
   const prefersReducedMotion = usePrefersReducedMotion()
+
+  useEffect(() => {
+    setSubmittedOnDevice(readLeadFormSubmittedOnDevice())
+  }, [])
 
   const readCanSubmit = useCallback((): boolean => {
     const form = formRef.current
@@ -411,6 +440,10 @@ export function LeadForm() {
   }, [readCanSubmit, formStep])
 
   useEffect(() => {
+    onStepChange?.(formStep)
+  }, [formStep, onStepChange])
+
+  useEffect(() => {
     const id = window.setTimeout(() => {
       revalidate()
     }, 0)
@@ -455,6 +488,8 @@ export function LeadForm() {
       link_domain: 'wa.me',
     })
     window.open(url, '_blank', 'noopener,noreferrer')
+    markLeadFormSubmittedOnDevice()
+    setSubmittedOnDevice(true)
     setSubmitted(true)
   }
 
@@ -488,7 +523,21 @@ export function LeadForm() {
           </>
         )}
 
-        {submitted ? (
+        {submittedOnDevice && !submitted ? (
+          <div
+            key="lead-already-sent"
+            role="status"
+            aria-live="polite"
+            className={`rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.06] px-8 py-14 text-center text-pretty ring-1 ring-white/[0.06] sm:px-10 sm:py-16 ${
+              prefersReducedMotion ? '' : 'lead-form-fade-in'
+            }`}
+          >
+            <p className="text-lg font-medium text-white sm:text-xl">כבר קיבלתי ממך פרטים מהמכשיר הזה.</p>
+            <p className="mt-4 text-base leading-relaxed text-slate-300 sm:text-lg">
+              כדי למנוע כפילויות, אפשר לשלוח את הטופס פעם אחת מכל דפדפן או מכשיר.
+            </p>
+          </div>
+        ) : submitted ? (
             <div
               key="lead-sent"
               role="status"
@@ -813,8 +862,8 @@ export function LeadForm() {
             key={budget ? 'has-budget' : 'no-budget'}
             className="space-y-4 md:space-y-5"
           >
-          <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-7">
-            <div className={`min-w-0 space-y-2 ${fieldShellClass}`}>
+          <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+            <div className={`min-w-0 ${compactFieldShellClass}`}>
               <label htmlFor="lead-goal" className="block text-sm font-medium text-slate-300">
                 מטרה <span className="font-normal text-slate-500">(חובה)</span>
               </label>
@@ -823,12 +872,12 @@ export function LeadForm() {
                 name="goal"
                 rows={3}
                 required
-                className={`${fieldControlClass} min-h-[5.5rem] resize-y`}
+                className={`${compactTextAreaClass} min-h-[7rem] resize-y`}
                 placeholder="מה האתר צריך להשיג בשבילך?"
               />
             </div>
 
-            <div className={`min-w-0 space-y-2 ${fieldShellClass}`}>
+            <div className={`min-w-0 ${compactFieldShellClass}`}>
               <label htmlFor="lead-why-now" className="block text-sm font-medium text-slate-300">
                 למה עכשיו <span className="font-normal text-slate-500">(חובה)</span>
               </label>
@@ -837,13 +886,13 @@ export function LeadForm() {
                 name="whyNow"
                 rows={2}
                 required
-                className={`${fieldControlClass} min-h-[4.25rem] resize-y`}
+                className={`${compactTextAreaClass} min-h-[7rem] resize-y`}
                 placeholder="דחיפות, השקה, מגבלות זמן…"
               />
             </div>
           </div>
 
-          <div className={`space-y-2 ${fieldShellClass}`}>
+          <div className={compactFieldShellClass}>
             <label htmlFor="lead-notes" className="block text-sm font-medium text-slate-300">
               הערות <span className="font-normal text-slate-500">(אופציונלי)</span>
             </label>
@@ -851,7 +900,7 @@ export function LeadForm() {
               id="lead-notes"
               name="notes"
               rows={3}
-              className={`${fieldControlClass} min-h-[5.5rem] resize-y`}
+              className={`${compactTextAreaClass} min-h-[7rem] resize-y`}
               placeholder="כל דבר נוסף שחשוב שאדע…"
             />
           </div>

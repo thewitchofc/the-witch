@@ -4,18 +4,13 @@ import { JsonLd } from "../components/JsonLd";
 import { Seo } from "../components/Seo";
 import { FAQ_ITEMS } from "../data/faqContent";
 import { trackEvent } from "../lib/analytics";
+import { primaryCtaInnerClass, primaryCtaOuterClass } from "../lib/primaryCtaClasses";
 import { buildFaqPageJsonLd } from "../seo/structuredData";
-
-const ctaRestShadow =
-  "0 2px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.22), 0 0 28px rgba(34, 211, 238, 0.1)";
-const ctaHoverShadow =
-  "0 8px 28px rgba(0, 0, 0, 0.45), 0 0 28px rgba(167, 139, 250, 0.35), 0 0 40px rgba(34, 211, 238, 0.16)";
 
 const ctaLabel = "בדיקת התאמה לפרויקט";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [ctaShadow, setCtaShadow] = useState(ctaRestShadow);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -30,73 +25,102 @@ export default function FAQ() {
         path="/faq"
       />
       <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
+        <div
+          className="pointer-events-none absolute -right-28 top-20 h-72 w-72 rounded-full bg-violet-500/20 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -left-28 top-80 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.10),transparent_48%)]"
+          aria-hidden
+        />
+
         <div className="relative z-10">
-          <section className="py-20 px-4 text-center">
+          <section className="px-4 py-20 text-center md:py-24">
             <div className="mx-auto max-w-3xl">
+              <header className="mb-12 md:mb-14">
+                <p className="mx-auto mb-4 w-fit rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-3 py-1 text-xs font-medium text-cyan-100">
+                  לפני שמתחילים
+                </p>
+                <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
+                  שאלות נפוצות
+                </h1>
+                <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
+                  כל מה שכדאי לדעת לפני שבונים אתר: תהליך, מחירים, קוד מלא, תחזוקה ומה קורה אחרי העלייה לאוויר.
+                </p>
+              </header>
 
-        <h1 className="mb-12 text-3xl font-semibold text-white md:text-4xl">
-          שאלות נפוצות
-        </h1>
+              <div className="space-y-4 text-right">
+                {FAQ_ITEMS.map((item, index) => {
+                  const isOpen = openIndex === index
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`group w-full cursor-pointer rounded-3xl border p-5 text-right ring-1 ring-white/[0.04] backdrop-blur-md transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:p-6 ${
+                        isOpen
+                          ? "border-cyan-300/25 bg-cyan-300/[0.07] shadow-[0_0_34px_rgba(34,211,238,0.10)]"
+                          : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-violet-300/25 hover:bg-white/[0.065]"
+                      }`}
+                      onClick={() => toggle(index)}
+                      aria-expanded={isOpen}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-violet-300/20 bg-violet-300/[0.08] text-xs font-semibold text-violet-100">
+                            {index + 1}
+                          </span>
+                          <h3 className="text-base font-semibold text-white md:text-lg">{item.question}</h3>
+                        </div>
+                        <span
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-2xl leading-none transition ${
+                            isOpen
+                              ? "border-cyan-300/25 bg-cyan-300/[0.10] text-cyan-100"
+                              : "border-white/10 bg-white/[0.04] text-white group-hover:border-violet-300/25"
+                          }`}
+                          aria-hidden
+                        >
+                          {isOpen ? "−" : "+"}
+                        </span>
+                      </div>
 
-        <div className="space-y-4 text-right">
-
-          {FAQ_ITEMS.map((item, index) => (
-            <button
-              key={index}
-              type="button"
-              className="w-full cursor-pointer rounded-2xl border border-white/10 bg-white/5 p-5 text-right backdrop-blur-md transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-              onClick={() => toggle(index)}
-              aria-expanded={openIndex === index}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-base font-medium text-white md:text-lg">
-                  {item.question}
-                </h3>
-                <span className="shrink-0 text-2xl text-white" aria-hidden>
-                  {openIndex === index ? "−" : "+"}
-                </span>
+                      {isOpen ? (
+                        <p className="mt-5 whitespace-pre-line border-t border-white/10 pt-5 text-sm leading-relaxed text-slate-300 md:text-base">
+                          {item.answer}
+                        </p>
+                      ) : null}
+                    </button>
+                  )
+                })}
               </div>
 
-              {openIndex === index ? (
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-300">{item.answer}</p>
-              ) : null}
-            </button>
-          ))}
+              <div className="mt-16 rounded-3xl border border-violet-300/15 bg-gradient-to-l from-violet-500/[0.12] via-slate-950/70 to-cyan-500/[0.08] px-6 py-10 text-center shadow-[0_0_46px_rgba(139,92,246,0.12)] ring-1 ring-white/[0.05] backdrop-blur-xl md:px-10 md:py-12">
+                <h2 className="text-balance text-2xl font-semibold tracking-tight text-white md:text-3xl">
+                  עדיין מתלבט?
+                </h2>
+                <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-300 md:text-lg">
+                  ממלאים שאלון קצר ובודקים אם הפרויקט מתאים, בלי התחייבות.
+                </p>
 
-        </div>
-
-        <div className="mt-16 text-center">
-          <p className="mb-4 text-base text-slate-300 md:text-lg">
-            עדיין מתלבט?
-          </p>
-
-          <p className="mb-6 text-base text-slate-300">
-            ממלאים את השאלון ורואים אם זה מתאים.
-          </p>
-
-          <div className="relative mx-auto mt-3 flex w-full max-w-[260px] justify-center overflow-visible md:mt-0 md:w-fit md:max-w-none">
-            <CustomLink
-              to="/apply#contact"
-              aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
-              className="group relative z-10 flex w-full min-w-0 touch-manipulation rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] no-underline shadow-[0_0_1px_rgba(255,255,255,0.12)] transition-[transform,box-shadow] duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95 hover:-translate-y-0.5 hover:scale-[1.03] md:inline-flex md:w-auto"
-              style={{ boxShadow: ctaShadow }}
-              onMouseEnter={() => setCtaShadow(ctaHoverShadow)}
-              onMouseLeave={() => setCtaShadow(ctaRestShadow)}
-              onFocus={() => setCtaShadow(ctaHoverShadow)}
-              onBlur={() => setCtaShadow(ctaRestShadow)}
-              onClick={() =>
-                trackEvent("cta_click", {
-                  cta_location: "faq_primary",
-                  link_url: "/apply#contact",
-                })
-              }
-            >
-              <span className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:min-h-[48px] md:w-auto md:px-8 md:py-4 md:text-lg">
-                {ctaLabel}
-              </span>
-            </CustomLink>
-          </div>
-        </div>
+                <div className="relative mx-auto mt-7 flex w-full max-w-[260px] justify-center overflow-visible md:w-fit md:max-w-none">
+                  <CustomLink
+                    to="/apply#contact"
+                    aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
+                    className={primaryCtaOuterClass}
+                    onClick={() =>
+                      trackEvent("cta_click", {
+                        cta_location: "faq_primary",
+                        link_url: "/apply#contact",
+                      })
+                    }
+                  >
+                    <span className={primaryCtaInnerClass}>{ctaLabel}</span>
+                  </CustomLink>
+                </div>
+              </div>
             </div>
           </section>
         </div>

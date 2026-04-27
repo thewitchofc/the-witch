@@ -1,5 +1,6 @@
 import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
+import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 export default function HamachshefaPage() {
   return (
@@ -39,9 +40,9 @@ export default function HamachshefaPage() {
 
           <CustomLink
             to="/apply"
-            className="inline-block rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:opacity-90"
+            className={primaryCtaOuterClass}
           >
-            בדיקת התאמה לפרויקט
+            <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
           </CustomLink>
         </main>
       </div>

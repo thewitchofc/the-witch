@@ -38,6 +38,9 @@ export function PortfolioPage() {
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
             כל פרויקט כאן נבנה סביב מטרה ברורה: אמון, פעולה ופנייה. העיצוב הוא רק חלק מהמערכת.
           </p>
+          <p className="mx-auto mt-5 w-fit rounded-full border border-cyan-300/25 bg-cyan-300/[0.08] px-5 py-2.5 text-sm font-semibold leading-relaxed text-cyan-100 shadow-[0_0_28px_rgba(34,211,238,0.10)] ring-1 ring-white/[0.05] md:text-base">
+            לחוויה המלאה מומלץ לצפות באתרים דרך מחשב.
+          </p>
         </header>
 
         <PortfolioGrid />
