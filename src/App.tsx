@@ -16,6 +16,7 @@ import {
   ProcessPage,
   RoyalFruitPage,
   SabGlassPage,
+  SachiRamenPage,
   TermsPage,
 } from './lazyRoutePages'
 import { HomePage } from './pages/HomePage'
@@ -75,6 +76,7 @@ function App() {
             <Route path="/projects/sab-glass" element={<SabGlassPage />} />
             <Route path="/projects/royal-fruit" element={<RoyalFruitPage />} />
             <Route path="/projects/liel-edri" element={<LielEdriPage />} />
+            <Route path="/projects/sachi-ramen" element={<SachiRamenPage />} />
             <Route path="/order" element={<Navigate to="/apply#contact" replace />} />
             <Route path="/apply" element={<ApplyPage />} />
             <Route path="/hamachshefa-bniyat-atarim" element={<HamachshefaPage />} />

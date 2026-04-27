@@ -1,7 +1,13 @@
 import { usePageTransition } from '../context/PageTransitionContext'
 import royalFruitHero from '../assets/royal-fruit-hero.webp?url'
 import { trackEvent } from '../lib/analytics'
-import { lielEdriOgImage, sabGlassOgImage, sachiRamenHeroImage } from '../data/clientOgImages'
+import {
+  lielEdriLiveUrl,
+  lielEdriOgImage,
+  sabGlassOgImage,
+  sachiRamenHeroImage,
+  sachiRamenLiveUrl,
+} from '../data/clientOgImages'
 
 type PortfolioProject = {
   title: string
@@ -19,16 +25,16 @@ type PortfolioProject = {
 
 const projects: PortfolioProject[] = [
   {
-    title: 'SAB Glass',
+    title: 'Liel Edri Home Baking',
     description:
-      'לא עוד אתר תדמית, אלא מערכת שמביאה לקוחות מגוגל. בנוי עם דגש על מהירות, SEO וחוויית משתמש שמובילה לפעולה.',
-    outcome: 'תוצאה: ↑ חשיפה בגוגל + פניות חדשות',
-    tags: ['SEO', 'המרות', 'ביצועים', 'קוד מלא'],
-    image: sabGlassOgImage,
-    imageAlt: 'מסך הבית של SAB Glass, מקלחוני זכוכית בהתאמה אישית',
-    href: '/projects/sab-glass',
+      'אתר למותג בוטיק ביתי: מיתוג עדין, ניווט פשוט, ואינטגרציה לוואטסאפ ואינסטגרם — מביא פניות בלי רעש.',
+    outcome: 'תוצאה: ↑ אמון + פניות והזמנות',
+    tags: ['מיתוג', 'UX', 'המרות', 'מובייל'],
+    image: lielEdriOgImage,
+    imageAlt: 'מסך הבית של Liel Edri, קינוחי בוטיק ביתיים',
+    href: '/projects/liel-edri',
     featured: true,
-    liveSiteUrl: 'https://sabglass.co.il/',
+    liveSiteUrl: lielEdriLiveUrl,
   },
   {
     title: 'Royal Fruit',
@@ -48,21 +54,25 @@ const projects: PortfolioProject[] = [
     tags: ['UX', 'Mobile First', 'המרות', 'תפריט'],
     image: sachiRamenHeroImage,
     imageAlt: 'מסך הבית של Sachi Ramen & Sushi, ראמן, סושי וקריאה להזמנה',
-    href: 'https://sachiramen-sushi.onrender.com/',
+    href: '/projects/sachi-ramen',
+    liveSiteUrl: sachiRamenLiveUrl,
   },
   {
-    title: 'Liel Edri Home Baking',
-    description: 'אתר למותג אישי עם חוויית משתמש זורמת שמחזקת אמון ומובילה לפניות.',
-    outcome: 'תוצאה: ↑ אמון + פניות דרך האתר',
-    tags: ['מיתוג', 'UX', 'עיצוב', 'המרות'],
-    image: lielEdriOgImage,
-    imageAlt: 'מסך הבית של Liel Edri, קינוחי בוטיק ביתיים',
-    href: '/projects/liel-edri',
+    title: 'SAB Glass',
+    description:
+      'לא עוד אתר תדמית, אלא מערכת שמביאה ללקוחות מגוגל. בנוי עם דגש על מהירות, SEO וחוויית משתמש שמובילה לפעולה.',
+    outcome: 'תוצאה: ↑ חשיפה בגוגל + פניות חדשות',
+    tags: ['SEO', 'המרות', 'ביצועים', 'קוד מלא'],
+    image: sabGlassOgImage,
+    imageAlt: 'מסך הבית של SAB Glass, מקלחוני זכוכית בהתאמה אישית',
+    href: '/projects/sab-glass',
+    liveSiteUrl: 'https://sabglass.co.il/',
   },
 ]
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
   const { go } = usePageTransition()
+  const featured = project.featured === true
 
   function openProject() {
     const { href } = project
@@ -85,7 +95,9 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
   return (
     <div
-      className="block cursor-pointer rounded-none border-0 bg-transparent p-0 shadow-none ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+      className={`group block cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-white/[0.045] p-3 text-right shadow-[0_0_32px_rgba(15,23,42,0.18)] ring-1 ring-white/[0.04] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.065] hover:shadow-[0_0_42px_rgba(34,211,238,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 ${
+        featured ? 'md:col-span-2 md:grid md:grid-cols-[1.12fr_0.88fr] md:gap-5 md:p-4' : ''
+      }`}
       role="link"
       tabIndex={0}
       onClick={openProject}
@@ -97,22 +109,64 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
       }}
       aria-label={cardAriaLabel}
     >
-      <div className="space-y-3">
-        <div className="overflow-hidden rounded-lg bg-slate-950">
+      <div className={featured ? 'min-w-0' : ''}>
+        <div className="relative overflow-hidden rounded-2xl bg-slate-950">
           <img
             src={project.image}
             alt={project.imageAlt}
             width={900}
             height={520}
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes={featured ? '(max-width: 768px) 100vw, 58vw' : '(max-width: 768px) 100vw, 50vw'}
             loading="lazy"
             decoding="async"
-            className="h-[200px] w-full object-cover object-center md:h-[240px]"
+            className={`w-full object-cover object-center transition duration-500 group-hover:scale-[1.04] ${
+              featured ? 'h-[260px] md:h-full md:min-h-[360px]' : 'h-[220px] md:h-[250px]'
+            }`}
           />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/10 to-transparent opacity-90" />
+          <div className="absolute bottom-3 right-3 flex flex-wrap gap-2">
+            {project.tags.slice(0, featured ? 4 : 3).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-white/15 bg-slate-950/65 px-2.5 py-1 text-[11px] font-medium text-slate-100 backdrop-blur-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          {featured ? (
+            <span className="absolute left-3 top-3 rounded-full border border-cyan-300/25 bg-cyan-300/[0.12] px-3 py-1 text-xs font-semibold text-cyan-100 backdrop-blur-md">
+              פרויקט מוביל
+            </span>
+          ) : null}
         </div>
-        <div>
-          <h3 className="text-base font-semibold text-white md:text-lg">{project.title}</h3>
-          <p className="mt-1 line-clamp-1 text-sm leading-snug text-white/60">{project.description}</p>
+      </div>
+
+      <div className={`flex flex-col ${featured ? 'mt-5 md:mt-0 md:justify-center md:py-3' : 'mt-4'}`}>
+        <p className="text-xs font-semibold text-cyan-200">{project.outcome}</p>
+        <h3
+          className={`mt-2 text-balance font-semibold tracking-tight text-white ${
+            featured ? 'text-2xl md:text-4xl' : 'text-xl md:text-2xl'
+          }`}
+        >
+          {project.title}
+        </h3>
+        <p
+          className={`mt-3 text-pretty leading-relaxed text-slate-300 ${
+            featured ? 'text-base md:text-lg' : 'line-clamp-3 text-sm md:text-base'
+          }`}
+        >
+          {project.description}
+        </p>
+
+        <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-violet-200 transition group-hover:text-white">
+          <span>{isExternalHref ? 'לצפייה באתר' : 'לצפייה בפרויקט'}</span>
+          <span
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-violet-300/20 bg-violet-300/[0.08] transition group-hover:translate-x-[-2px] group-hover:border-cyan-300/30 group-hover:text-cyan-100"
+            aria-hidden
+          >
+            ←
+          </span>
         </div>
       </div>
     </div>
@@ -121,7 +175,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
 
 export function PortfolioGrid() {
   return (
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-8">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
       {projects.map((project) => (
         <ProjectCard key={project.title} project={project} />
       ))}

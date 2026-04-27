@@ -3,13 +3,17 @@ import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
+import { lielEdriLiveUrl } from '../data/clientOgImages'
 
 const caseStudy = {
-  title: 'מקרה לדוגמה: SAB Glass',
-  problem: 'אתר תדמית שלא הביא פניות איכותיות מגוגל, מבקרים עזבו בלי לפנות.',
-  improved: 'מבנה דפים סביב המרה, ביצועים גבוהים, SEO בסיסי נכון וחוויית משתמש שמובילה לפעולה.',
-  today: 'היום האתר משרת כערוץ פניות: מסלול ברור מחיפוש ועד טופס או וואטסאפ.',
-  href: '/projects/sab-glass',
+  title: 'מקרה לדוגמה: Liel Edri — Homemade Baking',
+  problem:
+    'היה צורך באתר שישדר בוטיק, אמון וטריות, ויוביל בקלות לפניות בוואטסאפ בלי חיכוך ורעש ויזואלי.',
+  improved:
+    'אתר נקי ואלגנטי, צילום מזון, היררכיה ברורה ואינטגרציה לוואטסאפ ואינסטגרם, כדי שהמבקר ירגיש מיד את איכות המותג.',
+  today: 'מותג אישי שמחזק אמון ומייצר פניות והזמנות דרך הערוצים הדיגיטליים.',
+  href: '/projects/liel-edri',
+  liveUrl: lielEdriLiveUrl,
 } as const
 
 const principles = [
@@ -73,13 +77,27 @@ export function HowIBuildSitesSection() {
               <dd className="mt-0.5">{caseStudy.today}</dd>
             </div>
           </dl>
-          <div className="mt-4 flex justify-center md:justify-start">
+          <div className="mt-4 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:justify-center md:justify-start md:gap-4">
             <CustomLink
               to={caseStudy.href}
               className="pointer-events-auto inline-flex min-h-[44px] items-center justify-center rounded-full border border-cyan-400/35 bg-slate-950/60 px-5 py-2.5 text-sm font-medium text-cyan-200 ring-1 ring-white/10 transition hover:border-cyan-400/50 hover:bg-slate-900/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:text-base"
             >
               לקריאת מקרה הבוחן המלא
             </CustomLink>
+            <a
+              href={caseStudy.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pointer-events-auto inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-slate-200 ring-1 ring-white/10 transition hover:border-white/25 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:text-base"
+              onClick={() =>
+                trackEvent('cta_click', {
+                  cta_location: 'how_build_case_study_live_site',
+                  link_url: caseStudy.liveUrl,
+                })
+              }
+            >
+              לצפייה באתר החי
+            </a>
           </div>
         </div>
 

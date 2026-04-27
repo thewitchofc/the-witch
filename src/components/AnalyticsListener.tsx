@@ -7,6 +7,7 @@ const PROJECT_SLUGS: Record<string, string> = {
   '/projects/sab-glass': 'sab-glass',
   '/projects/royal-fruit': 'royal-fruit',
   '/projects/liel-edri': 'liel-edri',
+  '/projects/sachi-ramen': 'sachi-ramen',
 }
 
 const SCROLL_DEPTHS = [25, 50, 75, 100] as const

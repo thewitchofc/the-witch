@@ -22,6 +22,9 @@ export const RoyalFruitPage = lazy(() =>
 export const SabGlassPage = lazy(() =>
   import('./pages/SabGlassPage').then((m) => ({ default: m.SabGlassPage })),
 )
+export const SachiRamenPage = lazy(() =>
+  import('./pages/SachiRamenPage').then((m) => ({ default: m.SachiRamenPage })),
+)
 export const ProcessPage = lazy(() =>
   import('./pages/Process').then((m) => ({ default: m.ProcessPage })),
 )
