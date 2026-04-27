@@ -6,9 +6,10 @@ import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const auroraBackground = [
-  'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(180, 120, 255, 0.26) 0%, transparent 56%)',
-  'radial-gradient(ellipse 72% 58% at 26% 46%, rgba(236, 72, 153, 0.17) 0%, transparent 52%)',
-  'radial-gradient(ellipse 68% 52% at 74% 50%, rgba(34, 211, 238, 0.2) 0%, transparent 52%)',
+  'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(167, 139, 250, 0.24) 0%, transparent 56%)',
+  'radial-gradient(ellipse 78% 62% at 22% 48%, rgba(236, 72, 153, 0.3) 0%, transparent 54%)',
+  'radial-gradient(ellipse 74% 58% at 78% 44%, rgba(34, 211, 238, 0.3) 0%, transparent 54%)',
+  'radial-gradient(ellipse 92% 48% at 50% 100%, rgba(6, 182, 212, 0.16) 0%, transparent 52%)',
 ].join(', ')
 
 const COSMIC_IO: IntersectionObserverInit = {
@@ -17,7 +18,7 @@ const COSMIC_IO: IntersectionObserverInit = {
   threshold: 0.02,
 }
 
-/** ≤10 אנימציות framer במקביל (חלקיקים + אורורה בשלב 3) */
+/** 8 חלקיקים — pause מחוץ למסך + contain חוסכים GPU בלי לדלל את האפקט */
 const PARTICLE_COUNT = 8
 
 /** 0..1 דטרמיניסטי לפי מפתח, טהור לרינדור */
@@ -91,19 +92,30 @@ function HomeAurora({ stage, reduceMotion }: { stage: number; reduceMotion: bool
 function Particles({ effectsStage }: { effectsStage: number }) {
   const reduceMotion = usePrefersReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
-  const [particlesInView, setParticlesInView] = useState(true)
 
+  /** בלי setState ב־IO — classList + rAF יחיד לשינוי, פחות רה-רינדור */
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    const obs = new IntersectionObserver(
-      (entries) => {
-        setParticlesInView(entries.some((e) => e.isIntersecting))
-      },
-      { root: null, rootMargin: '80px', threshold: 0 },
-    )
+
+    let rafId = 0
+    const obs = new IntersectionObserver((entries) => {
+      const vis = entries.some((e) => e.isIntersecting)
+      if (rafId !== 0) {
+        cancelAnimationFrame(rafId)
+      }
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        el.classList.toggle('cosmic-particles--paused', !vis)
+      })
+    }, { root: null, rootMargin: '80px', threshold: 0 })
+
     obs.observe(el)
-    return () => obs.disconnect()
+    return () => {
+      if (rafId !== 0) cancelAnimationFrame(rafId)
+      obs.disconnect()
+      el.classList.remove('cosmic-particles--paused')
+    }
   }, [])
 
   const particles = useMemo(
@@ -145,12 +157,12 @@ function Particles({ effectsStage }: { effectsStage: number }) {
   return (
     <div ref={containerRef} className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       {particles.map((p) => {
-        const paused = !particlesInView || reduceMotion
+        const paused = reduceMotion
         const o0 = motionHeavy ? p.opacity * 0.4 : p.opacity * 0.55
         const o2 = motionHeavy ? p.opacity * 0.68 : p.opacity * 0.55
-        const baseClass = allowWillChange
-          ? 'absolute rounded-full bg-white/95 will-change-[transform,opacity] motion-reduce:animate-none'
-          : 'absolute rounded-full bg-white/95 motion-reduce:animate-none'
+        const gpuClass = allowWillChange ? 'cosmic-particle-dot--gpu' : ''
+        const baseClass =
+          `cosmic-particle-dot absolute rounded-full bg-white/95 motion-reduce:animate-none ${gpuClass}`.trim()
         const animClass = paused
           ? ''
           : motionHeavy
@@ -204,7 +216,7 @@ function Particles({ effectsStage }: { effectsStage: number }) {
 }
 
 /**
- * דף הבית: אורורה (CSS) בשלבים + חלקיקים מ־שלב 2; אנימציית scroll בפרלקס.
+ * דף הבית: אורורה (CSS) בשלבים + חלקיקים מ־שלב 1; אנימציית scroll בפרלקס.
  * `shouldBlockHeavyEffects` / `prefers-reduced-motion`: רקע סטטי בלבד.
  */
 export function CosmicFieldImpl() {
@@ -213,7 +225,7 @@ export function CosmicFieldImpl() {
   const reduceMotion = usePrefersReducedMotion()
   const effectsStage = useEffectsStage()
   const rootRef = useRef<HTMLDivElement>(null)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(true)
 
   const home = isHomePath(pathname)
   const mayMotion = !blocked && !reduceMotion
@@ -223,10 +235,6 @@ export function CosmicFieldImpl() {
       const id = window.setTimeout(() => setInView(false), 0)
       return () => window.clearTimeout(id)
     }
-
-    /* איפוס לפני subscribe ל־IntersectionObserver כשהנתיב / שער motion משתנים */
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- סינכרון מכוון לפני ה־observer
-    setInView(false)
 
     const el = rootRef.current
     if (!el) return
@@ -254,7 +262,7 @@ export function CosmicFieldImpl() {
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
           {(!active || !fullHome) && <StaticCosmicBackdrop mediumBlur={staticBlurMedium} />}
-          {particlesOnly && effectsStage >= 2 ? (
+          {particlesOnly ? (
             <div className="pointer-events-none absolute inset-0 z-[1]">
               <div className="absolute inset-0 overflow-hidden">
                 <Particles effectsStage={effectsStage} />
@@ -266,13 +274,11 @@ export function CosmicFieldImpl() {
               <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
                 <HomeAurora stage={effectsStage} reduceMotion={!!reduceMotion} />
               </div>
-              {effectsStage >= 2 ? (
-                <div className="pointer-events-none absolute inset-0 z-[1]">
-                  <div className="absolute inset-0 overflow-hidden">
-                    <Particles effectsStage={effectsStage} />
-                  </div>
+              <div className="pointer-events-none absolute inset-0 z-[1]">
+                <div className="absolute inset-0 overflow-hidden">
+                  <Particles effectsStage={effectsStage} />
                 </div>
-              ) : null}
+              </div>
             </>
           ) : null}
         </div>

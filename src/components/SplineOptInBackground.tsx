@@ -67,12 +67,8 @@ export function SplineOptInBackground({
   const autoActivationLogged = useRef(false)
   const isHome = isHomePath(pathname)
 
-  if (!isHome) {
-    return null
-  }
-
   useEffect(() => {
-    if (!autoActivate || !splineAllowed) return
+    if (!isHome || !autoActivate || !splineAllowed) return
     const id = window.requestAnimationFrame(() => {
       setActivated(true)
       if (!autoActivationLogged.current) {
@@ -81,12 +77,16 @@ export function SplineOptInBackground({
       }
     })
     return () => window.cancelAnimationFrame(id)
-  }, [autoActivate, splineAllowed, rootClassName])
+  }, [isHome, autoActivate, splineAllowed, rootClassName])
 
   const onActivate = useCallback(() => {
     trackEvent('spline_opt_in_activate', { surface: rootClassName, activation: 'click' })
     setActivated(true)
   }, [rootClassName])
+
+  if (!isHome) {
+    return null
+  }
 
   const showStaticBackdrop = !activated
 

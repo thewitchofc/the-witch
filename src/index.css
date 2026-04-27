@@ -68,6 +68,29 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   transform: none !important;
 }
 
+/* CosmicField: ה־impl עולה אחרי dynamic import — fade-in שלא ירגיש ״קופץ״ */
+@keyframes cosmic-field-impl-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.cosmic-field-impl-fade {
+  animation: cosmic-field-impl-fade-in 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-field-impl-fade {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Spline: שורש — חיתוך אופקי, רוחב יחסי (לא 100vw) */
 .spline-lazy-root {
   position: relative;
@@ -94,11 +117,11 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   z-index: 0;
 }
 
-/* דף הבית, רקע Spline קבוע (מובייל: בלי iframe, רקע #020617 + CosmicField) */
+/* דף הבית, רקע Spline — מעל CosmicField (z-0) כדי שייראו ויישלחו אליו אירועי עכבר */
 .home-spline-bg {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   width: 100%;
   max-width: 100%;
@@ -106,6 +129,19 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   min-height: 100svh;
   min-height: 100dvh;
   overflow: hidden;
+  /* מאחורי כל שכבות ה-Spline — הגרדיאנטים מגיעים מ־CosmicField מתחת */
+  background: transparent;
+}
+
+/**
+ * דף הבית: בלי #020617 מאחורי ה־iframe — שכבת ורוד/תכלת עדינה שמשלימה את CosmicField דרך האפקט.
+ */
+.home-spline-bg.spline-lazy-root::before {
+  background:
+    radial-gradient(ellipse 78% 58% at 24% 46%, rgb(236 72 153 / 0.2) 0%, transparent 54%),
+    radial-gradient(ellipse 74% 56% at 80% 42%, rgb(34 211 238 / 0.2) 0%, transparent 54%),
+    radial-gradient(ellipse 120% 80% at 50% 100%, rgb(15 23 42 / 0.18) 0%, transparent 58%),
+    transparent;
 }
 
 .home-spline-bg iframe {
@@ -202,15 +238,19 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   pointer-events: none;
   z-index: 0;
   --w-left-0: -200px;
+  --w-left-mid: 50%;
   --w-left-1: 110%;
   --w-top-0: 22%;
+  --w-top-mid: 35%;
   --w-top-1: 38%;
   --w-bob: -25px;
+  --w-flip: 1;
   /* מחזור כולל (טיסה + המתנה); משך הטיסה ב-keyframes ~62% */
   --witch-dur: 16s;
   left: var(--w-left-0);
   top: var(--w-top-0);
-  transform: translateY(0);
+  transform: translateY(0) scaleX(var(--w-flip));
+  transform-origin: center center;
 }
 
 .witch-sprite--flying {
@@ -224,6 +264,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   left: var(--w-left-1);
   top: var(--w-top-1);
   transform: none;
+  transform-origin: center center;
 }
 
 .hero-content {
@@ -431,22 +472,29 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   0% {
     left: var(--w-left-0);
     top: var(--w-top-0);
-    transform: translateY(0);
+    transform: translateY(0) scaleX(var(--w-flip));
   }
-  /* אמצע מסלול הטיסה (~חצי מ־62%) */
+  /* נקודת ביניים — זווית אקראית, עדיין חוצה את המסך */
+  24% {
+    left: var(--w-left-mid);
+    top: var(--w-top-mid);
+    transform: translateY(calc(var(--w-bob) * 0.45)) scaleX(var(--w-flip));
+  }
   31% {
-    transform: translateY(var(--w-bob));
+    left: var(--w-left-mid);
+    top: var(--w-top-mid);
+    transform: translateY(var(--w-bob)) scaleX(var(--w-flip));
   }
   62% {
     left: var(--w-left-1);
     top: var(--w-top-1);
-    transform: translateY(0);
+    transform: translateY(0) scaleX(var(--w-flip));
   }
   /* idle: ~38% מהמחזור ללא תנועה, פחות עומס GPU רציף */
   100% {
     left: var(--w-left-1);
     top: var(--w-top-1);
-    transform: translateY(0);
+    transform: translateY(0) scaleX(var(--w-flip));
   }
 }
 
@@ -573,10 +621,31 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   animation-iteration-count: 1;
 }
 
+.cosmic-particle-dot {
+  contain: layout style;
+}
+
+.cosmic-particle-dot--gpu {
+  will-change: transform, opacity;
+}
+
+.cosmic-particles--paused .cosmic-particle-anim,
+.cosmic-particles--paused .cosmic-particle-anim--light {
+  animation-play-state: paused;
+}
+
+.cosmic-particles--paused .cosmic-particle-dot--gpu {
+  will-change: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cosmic-aurora-breathe,
   .cosmic-particle-anim,
   .cosmic-particle-anim--light {
     animation: none;
+  }
+
+  .cosmic-particle-dot--gpu {
+    will-change: auto;
   }
 }

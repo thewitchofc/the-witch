@@ -1,20 +1,12 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { useLocation } from 'react-router-dom'
 import { CustomLink } from './CustomLink'
 import { trackEvent } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 import { CosmicField } from './CosmicField'
-import { scrollIsolationDebug } from '../lib/scrollIsolationDebug'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { useHeroScrollFade } from '../hooks/useHeroScrollFade'
-import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
-import { useEffectsStage, useHeavyEffectsReady } from '../context/HeavyEffectsReadyContext'
-
-const Logo3D = lazy(() =>
-  import('./Logo3D').then((m) => ({ default: m.Logo3D })),
-)
 
 const WITCH_SECTION_IO: IntersectionObserverInit = {
   root: null,
@@ -25,35 +17,22 @@ const WITCH_SECTION_IO: IntersectionObserverInit = {
 /** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
 const logoSrc = '/logo.svg'
 
-const logoTransformBase = 'perspective(600px) rotateX(6deg) rotateY(-3deg)'
-
-/** אותו מבנה פילטר בכל מצב — הדפדפן מחליף בין 0/1 בצורה חלקה, בלי re-render לכל פריים */
-const LOGO_FILTER_SMOOTH = 'filter 0.7s cubic-bezier(0.33, 1, 0.32, 1)'
-
-function buildLogoFilterStyle(hover: boolean): CSSProperties {
-  const t = hover ? 1 : 0
-  const b = 1.04 + 0.05 * t
-  const c = 1.02 + 0.03 * t
-  const w = 0.14 + 0.1 * t
-  const v = 0.38 * t
-  const vDeep = 0.14 * t
+/** לוגו מונוכרומטי לבן (SVG עם צללים אפורים) + זוהר לבן — קבוע, בלי הובר/לחיצה */
+function buildLogoFilterStyle(): CSSProperties {
   return {
     filter: [
-      `brightness(${b.toFixed(3)})`,
-      `contrast(${c.toFixed(3)})`,
-      `saturate(${(1 + 0.08 * t).toFixed(3)})`,
-      `drop-shadow(0 0 18px rgba(255, 255, 255, ${w.toFixed(3)}))`,
-      `drop-shadow(0 0 48px rgba(139, 92, 246, ${v.toFixed(3)}))`,
-      `drop-shadow(0 0 80px rgba(49, 46, 129, ${vDeep.toFixed(3)}))`,
+      'brightness(0)',
+      'invert(1)',
+      'drop-shadow(0 0 12px rgba(255, 255, 255, 0.32))',
+      'drop-shadow(0 0 36px rgba(248, 250, 252, 0.14))',
     ].join(' '),
     imageRendering: 'auto' as const,
   }
 }
 
-function buildLogoViewStyle(depthScale: number): CSSProperties {
-  const s = Number.isFinite(depthScale) ? depthScale : 1.02
+function buildLogoViewStyle(): CSSProperties {
   return {
-    transform: `${logoTransformBase} scale(${s.toFixed(4)})`,
+    transform: 'none',
     transformOrigin: 'center center',
   }
 }
@@ -103,31 +82,78 @@ function unitRand(seed: number): number {
   return x - Math.floor(x)
 }
 
-function witchFlightStyle(key: number): CSSProperties {
-  const r = (n: number) => unitRand(key * 9973 + n)
-  /* מחזור כולל 12–18s (טיסה + idle ב-keyframes) */
-  const dur = 12 + r(1) * 6
-  const startPct = -(6 + r(2) * 18)
-  const endPct = 100 + r(3) * 12
-  const bob = -(5 + r(4) * 12)
+/** קצוות מסך (יחסית ל־Hero): שמאל / ימין / עליון / תחתון */
+type WitchEdge = 0 | 1 | 2 | 3
 
-  const top0 = 10 + r(5) * 42
-  const diagonal = r(6) < 0.78
-  let top1 = diagonal
-    ? top0 + (8 + r(7) * 14) * (r(8) < 0.5 ? -1 : 1)
-    : top0 + (r(9) * 4 - 2)
-  top1 = Math.max(8, Math.min(58, top1))
-  if (diagonal && Math.abs(top1 - top0) < 8) {
-    top1 = top0 + (top1 >= top0 ? 10 : -10)
-    top1 = Math.max(8, Math.min(58, top1))
+function oppositeWitchEdge(e: WitchEdge): WitchEdge {
+  if (e === 0) return 1
+  if (e === 1) return 0
+  if (e === 2) return 3
+  return 2
+}
+
+/** נקודה מחוץ למסגרת על קצה נתון — אקראית לאורך הקצה */
+function witchPointOnEdge(
+  edge: WitchEdge,
+  r: (n: number) => number,
+  salt: number,
+): { lx: number; ty: number } {
+  const along = 0.06 + r(salt) * 0.88
+  const along2 = 0.05 + r(salt + 17) * 0.9
+  if (edge === 0) {
+    return { lx: -0.22 - r(salt + 1) * 0.14, ty: along }
   }
+  if (edge === 1) {
+    return { lx: 1.1 + r(salt + 2) * 0.18, ty: along2 }
+  }
+  if (edge === 2) {
+    return { lx: along, ty: -0.16 - r(salt + 3) * 0.12 }
+  }
+  return { lx: along2, ty: 1.08 + r(salt + 4) * 0.14 }
+}
+
+function pct(n: number): string {
+  return `${(n * 100).toFixed(2)}%`
+}
+
+/**
+ * טיסה מקצה לקצה מנוגד (חוצה את כל ה־Hero), זווית אקראית דרך נקודת אמצע.
+ * הדמות מניחה כיוון לימין ב־asset — scaleX כשהטיסה שולית לשמאל כדי שלא תיראה ״אחורה״.
+ */
+function witchFlightStyle(epoch: number): CSSProperties {
+  const r = (n: number) => unitRand(epoch * 9973 + n)
+
+  const entry: WitchEdge = Math.floor(r(1) * 4) as WitchEdge
+  const exit = oppositeWitchEdge(entry)
+  const start = witchPointOnEdge(entry, r, 10)
+  const end = witchPointOnEdge(exit, r, 60)
+
+  const dx = end.lx - start.lx
+  const dy = end.ty - start.ty
+  const len = Math.hypot(dx, dy) || 1
+  const px = -dy / len
+  const py = dx / len
+  const arc = (r(88) - 0.5) * 0.34
+  const midL = (start.lx + end.lx) / 2 + px * arc
+  const midT = (start.ty + end.ty) / 2 + py * arc
+  const midLClamped = Math.max(-0.28, Math.min(1.32, midL))
+  const midTClamped = Math.max(-0.22, Math.min(1.28, midT))
+
+  const horizDominant = Math.abs(dx) >= Math.abs(dy) * 0.22
+  const wFlip = horizDominant ? (dx >= 0 ? 1 : -1) : 1
+
+  const dur = 12 + r(2) * 8
+  const bob = -(5 + r(3) * 12)
 
   return {
-    ['--w-left-0' as string]: `${startPct}%`,
-    ['--w-left-1' as string]: `${endPct}%`,
-    ['--w-top-0' as string]: `${top0}%`,
-    ['--w-top-1' as string]: `${top1}%`,
+    ['--w-left-0' as string]: pct(start.lx),
+    ['--w-top-0' as string]: pct(start.ty),
+    ['--w-left-mid' as string]: pct(midLClamped),
+    ['--w-top-mid' as string]: pct(midTClamped),
+    ['--w-left-1' as string]: pct(end.lx),
+    ['--w-top-1' as string]: pct(end.ty),
     ['--w-bob' as string]: `${bob}px`,
+    ['--w-flip' as string]: String(wFlip),
     ['--witch-dur' as string]: `${dur}s`,
   } as CSSProperties
 }
@@ -144,14 +170,9 @@ export function Hero({
   const sectionRef = useRef<HTMLElement | null>(null)
   const scrollFadeLayerRef = useRef<HTMLDivElement | null>(null)
   const [witchFlying, setWitchFlying] = useState(false)
-  const [logoDepthScale, setLogoDepthScale] = useState(1.02)
-  const [logoHover, setLogoHover] = useState(false)
+  /** מסלול חדש בכל סיבוב אנימציה — מיקומי התחלה/סיום אקראיים */
+  const [witchPathEpoch, setWitchPathEpoch] = useState(0)
   const reducedMotion = usePrefersReducedMotion()
-  const [enableLogo3D, setEnableLogo3D] = useState(false)
-  const [logoCanvasUnlocked, setLogoCanvasUnlocked] = useState(false)
-  const blockHeavy = useHeavyEffectsBlocked()
-  const { pathname } = useLocation()
-  const isHomeRoute = pathname === '/'
 
   const disclaimerRevealRef = useRef<HTMLParagraphElement>(null)
 
@@ -159,64 +180,18 @@ export function Hero({
 
   useHeroScrollFade(sectionRef, scrollFadeLayerRef)
 
-  useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
-    if (reducedMotion) return
-
-    const update = () => {
-      const top = section.getBoundingClientRect().top
-      const t = Math.max(0, Math.min(1, -top / 260))
-      setLogoDepthScale(1.02 - t * 0.14)
-    }
-
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = window.requestAnimationFrame(() => {
-        raf = 0
-        update()
-      })
-    }
-
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) window.cancelAnimationFrame(raf)
-    }
-  }, [reducedMotion])
-
-  const logoFilterStyle = useMemo(
-    () => buildLogoFilterStyle(logoHover),
-    [logoHover],
-  )
-
-  const logoViewStyle = useMemo(
-    () => buildLogoViewStyle(logoDepthScale),
-    [logoDepthScale],
-  )
+  const logoViewStyle = useMemo(() => buildLogoViewStyle(), [])
 
   const logoImageStyle = useMemo((): CSSProperties => {
-    /* רק filter — transform (עומק בגלילה) בלי transition כדי שיישאר מסונכרן ל־rAF */
-    const trans = reducedMotion ? 'none' : LOGO_FILTER_SMOOTH
     return {
-      ...logoFilterStyle,
+      ...buildLogoFilterStyle(),
       ...logoViewStyle,
-      transition: trans,
     }
-  }, [logoFilterStyle, logoViewStyle, reducedMotion])
+  }, [logoViewStyle])
 
   const desktopLogoImgClass = stacked
     ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
     : 'mx-auto h-auto w-auto max-h-[min(30vh,190px)] object-contain object-center select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
-
-  const desktopLogoShellClass = stacked
-    ? 'relative mx-auto block aspect-[169/89] w-full max-h-[min(28vh,172px)] select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
-    : 'relative mx-auto block aspect-[169/89] w-full max-h-[min(30vh,190px)] select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
 
   useEffect(() => {
     const section = sectionRef.current
@@ -233,59 +208,7 @@ export function Hero({
     return () => obs.disconnect()
   }, [])
 
-  /** ללא onAnimationIteration, עדכון state בכל מחזור גרם לרינדורים חוזרים ולעומס ב-Lighthouse */
-  const witchMotionStyle = useMemo(() => witchFlightStyle(0), [])
-
-  const heavyEffectsReady = useHeavyEffectsReady()
-  const effectsStage = useEffectsStage()
-
-  const showLogo3D =
-    enableLogo3D &&
-    !blockHeavy &&
-    isHomeRoute &&
-    scrollIsolationDebug.enableLogo3D
-
-  const showLogo3DCanvas = showLogo3D && heavyEffectsReady && logoCanvasUnlocked
-
-  const effectsStageRef = useRef(effectsStage)
-  effectsStageRef.current = effectsStage
-
-  useEffect(() => {
-    if (!showLogo3D || !heavyEffectsReady) {
-      setLogoCanvasUnlocked(false)
-      return
-    }
-
-    let cancelled = false
-    const unlock = () => {
-      if (!cancelled) setLogoCanvasUnlocked(true)
-    }
-
-    let scheduled: ReturnType<typeof setTimeout> | undefined
-    if (effectsStage >= 3) {
-      scheduled = window.setTimeout(unlock, 200)
-    }
-
-    if (effectsStage >= 2 && (window.scrollY > 16 || document.documentElement.scrollTop > 16)) {
-      unlock()
-    }
-
-    const onInteract = () => {
-      if (effectsStageRef.current >= 2) unlock()
-    }
-
-    window.addEventListener('scroll', onInteract, { passive: true })
-    window.addEventListener('pointerdown', onInteract)
-    window.addEventListener('keydown', onInteract)
-
-    return () => {
-      cancelled = true
-      if (scheduled !== undefined) window.clearTimeout(scheduled)
-      window.removeEventListener('scroll', onInteract)
-      window.removeEventListener('pointerdown', onInteract)
-      window.removeEventListener('keydown', onInteract)
-    }
-  }, [showLogo3D, heavyEffectsReady, effectsStage])
+  const witchMotionStyle = useMemo(() => witchFlightStyle(witchPathEpoch), [witchPathEpoch])
 
   return (
     <section
@@ -318,6 +241,9 @@ export function Hero({
           loading="lazy"
           decoding="async"
           fetchPriority="low"
+          onAnimationIteration={
+            reducedMotion ? undefined : () => setWitchPathEpoch((n) => n + 1)
+          }
         />
 
         <div className="relative z-10 flex min-h-0 w-full min-w-0 max-w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
@@ -330,96 +256,16 @@ export function Hero({
             lang="en"
             dir="ltr"
           >
-            {showLogo3DCanvas ? (
-              <Suspense
-                fallback={
-                  <div
-                    className={desktopLogoShellClass}
-                    style={logoImageStyle}
-                    onPointerEnter={() => setLogoHover(true)}
-                    onPointerLeave={() => setLogoHover(false)}
-                  >
-                    <img
-                      src={logoSrc}
-                      alt="The Witch logo"
-                      width={1690}
-                      height={890}
-                      decoding="async"
-                      fetchPriority="high"
-                      className={desktopLogoImgClass}
-                    />
-                  </div>
-                }
-              >
-                <div
-                  className={desktopLogoShellClass}
-                  style={logoImageStyle}
-                  onPointerEnter={() => setLogoHover(true)}
-                  onPointerLeave={() => setLogoHover(false)}
-                >
-                  <Logo3D className="h-full w-full" />
-                </div>
-              </Suspense>
-            ) : showLogo3D ? (
-              <div
-                className={desktopLogoShellClass}
-                style={logoImageStyle}
-                onPointerEnter={() => setLogoHover(true)}
-                onPointerLeave={() => setLogoHover(false)}
-                onPointerDown={() => {
-                  if (effectsStage >= 2) setLogoCanvasUnlocked(true)
-                }}
-              >
-                <img
-                  src={logoSrc}
-                  alt="The Witch logo"
-                  width={1690}
-                  height={890}
-                  decoding="async"
-                  fetchPriority="high"
-                  className={`${desktopLogoImgClass} h-full w-full`}
-                />
-              </div>
-            ) : !blockHeavy ? (
-              <button
-                type="button"
-                className="block w-full cursor-pointer border-0 bg-transparent p-0"
-                aria-label="הצג לוגו תלת־ממד"
-                onClick={() => {
-                  setEnableLogo3D(true)
-                  trackEvent('logo_3d_opt_in', {
-                    surface: 'hero_desktop',
-                    layout: stacked ? 'stacked' : 'default',
-                  })
-                }}
-              >
-                <img
-                  src={logoSrc}
-                  alt="The Witch logo"
-                  width={1690}
-                  height={890}
-                  decoding="async"
-                  fetchPriority="high"
-                  className={desktopLogoImgClass}
-                  style={logoImageStyle}
-                  onPointerEnter={() => setLogoHover(true)}
-                  onPointerLeave={() => setLogoHover(false)}
-                />
-              </button>
-            ) : (
-              <img
-                src={logoSrc}
-                alt="The Witch logo"
-                width={1690}
-                height={890}
-                decoding="async"
-                fetchPriority="high"
-                className={desktopLogoImgClass}
-                style={logoImageStyle}
-                onPointerEnter={() => setLogoHover(true)}
-                onPointerLeave={() => setLogoHover(false)}
-              />
-            )}
+            <img
+              src={logoSrc}
+              alt="The Witch logo"
+              width={1690}
+              height={890}
+              decoding="async"
+              fetchPriority="high"
+              className={desktopLogoImgClass}
+              style={logoImageStyle}
+            />
           </div>
 
           <div
@@ -446,8 +292,6 @@ export function Hero({
                     : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
                 }
                 style={logoImageStyle}
-                onPointerEnter={() => setLogoHover(true)}
-                onPointerLeave={() => setLogoHover(false)}
               />
             </div>
 

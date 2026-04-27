@@ -14,10 +14,11 @@ export function HomePage() {
         description="אתרים בקוד מלא שמביאים פניות, לא רק ביקורים. שיחת התאמה חינם ללא התחייבות: טופס קצר."
         path="/"
       />
-      <HeroSpline src="https://my.spline.design/particlenebula-yMPUIhRUYftCj8iVtsWaBcG6/" />
+      {/* CosmicField מתחת; Spline (נקודות/נבולה אינטראקטיבית) מעל — שני הברים היו z-0 ולכן ה-Cosmic כיסה את ה-iframe */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
         <CosmicField />
       </div>
+      <HeroSpline src="https://my.spline.design/particlenebula-yMPUIhRUYftCj8iVtsWaBcG6/" />
       <div className="pointer-events-none relative z-[10] flex min-h-[100svh] min-w-0 flex-1 flex-col supports-[min-height:100dvh]:min-h-[100dvh]">
         <Hero layout="stacked" showCosmicField={false} />
         <WhyMe variant="stacked" />

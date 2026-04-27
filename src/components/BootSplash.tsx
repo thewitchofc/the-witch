@@ -92,7 +92,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                 height={890}
                 decoding="async"
                 fetchPriority="high"
-                className="relative z-[1] h-[min(22vh,140px)] w-auto object-contain object-center drop-shadow-[0_0_24px_rgba(168,85,247,0.35)] sm:h-[min(24vh,160px)]"
+                className="relative z-[1] h-[min(22vh,140px)] w-auto object-contain object-center brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,0.45)] sm:h-[min(24vh,160px)]"
               />
             </div>
 

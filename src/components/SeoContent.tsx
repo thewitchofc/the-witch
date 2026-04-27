@@ -14,7 +14,7 @@ export function SeoContent() {
 
   return (
     <section
-      className="pointer-events-auto relative z-[11] border-t border-white/[0.06] bg-[#020617] py-14 text-white sm:py-16"
+      className="pointer-events-auto relative z-[11] border-t border-white/[0.08] bg-[#020617]/55 py-14 text-white shadow-[0_-20px_48px_rgba(2,6,23,0.4)] backdrop-blur-2xl backdrop-saturate-150 motion-reduce:bg-[#020617]/95 motion-reduce:shadow-none motion-reduce:backdrop-blur-none sm:py-16"
       dir="rtl"
       lang="he"
       aria-labelledby={HEADING_ID}
