@@ -5,23 +5,10 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
   type FormEvent,
 } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { trackEvent } from '../lib/analytics'
-
-function useIsMinMd(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia('(min-width: 768px)')
-      mq.addEventListener('change', onChange)
-      return () => mq.removeEventListener('change', onChange)
-    },
-    () => window.matchMedia('(min-width: 768px)').matches,
-    () => false,
-  )
-}
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const fieldShellClass =
   'rounded-2xl border border-white/[0.14] bg-slate-950/78 p-4 ring-1 ring-white/[0.08] backdrop-blur-md sm:p-5 md:px-6 lg:px-7'
@@ -324,8 +311,7 @@ export function LeadForm() {
   const formRef = useRef<HTMLFormElement | null>(null)
   const skipStepScrollRef = useRef(true)
   const isLowBudget = budget === BUDGET_BELOW
-  const prefersReducedMotion = useReducedMotion()
-  const isMinMd = useIsMinMd()
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   const readCanSubmit = useCallback((): boolean => {
     const form = formRef.current
@@ -502,25 +488,22 @@ export function LeadForm() {
           </>
         )}
 
-        <AnimatePresence mode="wait">
-          {submitted ? (
-            <motion.div
+        {submitted ? (
+            <div
               key="lead-sent"
               role="status"
               aria-live="polite"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-2xl border border-white/[0.1] bg-slate-950/55 px-8 py-14 text-center text-pretty ring-1 ring-white/[0.06] sm:px-10 sm:py-16"
+              className={`rounded-2xl border border-white/[0.1] bg-slate-950/55 px-8 py-14 text-center text-pretty ring-1 ring-white/[0.06] sm:px-10 sm:py-16 ${
+                prefersReducedMotion ? '' : 'lead-form-fade-in'
+              }`}
             >
               <p className="text-lg font-medium text-white sm:text-xl">הפרטים התקבלו, תודה.</p>
               <p className="mt-4 text-base leading-relaxed text-slate-300 sm:text-lg">
                 אעבור עליהם ואחזור אליך עם המשך צעדים או שאלות ממוקדות.
               </p>
-            </motion.div>
+            </div>
           ) : (
-            <motion.form
+            <form
               ref={formRef}
               key="lead-form"
               className="touch-manipulation space-y-6 md:space-y-8"
@@ -528,18 +511,12 @@ export function LeadForm() {
               onInput={revalidate}
               onChange={revalidate}
               noValidate
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
             >
           <div className="w-full">
             <div className="h-[2px] w-full overflow-hidden rounded-full bg-white/[0.07]">
-              <motion.div
-                className="h-full w-full rounded-full bg-gradient-to-l from-violet-500 via-fuchsia-500 to-cyan-400"
-                initial={false}
-                animate={{ scaleX: (formStep + 1) / 3 }}
-                style={{ transformOrigin: '100% 50%' }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
+              <div
+                className="h-full w-full origin-right rounded-full bg-gradient-to-l from-violet-500 via-fuchsia-500 to-cyan-400 transition-transform duration-500 ease-out motion-reduce:transition-none"
+                style={{ transform: `scaleX(${(formStep + 1) / 3})` }}
               />
             </div>
           </div>
@@ -798,7 +775,7 @@ export function LeadForm() {
               {budgetChoices.map((opt) => {
                 const selected = budget === opt.value
                 return (
-                  <motion.label key={opt.value} className="min-w-0">
+                  <label key={opt.value} className="min-w-0">
                     <input
                       type="radio"
                       name="budget"
@@ -807,59 +784,34 @@ export function LeadForm() {
                       onChange={() => setBudget(opt.value)}
                       className="peer sr-only"
                     />
-                    <motion.span
-                      className={`flex min-h-[3.25rem] cursor-pointer items-center justify-center text-pretty rounded-2xl border px-2 py-3 text-center text-sm font-medium tracking-tight transition-[background-color,border-color,box-shadow,color,transform] duration-300 ease-out will-change-transform sm:min-h-[3.5rem] sm:px-5 sm:py-4 sm:text-base ${
+                    <span
+                      className={`flex min-h-[3.25rem] cursor-pointer items-center justify-center text-pretty rounded-2xl border px-2 py-3 text-center text-sm font-medium tracking-tight transition-[background-color,border-color,box-shadow,color,transform] duration-300 ease-out will-change-transform sm:min-h-[3.5rem] sm:px-5 sm:py-4 sm:text-base peer-checked:scale-[1.02] motion-reduce:peer-checked:scale-100 hover:translate-y-[-2px] motion-reduce:hover:translate-y-0 active:scale-[0.985] motion-reduce:active:scale-100 ${
                         selected
                           ? 'border-violet-400/60 bg-gradient-to-br from-violet-500/12 via-violet-950/40 to-fuchsia-500/10 text-white shadow-[0_0_0_1px_rgba(167,139,250,0.4),0_0_28px_-10px_rgba(139,92,246,0.38),0_0_48px_-18px_rgba(124,58,237,0.22)] ring-2 ring-violet-400/50 ring-offset-2 ring-offset-[#020617]'
                           : 'border-white/[0.1] bg-slate-950/45 text-slate-200 hover:border-white/[0.22] hover:bg-slate-900/60 hover:text-white hover:shadow-[0_8px_28px_-12px_rgba(15,23,42,0.65)] peer-focus-visible:border-violet-400/50 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-400/35 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#020617]'
                       } `}
-                      animate={{
-                        scale: selected ? 1.02 : 1,
-                      }}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: selected ? 1.005 : 0.985 }}
-                      transition={{
-                        scale: { duration: 0.3, ease: 'easeOut' },
-                        y: { duration: 0.25, ease: 'easeOut' },
-                      }}
                     >
                       {opt.label}
-                    </motion.span>
-                  </motion.label>
+                    </span>
+                  </label>
                 )
               })}
             </div>
           </fieldset>
 
-          <AnimatePresence initial={false}>
-            {budget !== '' && (
-              <motion.p
-                key="budget-feedback"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="text-center text-xs leading-snug text-slate-400 sm:text-sm"
-              >
-                מעולה, נמשיך 👇
-              </motion.p>
-            )}
-          </AnimatePresence>
+          {budget !== '' && (
+            <p
+              className={`text-center text-xs leading-snug text-slate-400 sm:text-sm ${
+                prefersReducedMotion ? '' : 'lead-form-fade-in'
+              }`}
+            >
+              מעולה, נמשיך 👇
+            </p>
+          )}
 
-          <motion.div
+          <div
             key={budget ? 'has-budget' : 'no-budget'}
             className="space-y-4 md:space-y-5"
-            initial={
-              !budget
-                ? false
-                : prefersReducedMotion
-                  ? false
-                  : isMinMd
-                    ? { opacity: 0.92, y: 6, scale: 0.991 }
-                    : { opacity: 0.97, y: 2 }
-            }
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: isMinMd ? 0.32 : 0.22, ease: 'easeOut' }}
           >
           <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-7">
             <div className={`min-w-0 space-y-2 ${fieldShellClass}`}>
@@ -903,7 +855,7 @@ export function LeadForm() {
               placeholder="כל דבר נוסף שחשוב שאדע…"
             />
           </div>
-          </motion.div>
+          </div>
 
           <div className="flex justify-start pt-1">
             <button type="button" className={stepNavSecondaryClass} onClick={() => setFormStep(1)}>
@@ -911,25 +863,17 @@ export function LeadForm() {
             </button>
           </div>
 
-          <AnimatePresence mode="wait" initial={false}>
             {isLowBudget ? (
-              <motion.div
+              <div
                 key="low-budget-panel"
-                className="space-y-6 pt-2 md:space-y-7 md:pt-3"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                className={`space-y-6 pt-2 md:space-y-7 md:pt-3 ${
+                  prefersReducedMotion ? '' : 'lead-form-section-in'
+                }`}
               >
                 <h3 className="text-center text-base font-semibold tracking-tight text-white sm:text-lg">
                   הודעה מהמתכנתת
                 </h3>
-                <motion.div
-                  className="rounded-2xl border border-white/[0.08] bg-slate-950/50 px-5 py-6 text-pretty text-sm leading-relaxed text-slate-300 ring-1 ring-white/[0.04] sm:text-base"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.38, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-                >
+                <div className="rounded-2xl border border-white/[0.08] bg-slate-950/50 px-5 py-6 text-pretty text-sm leading-relaxed text-slate-300 ring-1 ring-white/[0.04] sm:text-base">
                   <p className="mb-4">
                     כרגע אני עובדת רק עם פרויקטים בהתאמה אישית
                     <br />
@@ -940,20 +884,15 @@ export function LeadForm() {
                     <br />
                     כנראה שפתרון מוכן כמו WordPress יתאים לך יותר בשלב הזה.
                   </p>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1, ease: 'easeOut' }}
-                  className="flex justify-center"
-                >
+                </div>
+                <div className="flex justify-center">
                   <div className="relative mx-auto flex w-full max-w-full justify-center overflow-visible">
                     <a
                       href={QUICK_SOLUTION_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="פתיחת קישור חיצוני, פתרון מהיר (אתר אחר)"
-                      className="group relative z-10 flex min-h-[52px] w-full min-w-0 touch-manipulation items-stretch rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] text-base font-medium text-white no-underline shadow-[0_2px_16px_rgba(0,0,0,0.4),0_0_20px_rgba(139,92,246,0.22),0_0_28px_rgba(34,211,238,0.1)] transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.45),0_0_28px_rgba(167,139,250,0.35),0_0_40px_rgba(34,211,238,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95"
+                      className="group relative z-10 flex min-h-[52px] w-full min-w-0 touch-manipulation items-stretch rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] text-base font-medium text-white no-underline shadow-[0_2px_16px_rgba(0,0,0,0.4),0_0_20px_rgba(139,92,246,0.22),0_0_28px_rgba(34,211,238,0.1)] transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 hover:shadow-[0_8px_28px_rgba(0,0,0,0.45),0_0_28px_rgba(167,139,250,0.35),0_0_40px_rgba(34,211,238,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95"
                     >
                       <span className="flex min-h-0 w-full flex-1 items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:py-4">
                         <span className="inline-flex items-center justify-center gap-2.5" dir="ltr">
@@ -970,29 +909,27 @@ export function LeadForm() {
                       </span>
                     </a>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             ) : (
-              <motion.div
+              <div
                 key="submit-branch"
-                className="space-y-3 max-md:space-y-4 md:space-y-3.5"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className={`space-y-3 max-md:space-y-4 md:space-y-3.5 ${
+                  prefersReducedMotion ? '' : 'lead-form-section-in'
+                }`}
               >
-                <motion.button
+                <button
                   type="submit"
                   disabled={!canSubmit}
                   aria-label="שליחת בקשת בדיקת התאמה לוואטסאפ"
                   className={
                     canSubmit
-                      ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] md:py-4'
+                      ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] motion-reduce:active:scale-100 md:py-4'
                       : 'w-full min-h-[52px] cursor-not-allowed rounded-full bg-slate-950/70 px-6 py-3 text-base font-medium text-slate-500 ring-1 ring-white/[0.06] backdrop-blur-sm transition-[box-shadow,ring-color] duration-300 ease-out md:py-4'
                   }
                 >
                   שליחת הבקשה
-                </motion.button>
+                </button>
                 <div className="space-y-1.5 text-balance text-center text-[11px] leading-snug text-slate-500 sm:text-xs md:text-sm">
                   <p>אין התחייבות. נחזור אליך רק אם יש התאמה.</p>
                   <div className="space-y-1 text-slate-500/85">
@@ -1000,13 +937,11 @@ export function LeadForm() {
                     <p>רק כשהטופס מלא כראוי הבקשה תימסר.</p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
           </div>
-            </motion.form>
+            </form>
           )}
-        </AnimatePresence>
       </div>
     </section>
   )

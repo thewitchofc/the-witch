@@ -1,7 +1,5 @@
 import { useRef } from 'react'
 import { CustomLink } from '../components/CustomLink'
-import { CosmicField } from '../components/CosmicField'
-import { LazySplineBackground } from '../components/LazySplineBackground'
 import { trackEvent } from '../lib/analytics'
 import { Seo } from '../components/Seo'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
@@ -73,11 +71,6 @@ export function ProcessPage() {
         title="תהליך עבודה, The Witch"
         description="איך נראה תהליך בניית אתר איתי: שיחת התאמה, אפיון, עיצוב, פיתוח ועלייה לאוויר. שלבים ברורים, בלי הפתעות ובלי קיצורי דרך."
         path="/process"
-      />
-      <CosmicField />
-      <LazySplineBackground
-        rootClassName="process-page-spline-bg"
-        src="https://my.spline.design/glowingplanetparticles-oUUwHSA0ohcwhOOZ2hxahafJ/"
       />
       <main
         id="process"

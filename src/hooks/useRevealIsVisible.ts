@@ -37,15 +37,24 @@ export function useRevealIsVisible(ref: RefObject<Element | null>) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    let fallbackId: ReturnType<typeof setTimeout> | undefined
+
+    const revealNow = () => {
+      el.classList.add('is-visible')
+    }
 
     const obs = getRevealObserver()
     if (!obs) {
-      el.classList.add('is-visible')
+      revealNow()
       return
     }
 
+    // Fallback: במקרים נדירים IO לא יורה (למשל race בזמן hydration/HMR).
+    // לא משאירים את האלמנט שקוף לנצח.
+    fallbackId = window.setTimeout(revealNow, 700)
     obs.observe(el)
     return () => {
+      if (fallbackId !== undefined) window.clearTimeout(fallbackId)
       obs.unobserve(el)
     }
   }, [ref])

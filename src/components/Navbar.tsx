@@ -1,4 +1,5 @@
-import { CustomNavLink } from './CustomLink'
+import { CustomLink, CustomNavLink } from './CustomLink'
+import { trackEvent } from '../lib/analytics'
 
 const navLinkBase =
   'max-md:text-xs md:text-sm transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70'
@@ -41,6 +42,20 @@ export function Navbar() {
               <CustomNavLink to="/faq" className={navLinkClassName}>
                 שאלות נפוצות
               </CustomNavLink>
+            </li>
+            <li className="w-full min-w-0 sm:w-auto">
+              <CustomLink
+                to="/apply#contact"
+                className="inline-flex w-full min-w-0 max-w-full items-center justify-center rounded-full border border-cyan-400/35 bg-slate-950/35 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(34,211,238,0.10)] backdrop-blur-md transition hover:border-cyan-300/55 hover:bg-slate-900/50 hover:shadow-[0_0_22px_rgba(34,211,238,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+                onClick={() =>
+                  trackEvent('cta_click', {
+                    cta_location: 'navbar',
+                    link_url: '/apply#contact',
+                  })
+                }
+              >
+                <span className="truncate">טופס בדיקת התאמה</span>
+              </CustomLink>
             </li>
           </ul>
         </nav>

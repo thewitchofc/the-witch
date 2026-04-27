@@ -7,7 +7,7 @@ const SERVICE_ID = `${SITE_ORIGIN}/#service`
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`
 
 /** לוגו מלא, PNG לתאימות טובה יותר לתוצאות עשירות */
-const LOGO_URL = `${SITE_ORIGIN}/logo.png`
+const LOGO_URL = `${SITE_ORIGIN}/logo.webp`
 
 function faqAnswerPlainText(answer: string): string {
   return answer.replace(/\s+/g, ' ').trim()

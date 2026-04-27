@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSplineWebGLEmbedAllowed } from '../hooks/useSplineWebGLEmbedAllowed'
 import { trackEvent } from '../lib/analytics'
+import { isHomePath } from '../lib/cosmicFieldAllowlist'
 
 const DEFAULT_ACTIVATE_LABEL = 'הפעל אפקט'
 
@@ -59,9 +61,15 @@ export function SplineOptInBackground({
   activateLabel = DEFAULT_ACTIVATE_LABEL,
   autoActivate = false,
 }: SplineOptInBackgroundProps) {
+  const { pathname } = useLocation()
   const splineAllowed = useSplineWebGLEmbedAllowed()
   const [activated, setActivated] = useState(false)
   const autoActivationLogged = useRef(false)
+  const isHome = isHomePath(pathname)
+
+  if (!isHome) {
+    return null
+  }
 
   useEffect(() => {
     if (!autoActivate || !splineAllowed) return

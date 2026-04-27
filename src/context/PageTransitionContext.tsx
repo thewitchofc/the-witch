@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { NavigateOptions, To } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const OVERLAY_IN_MS = 250
 const OVERLAY_OUT_MS = 360
@@ -33,8 +33,10 @@ function prefersReducedMotion(): boolean {
 
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [covered, setCovered] = useState(false)
   const busy = useRef(false)
+  const pendingNav = useRef(false)
   const timersRef = useRef<number[]>([])
 
   const clearTimers = useCallback(() => {
@@ -44,6 +46,26 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => () => clearTimers(), [clearTimers])
 
+  useEffect(() => {
+    if (!pendingNav.current) return
+    const id = window.setTimeout(() => {
+      setCovered(false)
+      busy.current = false
+      pendingNav.current = false
+    }, OVERLAY_OUT_MS)
+    return () => window.clearTimeout(id)
+  }, [location.pathname, location.search, location.hash])
+
+  useEffect(() => {
+    if (!covered) return
+    const watchdogId = window.setTimeout(() => {
+      setCovered(false)
+      busy.current = false
+      pendingNav.current = false
+    }, 2000)
+    return () => window.clearTimeout(watchdogId)
+  }, [covered])
+
   const go = useCallback(
     (to: To, options?: NavigateOptions) => {
       if (busy.current) return
@@ -52,6 +74,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
         return
       }
       busy.current = true
+      pendingNav.current = true
       clearTimers()
       setCovered(true)
       const t1 = window.setTimeout(() => {
@@ -59,6 +82,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
         const t2 = window.setTimeout(() => {
           setCovered(false)
           busy.current = false
+          pendingNav.current = false
           timersRef.current = timersRef.current.filter((id) => id !== t2)
         }, OVERLAY_OUT_MS)
         timersRef.current.push(t2)

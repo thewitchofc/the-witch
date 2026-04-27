@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { CustomLink } from '../components/CustomLink'
 import { trackEvent } from '../lib/analytics'
-import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
 import { lielEdriOgImage } from '../data/clientOgImages'
 
@@ -43,7 +42,6 @@ export function LielEdriPage() {
         description="אתר לקינוחי בוטיק ביתיים: מיתוג עדין, פנייה בוואטסאפ ואינסטגרם, והתאמה מלאה למובייל."
         path="/projects/liel-edri"
       />
-      <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
         dir="rtl"

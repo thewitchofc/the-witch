@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { CustomLink } from "../components/CustomLink";
-import { CosmicField } from "../components/CosmicField";
-import { LazySplineBackground } from "../components/LazySplineBackground";
 import { JsonLd } from "../components/JsonLd";
 import { Seo } from "../components/Seo";
 import { FAQ_ITEMS } from "../data/faqContent";
@@ -32,11 +30,6 @@ export default function FAQ() {
         path="/faq"
       />
       <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
-        <CosmicField />
-        <LazySplineBackground
-          rootClassName="faq-page-spline-bg"
-          src="https://my.spline.design/orb-AEB9qDyTCETQRwLNVsPUap7g/"
-        />
         <div className="relative z-10">
           <section className="py-20 px-4 text-center">
             <div className="mx-auto max-w-3xl">

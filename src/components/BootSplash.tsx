@@ -63,7 +63,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
           role="progressbar"
           aria-busy={phase === 'on' || phase === 'exit'}
           aria-valuetext="טוען את האתר"
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#020617] text-white"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black text-white"
           style={{
             opacity: phase === 'exit' ? 0 : 1,
             transitionProperty: 'opacity',
@@ -76,31 +76,6 @@ export function BootSplash({ children }: { children: ReactNode }) {
             if (e.propertyName === 'opacity' && phase === 'exit') setPhase('off')
           }}
         >
-          <div
-            className="pointer-events-none absolute inset-0 overflow-hidden"
-            aria-hidden
-          >
-            <div
-              className="absolute -top-1/2 left-1/2 h-[120%] w-[min(140%,100%)] -translate-x-1/2 blur-[100px]"
-              style={{
-                background: [
-                  'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(180, 120, 255, 0.28) 0%, transparent 56%)',
-                  'radial-gradient(ellipse 72% 58% at 26% 46%, rgba(236, 72, 153, 0.18) 0%, transparent 52%)',
-                  'radial-gradient(ellipse 68% 52% at 74% 50%, rgba(34, 211, 238, 0.22) 0%, transparent 52%)',
-                ].join(', '),
-              }}
-            />
-            <div
-              className="absolute inset-0 opacity-[0.32]"
-              style={{
-                backgroundImage:
-                  'radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.45), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 40% 80%, rgba(196,181,253,0.35), transparent)',
-                backgroundSize: '100% 100%',
-              }}
-              aria-hidden
-            />
-          </div>
-
           <div className="relative z-10 flex flex-col items-center gap-8 px-6">
             <div
               className="relative"
@@ -110,14 +85,6 @@ export function BootSplash({ children }: { children: ReactNode }) {
                   : `witch-boot-logo-in 0.65s ${easeOutCubic} forwards`,
               }}
             >
-              <div
-                className="absolute inset-[-14px] rounded-[2rem] opacity-80 blur-xl"
-                style={{
-                  background:
-                    'conic-gradient(from 210deg, rgba(34,211,238,0.35), rgba(167,139,250,0.45), rgba(236,72,153,0.3), rgba(34,211,238,0.35))',
-                }}
-                aria-hidden
-              />
               <img
                 src="/logo.svg"
                 alt="The Witch, לוגו"

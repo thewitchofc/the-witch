@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { CustomLink } from '../components/CustomLink'
 import { trackEvent } from '../lib/analytics'
-import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
 import { sabGlassOgImage } from '../data/clientOgImages'
 
@@ -38,7 +37,6 @@ export function SabGlassPage() {
         description="אתר למקלחוני זכוכית בהתאמה אישית: UX להמרות, מבנה דפים, SEO בסיסי וטעינה מהירה. תוצאות ולא רק תדמית."
         path="/projects/sab-glass"
       />
-      <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
         dir="rtl"

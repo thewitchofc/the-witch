@@ -1,4 +1,3 @@
-import { CosmicField } from '../components/CosmicField'
 import { Seo } from '../components/Seo'
 
 export function PrivacyPage() {
@@ -9,9 +8,6 @@ export function PrivacyPage() {
         description="איסוף מידע, עוגיות, Google Analytics והעברת מידע לצדדים שלישיים, מדיניות פרטיות לאתר The Witch."
         path="/privacy"
       />
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
-        <CosmicField />
-      </div>
       <main
         className="relative z-10 mx-auto max-w-3xl px-4 pb-28 pt-24 text-pretty md:px-6 md:pb-32 md:pt-28"
         dir="rtl"

@@ -6,7 +6,10 @@
  * 2. `getBoundingClientRect`: `rect.left < 0` או `rect.right > window.innerWidth` (חריגה ויזואלית)
  *
  * מסנן אלמנטים ברוחב < 20px (רעש).
- * רק לוג בלי outlines: `?overflowAudit=log`
+ * כתירת מחדל: **לוג בלבד** (ללא מסגרות).
+ * - `?overflowAudit=outline` — מדגיש אלמנטים ב־`outline: red`
+ * - `?overflowAudit=log` — לוג בלבד (ללא הדגשה)
+ * - (או כל ערך אחר / ללא query) — לוג בלבד
  */
 const ATTR = 'data-overflow-audit'
 const MIN_WIDTH_PX = 20
@@ -51,7 +54,13 @@ export function installOverflowAudit(): () => void {
   if (!import.meta.env.DEV) return () => {}
 
   const params = new URLSearchParams(window.location.search)
-  const logOnly = params.get('overflowAudit') === 'log'
+  if (!params.has('overflowAudit')) {
+    // Opt-in: לא מריץ בדיקה/לוגים/RAF בלי בקשה מפורשת.
+    return () => {}
+  }
+
+  const mode = params.get('overflowAudit')
+  const showOutlines = mode === 'outline'
 
   const tolerance = 1
   let raf = 0
@@ -90,7 +99,7 @@ export function installOverflowAudit(): () => void {
     for (const el of nodes) {
       const bad = offenderSet.has(el)
       if (bad) {
-        if (!logOnly && !el.hasAttribute(ATTR)) {
+        if (showOutlines && !el.hasAttribute(ATTR)) {
           el.setAttribute(ATTR, '')
           el.style.outline = '2px solid red'
           el.style.outlineOffset = '0'

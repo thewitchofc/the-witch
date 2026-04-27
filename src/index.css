@@ -244,6 +244,14 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
 }
 
 /* Hero, חשיפה ב-CSS בלבד; `is-visible` מ־IntersectionObserver */
+/* ללא IO — כותרת/לוגו/CTA ל־LCP (מיידי, בלי will-change) */
+.hero-reveal--lcp {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: none;
+  will-change: auto;
+}
+
 .hero-reveal {
   opacity: 0;
   transform: translate3d(0, 16px, 0);
@@ -315,6 +323,28 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
     0 0 22px rgba(34, 211, 238, 0.08);
 }
 
+/* CTA בדף הבית: מצב סופי מייד, אנימציה רק ב־:hover (שיפור LCP) */
+.hero-cta-reveal--lcp {
+  opacity: 1;
+  transform: scale(1) translate3d(0, 0, 0);
+  box-shadow:
+    0 3px 18px rgba(0, 0, 0, 0.28),
+    0 0 16px rgba(139, 92, 246, 0.16),
+    0 0 20px rgba(34, 211, 238, 0.06);
+  transition:
+    transform 0.32s ease-out,
+    box-shadow 0.32s ease-out;
+  will-change: auto;
+}
+
+.hero-cta-reveal--lcp:hover {
+  transform: scale(1.012) translate3d(0, 0, 0);
+  box-shadow:
+    0 5px 22px rgba(0, 0, 0, 0.3),
+    0 0 18px rgba(167, 139, 250, 0.18),
+    0 0 22px rgba(34, 211, 238, 0.08);
+}
+
 /* CTA סופי בסגנון כהה (למשל תחתית Process) — אותה כניסה, צל ניטרלי */
 .final-cta-reveal {
   opacity: 0;
@@ -355,7 +385,8 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
     transform: none !important;
   }
 
-  .hero-reveal {
+  .hero-reveal,
+  .hero-reveal--lcp {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
@@ -363,6 +394,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   }
 
   .hero-cta-reveal,
+  .hero-cta-reveal--lcp,
   .final-cta-reveal {
     opacity: 1 !important;
     transform: none !important;
@@ -381,6 +413,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   }
 
   .hero-cta-reveal:hover,
+  .hero-cta-reveal--lcp:hover,
   .final-cta-reveal:hover {
     transform: none !important;
   }
@@ -463,5 +496,87 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
 
   50% {
     opacity: 1;
+  }
+}
+
+/* LeadForm: בלי framer — כניסה עדינה; מושבת ב־reduced-motion */
+@keyframes lead-form-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lead-form-fade-in {
+  animation: lead-form-fade-up 0.45s ease-out both;
+}
+
+.lead-form-section-in {
+  animation: lead-form-fade-up 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead-form-fade-in,
+  .lead-form-section-in {
+    animation: none;
+  }
+}
+
+/* CosmicField: אורורה (שלב 3) — breath ב־CSS */
+@keyframes cosmic-aurora-breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  33% {
+    opacity: 0.76;
+  }
+  66% {
+    opacity: 0.64;
+  }
+}
+
+.cosmic-aurora-breathe {
+  animation: cosmic-aurora-breathe 22s ease-in-out 0s 2;
+}
+
+/* חלקיקים — תנועה עדינה (נשען על CSS vars ב-inline) */
+@keyframes cosmic-particle-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: var(--p-o0, 0.45);
+  }
+  35% {
+    transform: translate3d(var(--p-tx1, 0), var(--p-ty1, -9px), 0) scale(var(--p-s1, 1.02));
+    opacity: var(--p-o1, 0.75);
+  }
+  70% {
+    transform: translate3d(var(--p-tx2, 0), var(--p-ty2, -4px), 0) scale(1.01);
+    opacity: var(--p-o2, 0.55);
+  }
+}
+
+.cosmic-particle-anim {
+  animation: cosmic-particle-drift var(--p-dur, 12s) ease-in-out var(--p-delay, 0s) 2
+    both;
+  animation-play-state: running;
+}
+
+.cosmic-particle-anim--light {
+  animation: cosmic-particle-drift var(--p-dur, 12s) ease-in-out var(--p-delay, 0s) 1
+    both;
+  animation-iteration-count: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-aurora-breathe,
+  .cosmic-particle-anim,
+  .cosmic-particle-anim--light {
+    animation: none;
   }
 }

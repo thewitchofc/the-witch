@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useEffectsStage } from '../context/HeavyEffectsReadyContext'
 import { isHomePath } from '../lib/cosmicFieldAllowlist'
 import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const auroraBackground = [
   'radial-gradient(ellipse 88% 68% at 50% 0%, rgba(180, 120, 255, 0.26) 0%, transparent 56%)',
@@ -16,7 +17,8 @@ const COSMIC_IO: IntersectionObserverInit = {
   threshold: 0.02,
 }
 
-const fadeEase = [0.22, 1, 0.36, 1] as const
+/** ≤10 אנימציות framer במקביל (חלקיקים + אורורה בשלב 3) */
+const PARTICLE_COUNT = 8
 
 /** 0..1 דטרמיניסטי לפי מפתח, טהור לרינדור */
 function unitRand(seed: number): number {
@@ -24,48 +26,89 @@ function unitRand(seed: number): number {
   return x - Math.floor(x)
 }
 
-function StaticCosmicBackdrop() {
+function StaticCosmicBackdrop({ mediumBlur }: { mediumBlur: boolean }) {
   return (
     <div
       className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
       aria-hidden
     >
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.7] blur-[72px] will-change-[transform,filter]"
+        className={
+          mediumBlur
+            ? 'pointer-events-none absolute inset-0 opacity-[0.7] blur-[36px]'
+            : 'pointer-events-none absolute inset-0 opacity-[0.82]'
+        }
         style={{ background: auroraBackground }}
       />
     </div>
   )
 }
 
-function CosmicBackdrop() {
-  const reduceMotion = useReducedMotion()
+/** דף הבית: אורורה — שלב 1 ללא blur כבד; שלב 2+ blur בינוני; שלב 3 אנימציית opacity מוגבלת ב-repeat */
+function HomeAurora({ stage, reduceMotion }: { stage: number; reduceMotion: boolean }) {
+  if (reduceMotion) {
+    return (
+      <div
+        className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
+        aria-hidden
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.68] blur-[36px]"
+          style={{ background: auroraBackground }}
+        />
+      </div>
+    )
+  }
+
+  if (stage < 3) {
+    const blurClass = stage >= 2 ? 'blur-[36px]' : ''
+    return (
+      <div
+        className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
+        aria-hidden
+      >
+        <div
+          className={`pointer-events-none absolute inset-0 opacity-[0.68] ${blurClass}`}
+          style={{ background: auroraBackground }}
+        />
+      </div>
+    )
+  }
 
   return (
     <div
       className="pointer-events-none absolute -top-1/2 inset-x-0 h-[120%] w-full overflow-hidden"
       aria-hidden
     >
-      <motion.div
-        className="pointer-events-none absolute inset-0 blur-[100px] will-change-[transform,filter]"
+      <div
+        className="cosmic-aurora-breathe pointer-events-none absolute inset-0 blur-[56px] will-change-[opacity] motion-reduce:animate-none"
         style={{ background: auroraBackground }}
-        animate={reduceMotion ? { opacity: 0.68 } : { opacity: [0.62, 0.76, 0.64, 0.72, 0.62] }}
-        transition={{
-          duration: reduceMotion ? 0 : 22,
-          repeat: reduceMotion ? 0 : Infinity,
-          ease: 'easeInOut',
-        }}
       />
     </div>
   )
 }
 
-function Particles() {
-  const reduceMotion = useReducedMotion()
+function Particles({ effectsStage }: { effectsStage: number }) {
+  const reduceMotion = usePrefersReducedMotion()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [particlesInView, setParticlesInView] = useState(true)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      (entries) => {
+        setParticlesInView(entries.some((e) => e.isIntersecting))
+      },
+      { root: null, rootMargin: '80px', threshold: 0 },
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 28 }, (_, i) => {
+      Array.from({ length: PARTICLE_COUNT }, (_, i) => {
         const r = (k: number) => unitRand(i * 7919 + k)
         const xDrift = (r(1) - 0.5) * 22
         const xMid = (r(2) - 0.5) * 16
@@ -96,58 +139,79 @@ function Particles() {
     [],
   )
 
+  const motionHeavy = effectsStage >= 3 && !reduceMotion
+  const allowWillChange = motionHeavy
+
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      {particles.map((p) => (
-        <motion.span
-          key={p.id}
-          className="absolute rounded-full bg-white/95"
-          style={{
-            left: p.left,
-            top: p.top,
-            width: p.size,
-            height: p.size,
-            opacity: p.opacity,
-            boxShadow: '0 0 14px rgba(196, 181, 253, 0.22), 0 0 28px rgba(34, 211, 238, 0.08)',
-          }}
-          animate={
-            reduceMotion
-              ? { y: 0, x: 0, opacity: p.opacity * 0.75, scale: 1 }
-              : {
-                  y: [0, p.yMid, p.yPeak, p.ySettle, 0],
-                  x: [0, p.xMid, p.xDrift * 0.72, p.xLate, 0],
-                  opacity: [
-                    p.opacity * 0.4,
-                    p.opacity * 0.82,
-                    p.opacity,
-                    p.opacity * 0.68,
-                    p.opacity * 0.4,
-                  ],
-                  scale: [1, 1.02, p.scalePeak, 1.018, 1],
-                }
-          }
-          transition={{
-            duration: reduceMotion ? 0 : p.duration,
-            repeat: reduceMotion ? 0 : Infinity,
-            ease: 'easeInOut',
-            delay: p.delay,
-            ...(reduceMotion ? {} : { times: p.times }),
-          }}
-        />
-      ))}
+    <div ref={containerRef} className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {particles.map((p) => {
+        const paused = !particlesInView || reduceMotion
+        const o0 = motionHeavy ? p.opacity * 0.4 : p.opacity * 0.55
+        const o2 = motionHeavy ? p.opacity * 0.68 : p.opacity * 0.55
+        const baseClass = allowWillChange
+          ? 'absolute rounded-full bg-white/95 will-change-[transform,opacity] motion-reduce:animate-none'
+          : 'absolute rounded-full bg-white/95 motion-reduce:animate-none'
+        const animClass = paused
+          ? ''
+          : motionHeavy
+            ? 'cosmic-particle-anim'
+            : 'cosmic-particle-anim--light'
+        const animStyle: CSSProperties | undefined = paused
+          ? undefined
+          : motionHeavy
+            ? {
+                ['--p-o0' as string]: o0,
+                ['--p-o1' as string]: p.opacity,
+                ['--p-o2' as string]: o2,
+                ['--p-tx1' as string]: `${p.xMid}px`,
+                ['--p-ty1' as string]: `${p.yMid}px`,
+                ['--p-tx2' as string]: `${p.xLate}px`,
+                ['--p-ty2' as string]: `${p.ySettle}px`,
+                ['--p-s1' as string]: p.scalePeak,
+                ['--p-dur' as string]: `${p.duration}s`,
+                ['--p-delay' as string]: `${p.delay}s`,
+              }
+            : {
+                ['--p-o0' as string]: p.opacity * 0.55,
+                ['--p-o1' as string]: p.opacity * 0.9,
+                ['--p-o2' as string]: p.opacity * 0.55,
+                ['--p-tx1' as string]: `${p.xMid * 0.45}px`,
+                ['--p-ty1' as string]: `${p.yPeak * 0.48}px`,
+                ['--p-tx2' as string]: '0px',
+                ['--p-ty2' as string]: '0px',
+                ['--p-s1' as string]: 1.012,
+                ['--p-dur' as string]: `${p.duration * 0.55}s`,
+                ['--p-delay' as string]: `${p.delay}s`,
+              }
+        return (
+          <span
+            key={p.id}
+            className={[baseClass, animClass].filter(Boolean).join(' ')}
+            style={{
+              left: p.left,
+              top: p.top,
+              width: p.size,
+              height: p.size,
+              boxShadow: '0 0 14px rgba(196, 181, 253, 0.22), 0 0 28px rgba(34, 211, 238, 0.08)',
+              opacity: paused ? p.opacity * 0.75 : undefined,
+              ...animStyle,
+            }}
+          />
+        )
+      })}
     </div>
   )
 }
 
 /**
- * דף הבית: אורורה מונפשת + חלקיקים (אחרי כניסה ל-viewport, fade-in).
- * שאר הדפים: רקע סטטי + חלקיקים זזים (כמו לפני), בלי אנימציית blur הכבדה של האורורה.
- * `shouldBlockHeavyEffects` / reduced-motion: רקע סטטי בלבד.
+ * דף הבית: אורורה (CSS) בשלבים + חלקיקים מ־שלב 2; אנימציית scroll בפרלקס.
+ * `shouldBlockHeavyEffects` / `prefers-reduced-motion`: רקע סטטי בלבד.
  */
 export function CosmicFieldImpl() {
   const { pathname } = useLocation()
   const blocked = useHeavyEffectsBlocked()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
+  const effectsStage = useEffectsStage()
   const rootRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
 
@@ -178,6 +242,7 @@ export function CosmicFieldImpl() {
   const active = mayMotion && inView
   const fullHome = home && active
   const particlesOnly = !home && active
+  const staticBlurMedium = effectsStage >= 2 && mayMotion
 
   return (
     <div
@@ -188,33 +253,27 @@ export function CosmicFieldImpl() {
       <div className="cosmic-scroll-parallax pointer-events-none absolute inset-x-0 top-[-7%] h-[114%] overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(30,27,75,0.55),transparent_60%)]" />
-          {(!active || !fullHome) && <StaticCosmicBackdrop />}
-          {particlesOnly ? (
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-[1]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.75, ease: fadeEase }}
-            >
+          {(!active || !fullHome) && <StaticCosmicBackdrop mediumBlur={staticBlurMedium} />}
+          {particlesOnly && effectsStage >= 2 ? (
+            <div className="pointer-events-none absolute inset-0 z-[1]">
               <div className="absolute inset-0 overflow-hidden">
-                <Particles />
+                <Particles effectsStage={effectsStage} />
               </div>
-            </motion.div>
+            </div>
           ) : null}
           {fullHome ? (
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-[1]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.85, ease: fadeEase }}
-            >
-              <div className="absolute inset-0 overflow-hidden">
-                <CosmicBackdrop />
+            <>
+              <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
+                <HomeAurora stage={effectsStage} reduceMotion={!!reduceMotion} />
               </div>
-              <div className="absolute inset-0 overflow-hidden">
-                <Particles />
-              </div>
-            </motion.div>
+              {effectsStage >= 2 ? (
+                <div className="pointer-events-none absolute inset-0 z-[1]">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <Particles effectsStage={effectsStage} />
+                  </div>
+                </div>
+              ) : null}
+            </>
           ) : null}
         </div>
       </div>

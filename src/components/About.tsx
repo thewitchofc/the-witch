@@ -10,7 +10,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 overflow-x-hidden bg-[#020617] py-10 text-white md:py-14"
+      className="scroll-mt-24 overflow-x-hidden bg-black py-10 text-white md:py-14"
       dir="rtl"
       lang="he"
       aria-labelledby="about-heading"

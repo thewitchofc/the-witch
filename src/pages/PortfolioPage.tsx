@@ -1,4 +1,3 @@
-import { CosmicField } from '../components/CosmicField'
 import { PortfolioGrid } from '../components/Portfolio'
 import { Seo } from '../components/Seo'
 import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
@@ -11,7 +10,6 @@ export function PortfolioPage() {
         description="פרויקטים שבנויים להביא תוצאות: אתרים למסעדות, חנויות, מותגי בוטיק ועסקים מקומיים. עיצוב, קוד ומהירות טעינה."
         path="/portfolio"
       />
-      <CosmicField />
       <main
         id="portfolio"
         className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-4 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:px-6 md:pb-32"

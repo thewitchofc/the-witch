@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import { CustomLink } from '../components/CustomLink'
 import { trackEvent } from '../lib/analytics'
-import heroImage from '../assets/royal-fruit-hero.png?url'
-import { CosmicField } from '../components/CosmicField'
+import heroImage from '../assets/royal-fruit-hero.webp?url'
 import { Seo } from '../components/Seo'
 
 const workItems = [
@@ -41,7 +40,6 @@ export function RoyalFruitPage() {
         description="אתר למסחר פירות וירקות טריים: קטלוג, הזמנות בוואטסאפ וחוויית קנייה נקייה. דגש על טריות ואמון."
         path="/projects/royal-fruit"
       />
-      <CosmicField />
       <main
         className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
         dir="rtl"
@@ -53,8 +51,11 @@ export function RoyalFruitPage() {
               src={heroImage}
               alt="Royal Fruit, לוגו ומיתוג האתר"
               className="h-[min(42vh,420px)] w-full object-cover object-center md:h-[min(48vh,480px)]"
-              width={1200}
-              height={630}
+              width={1024}
+              height={508}
+              sizes="(max-width: 768px) 100vw, 1024px"
+              fetchPriority="high"
+              loading="eager"
               decoding="async"
             />
           </div>

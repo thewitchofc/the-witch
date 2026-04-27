@@ -1,5 +1,5 @@
 import { usePageTransition } from '../context/PageTransitionContext'
-import royalFruitHero from '../assets/royal-fruit-hero.png?url'
+import royalFruitHero from '../assets/royal-fruit-hero.webp?url'
 import { trackEvent } from '../lib/analytics'
 import { lielEdriOgImage, sabGlassOgImage, sachiRamenHeroImage } from '../data/clientOgImages'
 
@@ -104,6 +104,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             alt={project.imageAlt}
             width={900}
             height={520}
+            sizes="(max-width: 768px) 100vw, 50vw"
             loading="lazy"
             decoding="async"
             className="h-[200px] w-full object-cover object-center md:h-[240px]"

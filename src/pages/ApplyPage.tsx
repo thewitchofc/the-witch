@@ -1,6 +1,4 @@
 import { lazy, Suspense } from 'react'
-import { CosmicField } from '../components/CosmicField'
-import { LazySplineBackground } from '../components/LazySplineBackground'
 import { Seo } from '../components/Seo'
 import { WhyItWorksDifferent } from '../components/WhyItWorksDifferent'
 
@@ -20,11 +18,6 @@ export function ApplyPage() {
         title="הגשת בקשה לפרויקט, The Witch"
         description="מלאו טופס קצר לבדיקת התאמה: סוג העסק, יעדים ואתר קיים. אחזור אליכם עם המשך צעדים והערכת היקף."
         path="/apply"
-      />
-      <CosmicField />
-      <LazySplineBackground
-        rootClassName="apply-page-spline-bg"
-        src="https://my.spline.design/particleaibrain-LcC5GIbOSWChW6OLPMzjZN2h/"
       />
       <div className="relative z-10 flex w-full flex-col items-center">
         <WhyItWorksDifferent />

@@ -9,6 +9,8 @@ import { scrollIsolationDebug } from '../lib/scrollIsolationDebug'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { useHeroScrollFade } from '../hooks/useHeroScrollFade'
 import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { useEffectsStage, useHeavyEffectsReady } from '../context/HeavyEffectsReadyContext'
 
 const Logo3D = lazy(() =>
   import('./Logo3D').then((m) => ({ default: m.Logo3D })),
@@ -23,34 +25,37 @@ const WITCH_SECTION_IO: IntersectionObserverInit = {
 /** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
 const logoSrc = '/logo.svg'
 
-const logoTransform = 'perspective(600px) rotateX(6deg) rotateY(-3deg) scale(1.02)'
+const logoTransformBase = 'perspective(600px) rotateX(6deg) rotateY(-3deg)'
 
-const logoTransition = 'filter 350ms ease, transform 350ms ease'
+/** אותו מבנה פילטר בכל מצב — הדפדפן מחליף בין 0/1 בצורה חלקה, בלי re-render לכל פריים */
+const LOGO_FILTER_SMOOTH = 'filter 0.7s cubic-bezier(0.33, 1, 0.32, 1)'
 
-const logoBaseStyle: CSSProperties = {
-  filter: [
-    'drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))',
-    'drop-shadow(0 0 28px rgba(168, 85, 247, 0.2))',
-  ].join(' '),
-  transform: logoTransform,
-  transformOrigin: 'center center',
-  transition: logoTransition,
-  imageRendering: 'auto',
+function buildLogoFilterStyle(hover: boolean): CSSProperties {
+  const t = hover ? 1 : 0
+  const b = 1.04 + 0.05 * t
+  const c = 1.02 + 0.03 * t
+  const w = 0.14 + 0.1 * t
+  const v = 0.38 * t
+  const vDeep = 0.14 * t
+  return {
+    filter: [
+      `brightness(${b.toFixed(3)})`,
+      `contrast(${c.toFixed(3)})`,
+      `saturate(${(1 + 0.08 * t).toFixed(3)})`,
+      `drop-shadow(0 0 18px rgba(255, 255, 255, ${w.toFixed(3)}))`,
+      `drop-shadow(0 0 48px rgba(139, 92, 246, ${v.toFixed(3)}))`,
+      `drop-shadow(0 0 80px rgba(49, 46, 129, ${vDeep.toFixed(3)}))`,
+    ].join(' '),
+    imageRendering: 'auto' as const,
+  }
 }
 
-const logoEffectStyle: CSSProperties = {
-  filter: [
-    'drop-shadow(1px 1px 0 rgba(168, 85, 247, 1))',
-    'drop-shadow(3px 3px 0 rgba(120, 60, 220, 0.9))',
-    'drop-shadow(5px 5px 1px rgba(80, 30, 180, 0.75))',
-    'drop-shadow(7px 7px 2px rgba(60, 20, 140, 0.6))',
-    'drop-shadow(0 0 14px rgba(168, 85, 247, 0.35))',
-    'drop-shadow(0 0 28px rgba(168, 85, 247, 0.2))',
-  ].join(' '),
-  transform: logoTransform,
-  transformOrigin: 'center center',
-  transition: logoTransition,
-  imageRendering: 'auto',
+function buildLogoViewStyle(depthScale: number): CSSProperties {
+  const s = Number.isFinite(depthScale) ? depthScale : 1.02
+  return {
+    transform: `${logoTransformBase} scale(${s.toFixed(4)})`,
+    transformOrigin: 'center center',
+  }
 }
 
 const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
@@ -139,27 +144,71 @@ export function Hero({
   const sectionRef = useRef<HTMLElement | null>(null)
   const scrollFadeLayerRef = useRef<HTMLDivElement | null>(null)
   const [witchFlying, setWitchFlying] = useState(false)
-  const [logoHovered, setLogoHovered] = useState(false)
+  const [logoDepthScale, setLogoDepthScale] = useState(1.02)
+  const [logoHover, setLogoHover] = useState(false)
+  const reducedMotion = usePrefersReducedMotion()
   const [enableLogo3D, setEnableLogo3D] = useState(false)
+  const [logoCanvasUnlocked, setLogoCanvasUnlocked] = useState(false)
   const blockHeavy = useHeavyEffectsBlocked()
   const { pathname } = useLocation()
   const isHomeRoute = pathname === '/'
 
-  const logoDesktopRevealRef = useRef<HTMLDivElement>(null)
-  const logoMobileRevealRef = useRef<HTMLDivElement>(null)
-  const headlineRevealRef = useRef<HTMLHeadingElement>(null)
-  const sublineRevealRef = useRef<HTMLDivElement>(null)
-  const ctaRevealRef = useRef<HTMLAnchorElement>(null)
   const disclaimerRevealRef = useRef<HTMLParagraphElement>(null)
 
-  useRevealIsVisible(logoDesktopRevealRef)
-  useRevealIsVisible(logoMobileRevealRef)
-  useRevealIsVisible(headlineRevealRef)
-  useRevealIsVisible(sublineRevealRef)
-  useRevealIsVisible(ctaRevealRef)
   useRevealIsVisible(disclaimerRevealRef)
 
   useHeroScrollFade(sectionRef, scrollFadeLayerRef)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    if (reducedMotion) return
+
+    const update = () => {
+      const top = section.getBoundingClientRect().top
+      const t = Math.max(0, Math.min(1, -top / 260))
+      setLogoDepthScale(1.02 - t * 0.14)
+    }
+
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(() => {
+        raf = 0
+        update()
+      })
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
+    }
+  }, [reducedMotion])
+
+  const logoFilterStyle = useMemo(
+    () => buildLogoFilterStyle(logoHover),
+    [logoHover],
+  )
+
+  const logoViewStyle = useMemo(
+    () => buildLogoViewStyle(logoDepthScale),
+    [logoDepthScale],
+  )
+
+  const logoImageStyle = useMemo((): CSSProperties => {
+    /* רק filter — transform (עומק בגלילה) בלי transition כדי שיישאר מסונכרן ל־rAF */
+    const trans = reducedMotion ? 'none' : LOGO_FILTER_SMOOTH
+    return {
+      ...logoFilterStyle,
+      ...logoViewStyle,
+      transition: trans,
+    }
+  }, [logoFilterStyle, logoViewStyle, reducedMotion])
 
   const desktopLogoImgClass = stacked
     ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
@@ -187,11 +236,56 @@ export function Hero({
   /** ללא onAnimationIteration, עדכון state בכל מחזור גרם לרינדורים חוזרים ולעומס ב-Lighthouse */
   const witchMotionStyle = useMemo(() => witchFlightStyle(0), [])
 
+  const heavyEffectsReady = useHeavyEffectsReady()
+  const effectsStage = useEffectsStage()
+
   const showLogo3D =
     enableLogo3D &&
     !blockHeavy &&
     isHomeRoute &&
     scrollIsolationDebug.enableLogo3D
+
+  const showLogo3DCanvas = showLogo3D && heavyEffectsReady && logoCanvasUnlocked
+
+  const effectsStageRef = useRef(effectsStage)
+  effectsStageRef.current = effectsStage
+
+  useEffect(() => {
+    if (!showLogo3D || !heavyEffectsReady) {
+      setLogoCanvasUnlocked(false)
+      return
+    }
+
+    let cancelled = false
+    const unlock = () => {
+      if (!cancelled) setLogoCanvasUnlocked(true)
+    }
+
+    let scheduled: ReturnType<typeof setTimeout> | undefined
+    if (effectsStage >= 3) {
+      scheduled = window.setTimeout(unlock, 200)
+    }
+
+    if (effectsStage >= 2 && (window.scrollY > 16 || document.documentElement.scrollTop > 16)) {
+      unlock()
+    }
+
+    const onInteract = () => {
+      if (effectsStageRef.current >= 2) unlock()
+    }
+
+    window.addEventListener('scroll', onInteract, { passive: true })
+    window.addEventListener('pointerdown', onInteract)
+    window.addEventListener('keydown', onInteract)
+
+    return () => {
+      cancelled = true
+      if (scheduled !== undefined) window.clearTimeout(scheduled)
+      window.removeEventListener('scroll', onInteract)
+      window.removeEventListener('pointerdown', onInteract)
+      window.removeEventListener('keydown', onInteract)
+    }
+  }, [showLogo3D, heavyEffectsReady, effectsStage])
 
   return (
     <section
@@ -212,43 +306,80 @@ export function Hero({
         {showCosmicField ? <CosmicField /> : null}
 
         <img
-          src="/witch.png"
+          src="/witch.webp"
+          width={400}
+          height={400}
           className={
             witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
           }
           style={witchMotionStyle}
           alt=""
           aria-hidden
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
         />
 
         <div className="relative z-10 flex min-h-0 w-full min-w-0 max-w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
           <div
-            ref={logoDesktopRevealRef}
             className={
               stacked
-                ? 'pointer-events-auto hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full min-w-0 max-w-full shrink-0 md:mb-4 md:mt-4 md:block'
-                : 'pointer-events-auto hero-reveal hero-reveal--from-top hero-reveal--duration-lg mb-0 mt-3 hidden w-full min-w-0 max-w-full shrink-0 md:mb-10 md:mt-4 md:block'
+                ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:block md:pt-7'
+                : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:block md:pt-7'
             }
             lang="en"
             dir="ltr"
           >
-            {showLogo3D ? (
+            {showLogo3DCanvas ? (
               <Suspense
                 fallback={
-                  <img
-                    src={logoSrc}
-                    alt="The Witch logo"
-                    width={1690}
-                    height={890}
-                    decoding="async"
-                    fetchPriority="high"
-                    className={desktopLogoImgClass}
-                    style={logoBaseStyle}
-                  />
+                  <div
+                    className={desktopLogoShellClass}
+                    style={logoImageStyle}
+                    onPointerEnter={() => setLogoHover(true)}
+                    onPointerLeave={() => setLogoHover(false)}
+                  >
+                    <img
+                      src={logoSrc}
+                      alt="The Witch logo"
+                      width={1690}
+                      height={890}
+                      decoding="async"
+                      fetchPriority="high"
+                      className={desktopLogoImgClass}
+                    />
+                  </div>
                 }
               >
-                <Logo3D className={desktopLogoShellClass} />
+                <div
+                  className={desktopLogoShellClass}
+                  style={logoImageStyle}
+                  onPointerEnter={() => setLogoHover(true)}
+                  onPointerLeave={() => setLogoHover(false)}
+                >
+                  <Logo3D className="h-full w-full" />
+                </div>
               </Suspense>
+            ) : showLogo3D ? (
+              <div
+                className={desktopLogoShellClass}
+                style={logoImageStyle}
+                onPointerEnter={() => setLogoHover(true)}
+                onPointerLeave={() => setLogoHover(false)}
+                onPointerDown={() => {
+                  if (effectsStage >= 2) setLogoCanvasUnlocked(true)
+                }}
+              >
+                <img
+                  src={logoSrc}
+                  alt="The Witch logo"
+                  width={1690}
+                  height={890}
+                  decoding="async"
+                  fetchPriority="high"
+                  className={`${desktopLogoImgClass} h-full w-full`}
+                />
+              </div>
             ) : !blockHeavy ? (
               <button
                 type="button"
@@ -270,9 +401,9 @@ export function Hero({
                   decoding="async"
                   fetchPriority="high"
                   className={desktopLogoImgClass}
-                  style={logoHovered ? logoEffectStyle : logoBaseStyle}
-                  onMouseEnter={() => setLogoHovered(true)}
-                  onMouseLeave={() => setLogoHovered(false)}
+                  style={logoImageStyle}
+                  onPointerEnter={() => setLogoHover(true)}
+                  onPointerLeave={() => setLogoHover(false)}
                 />
               </button>
             ) : (
@@ -284,9 +415,9 @@ export function Hero({
                 decoding="async"
                 fetchPriority="high"
                 className={desktopLogoImgClass}
-                style={logoHovered ? logoEffectStyle : logoBaseStyle}
-                onMouseEnter={() => setLogoHovered(true)}
-                onMouseLeave={() => setLogoHovered(false)}
+                style={logoImageStyle}
+                onPointerEnter={() => setLogoHover(true)}
+                onPointerLeave={() => setLogoHover(false)}
               />
             )}
           </div>
@@ -299,8 +430,7 @@ export function Hero({
             }
           >
             <div
-              ref={logoMobileRevealRef}
-              className="pointer-events-auto hero-reveal hero-reveal--fade-only hero-reveal--duration-lg mt-3 block w-full min-w-0 max-w-full shrink-0 md:hidden"
+              className="pointer-events-auto hero-reveal--lcp mt-2 block w-full min-w-0 max-w-full shrink-0 pt-5 [overflow:visible] md:hidden"
               dir="ltr"
               lang="en"
             >
@@ -315,14 +445,13 @@ export function Hero({
                     ? 'mx-auto h-auto w-auto max-h-[min(25vh,148px)] object-contain object-center select-none'
                     : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
                 }
-                style={logoBaseStyle}
+                style={logoImageStyle}
+                onPointerEnter={() => setLogoHover(true)}
+                onPointerLeave={() => setLogoHover(false)}
               />
             </div>
 
-            <h1
-              ref={headlineRevealRef}
-              className="hero-reveal hero-reveal--delay-1 mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]"
-            >
+            <h1 className="hero-reveal--lcp mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
               <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
                 {headline}
               </span>
@@ -331,10 +460,7 @@ export function Hero({
               </span>
             </h1>
 
-            <div
-              ref={sublineRevealRef}
-              className="hero-reveal hero-reveal--fade-only hero-reveal--delay-2 mx-auto w-full min-w-0 max-w-[260px] text-pretty break-words font-normal leading-relaxed md:max-w-none"
-            >
+            <div className="hero-reveal--lcp mx-auto w-full min-w-0 max-w-[260px] text-pretty break-words font-normal leading-relaxed md:max-w-none">
               <div className="space-y-2 md:hidden">
                 {sublines.map((line) => (
                   <p
@@ -361,10 +487,9 @@ export function Hero({
 
             <div className="relative mx-auto mt-3 flex w-full min-w-0 max-w-[min(100%,320px)] flex-col items-center overflow-visible sm:max-w-[360px] md:mt-0 md:max-w-none md:w-fit">
               <CustomLink
-                ref={ctaRevealRef}
                 to="/apply#contact"
                 aria-label="שיחת התאמה חינם לפרויקט, מעבר לטופס יצירת קשר"
-                className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
+                className={`hero-cta-reveal--lcp pointer-events-auto z-10 ${primaryCtaOuterClass}`}
                 onClick={() =>
                   trackEvent('cta_click', {
                     cta_location: 'hero_primary',

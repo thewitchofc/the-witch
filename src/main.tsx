@@ -7,6 +7,7 @@ import { BootSplash } from './components/BootSplash'
 import { CookieBanner } from './components/CookieBanner'
 import { HeavyEffectsDomSync } from './components/HeavyEffectsDomSync'
 import { AnalyticsConsentProvider } from './context/AnalyticsConsentContext'
+import { HeavyEffectsReadyProvider } from './context/HeavyEffectsReadyContext'
 import { PageTransitionProvider } from './context/PageTransitionContext'
 import { applyHeavyEffectsDomFlag } from './lib/heavyEffectsGuard'
 import { installOverflowAudit } from './dev/overflowAudit'
@@ -23,16 +24,18 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <PageTransitionProvider>
-          <HeavyEffectsDomSync />
-          <AnalyticsConsentProvider>
-            <BootSplash>
-              <AnalyticsListener />
-              <App />
-            </BootSplash>
-            <CookieBanner />
-          </AnalyticsConsentProvider>
-        </PageTransitionProvider>
+        <HeavyEffectsReadyProvider>
+          <PageTransitionProvider>
+            <HeavyEffectsDomSync />
+            <AnalyticsConsentProvider>
+              <BootSplash>
+                <AnalyticsListener />
+                <App />
+              </BootSplash>
+              <CookieBanner />
+            </AnalyticsConsentProvider>
+          </PageTransitionProvider>
+        </HeavyEffectsReadyProvider>
       </BrowserRouter>
     </HelmetProvider>
   </StrictMode>,
