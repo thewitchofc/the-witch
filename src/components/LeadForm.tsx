@@ -92,6 +92,11 @@ const LEAD_EMAIL_ENDPOINT =
     ? String(import.meta.env.VITE_LEAD_EMAIL_ENDPOINT).trim()
     : 'https://formspree.io/f/mvzdjrgz'
 
+const LEAD_SHEETS_ENDPOINT =
+  typeof import.meta.env.VITE_LEAD_SHEETS_ENDPOINT === 'string'
+    ? String(import.meta.env.VITE_LEAD_SHEETS_ENDPOINT).trim()
+    : ''
+
 function budgetLabel(value: string): string {
   if (!value) return '—'
   const row = budgetChoices.find((o) => o.value === value)
@@ -161,6 +166,19 @@ async function sendLeadToEmailEndpoint(payload: Record<string, string>): Promise
   if (!res.ok) {
     throw new Error(`Lead email endpoint failed: ${res.status}`)
   }
+}
+
+async function sendLeadToSheetsEndpoint(payload: Record<string, string>): Promise<void> {
+  if (!LEAD_SHEETS_ENDPOINT) return
+
+  await fetch(LEAD_SHEETS_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8',
+    },
+    body: JSON.stringify(payload),
+  })
 }
 
 function onlyDigits(s: string): string {
@@ -527,12 +545,14 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
     const form = e.currentTarget
     const fd = new FormData(form)
     const body = buildWhatsAppBody(fd, budget)
+    const payload = buildLeadPayload(fd, budget)
     setSubmitError(null)
     setSubmitting(true)
 
     try {
       if (LEAD_EMAIL_ENDPOINT) {
-        await sendLeadToEmailEndpoint(buildLeadPayload(fd, budget))
+        await sendLeadToEmailEndpoint(payload)
+        await sendLeadToSheetsEndpoint(payload)
         trackEvent('form_submit', {
           form_name: 'lead_match_email',
           form_step: formStep,
@@ -550,6 +570,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           link_domain: 'wa.me',
         })
         window.open(url, '_blank', 'noopener,noreferrer')
+        await sendLeadToSheetsEndpoint(payload)
       }
 
       markLeadFormSubmittedOnDevice()
