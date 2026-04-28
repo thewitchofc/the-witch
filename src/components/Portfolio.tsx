@@ -137,7 +137,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             ))}
           </div>
           {featured ? (
-            <span className="absolute left-3 top-3 rounded-full border border-cyan-300/25 bg-cyan-300/[0.12] px-3 py-1 text-xs font-semibold text-cyan-100 backdrop-blur-md">
+            <span className="absolute left-3 top-3 rounded-full border border-cyan-200/45 bg-slate-950/78 px-3.5 py-1.5 text-xs font-semibold text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.18)] backdrop-blur-md">
               פרויקט מוביל
             </span>
           ) : null}

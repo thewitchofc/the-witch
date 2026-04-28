@@ -123,7 +123,15 @@ function buildLeadPayload(fd: FormData, budgetValue: string): Record<string, str
   const pick = (key: string) => String(fd.get(key) ?? '').trim()
   const firstName = pick('firstName')
   const lastName = pick('lastName')
+  const submittedAtIsrael = new Intl.DateTimeFormat('he-IL', {
+    timeZone: 'Asia/Jerusalem',
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date())
+
   return {
+    submittedAtIsrael,
+    'תאריך ושעה בישראל': submittedAtIsrael,
     fullName: [firstName, lastName].filter(Boolean).join(' '),
     firstName,
     lastName,
