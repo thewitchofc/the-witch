@@ -407,6 +407,13 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
   const isLowBudget = budget === BUDGET_BELOW
   const prefersReducedMotion = usePrefersReducedMotion()
 
+  const goToStep = useCallback((nextStep: number) => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+    setFormStep(nextStep)
+  }, [])
+
   useEffect(() => {
     setSubmittedOnDevice(readLeadFormSubmittedOnDevice())
   }, [])
@@ -524,7 +531,9 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
       skipStepScrollRef.current = false
       return
     }
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    window.requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }, [formStep])
 
   const firstNameError = nameFieldHasUiError(nameDraft.firstName)
@@ -646,7 +655,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
             <form
               ref={formRef}
               key="lead-form"
-              className="touch-manipulation space-y-6 md:space-y-8"
+              className="scroll-mt-24 touch-manipulation space-y-6 md:space-y-8"
               onSubmit={handleSubmit}
               onInput={revalidate}
               onChange={revalidate}
@@ -754,7 +763,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
             <HomeStyleContinueButton
               disabled={!step0Valid}
               ariaLabel="המשך לשלב אתר ורשתות חברתיות"
-              onClick={() => readStep0Valid() && setFormStep(1)}
+              onClick={() => readStep0Valid() && goToStep(1)}
             />
           </div>
           </div>
@@ -893,13 +902,13 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           </div>
 
           <div className="flex justify-between gap-3 pt-1">
-            <button type="button" className={stepNavSecondaryClass} onClick={() => setFormStep(0)}>
+            <button type="button" className={stepNavSecondaryClass} onClick={() => goToStep(0)}>
               חזרה
             </button>
             <HomeStyleContinueButton
               disabled={!step1Valid}
               ariaLabel="המשך לשלב תקציב והמשך"
-              onClick={() => readStep1Valid() && setFormStep(2)}
+              onClick={() => readStep1Valid() && goToStep(2)}
             />
           </div>
           </div>
@@ -998,7 +1007,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           </div>
 
           <div className="flex justify-start pt-1">
-            <button type="button" className={stepNavSecondaryClass} onClick={() => setFormStep(1)}>
+            <button type="button" className={stepNavSecondaryClass} onClick={() => goToStep(1)}>
               חזרה
             </button>
           </div>
