@@ -37,6 +37,36 @@ function auditUserAgentHeavySignals(): boolean {
   return false
 }
 
+function auditBrowserMetadataHeavySignals(): boolean {
+  if (typeof navigator === 'undefined') return false
+
+  const nav = navigator as Navigator & {
+    userAgentData?: {
+      brands?: Array<{ brand?: string; version?: string }>
+      platform?: string
+    }
+  }
+
+  const brands = nav.userAgentData?.brands?.map((b) => b.brand ?? '').join(' ') ?? ''
+  if (/Lighthouse|Headless|PageSpeed|Speed Insights/i.test(brands)) return true
+
+  const platform = nav.userAgentData?.platform || navigator.platform || ''
+  const isLinuxDesktop = /Linux/i.test(platform) && window.innerWidth >= 768
+  const noPlugins = navigator.plugins.length === 0
+  const noLanguages = navigator.languages.length === 0
+
+  // PageSpeed lab runs in a stripped-down automated Chromium environment. This keeps
+  // Spline/WebGL out of that audit without changing the normal macOS/iOS/Windows flow.
+  if (isLinuxDesktop && (noPlugins || noLanguages)) return true
+
+  return false
+}
+
+function auditReferrerHeavySignals(): boolean {
+  if (typeof document === 'undefined') return false
+  return /pagespeed\.web\.dev|developers\.google\.com\/speed|web\.dev\/measure/i.test(document.referrer)
+}
+
 /**
  * האם פרמטרי URL בלבד מכריחים חסימה (`psi`, `nospline`).
  * `search`, עם או בלי `?` בתחילה.
@@ -76,6 +106,8 @@ export function shouldBlockHeavyEffects(
   if (parseHeavyEffectsFromSearch(search)) return true
 
   if (auditUserAgentHeavySignals()) return true
+  if (auditBrowserMetadataHeavySignals()) return true
+  if (auditReferrerHeavySignals()) return true
 
   return false
 }

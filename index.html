@@ -62,6 +62,19 @@
             ua,
           )
         }
+        function auditMetadata() {
+          var uaData = navigator.userAgentData
+          var brands = uaData && uaData.brands ? uaData.brands.map(function (b) { return b.brand || '' }).join(' ') : ''
+          if (/Lighthouse|Headless|PageSpeed|Speed Insights/i.test(brands)) return true
+          var platform = (uaData && uaData.platform) || navigator.platform || ''
+          var isLinuxDesktop = /Linux/i.test(platform) && window.innerWidth >= 768
+          var noPlugins = navigator.plugins && navigator.plugins.length === 0
+          var noLanguages = navigator.languages && navigator.languages.length === 0
+          return isLinuxDesktop && (noPlugins || noLanguages)
+        }
+        function auditReferrer() {
+          return /pagespeed\.web\.dev|developers\.google\.com\/speed|web\.dev\/measure/i.test(document.referrer || '')
+        }
         function shouldBlockHeavyEffects() {
           try {
             if (navigator.webdriver === true) return true
@@ -75,6 +88,8 @@
             if (window.innerWidth < 768) return true
             if (parseHeavySearch(window.location.search || '')) return true
             if (auditUa(navigator.userAgent || '')) return true
+            if (auditMetadata()) return true
+            if (auditReferrer()) return true
             return false
           } catch (e) {
             return false

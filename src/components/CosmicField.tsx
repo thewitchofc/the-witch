@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useHeavyEffectsReady } from '../context/HeavyEffectsReadyContext'
+import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { isHomePath } from '../lib/cosmicFieldAllowlist'
 import { scrollIsolationDebug } from '../lib/scrollIsolationDebug'
 
@@ -35,6 +36,7 @@ function CosmicFieldMountPlaceholder() {
 export function CosmicField() {
   const { pathname } = useLocation()
   const ready = useHeavyEffectsReady()
+  const blocked = useHeavyEffectsBlocked()
   const isHome = isHomePath(pathname)
 
   if (!scrollIsolationDebug.enableCosmicField) {
@@ -44,7 +46,7 @@ export function CosmicField() {
     return null
   }
 
-  if (!ready) {
+  if (blocked || !ready) {
     return <CosmicFieldMountPlaceholder />
   }
 
