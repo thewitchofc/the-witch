@@ -35,6 +35,9 @@ export const PrivacyPage = lazy(() =>
 export const TermsPage = lazy(() =>
   import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })),
 )
+export const ThankYouPage = lazy(() =>
+  import('./pages/ThankYouPage').then((m) => ({ default: m.ThankYouPage })),
+)
 export const HamachshefaPage = lazy(() => import('./pages/HamachshefaPage'))
 export const HamachshefaArticleClientsPage = lazy(
   () => import('./pages/HamachshefaArticleClientsPage'),

@@ -18,6 +18,7 @@ import {
   SabGlassPage,
   SachiRamenPage,
   TermsPage,
+  ThankYouPage,
 } from './lazyRoutePages'
 import { HomePage } from './pages/HomePage'
 
@@ -86,6 +87,7 @@ function App() {
             />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/thank-you" element={<ThankYouPage />} />
           </Routes>
         </Suspense>
       </main>

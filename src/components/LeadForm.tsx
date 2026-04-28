@@ -87,6 +87,11 @@ const WHATSAPP_E164 =
     ? String(import.meta.env.VITE_WHATSAPP_E164).replace(/\D/g, '')
     : '972000000000'
 
+const LEAD_EMAIL_ENDPOINT =
+  typeof import.meta.env.VITE_LEAD_EMAIL_ENDPOINT === 'string'
+    ? String(import.meta.env.VITE_LEAD_EMAIL_ENDPOINT).trim()
+    : 'https://formspree.io/f/mvzdjrgz'
+
 function budgetLabel(value: string): string {
   if (!value) return '—'
   const row = budgetChoices.find((o) => o.value === value)
@@ -112,6 +117,42 @@ function buildWhatsAppBody(fd: FormData, budgetValue: string): string {
     `למה עכשיו: ${pick('whyNow')}`,
     `הערות: ${pick('notes')}`,
   ].join('\n')
+}
+
+function buildLeadPayload(fd: FormData, budgetValue: string): Record<string, string> {
+  const pick = (key: string) => String(fd.get(key) ?? '').trim()
+  const firstName = pick('firstName')
+  const lastName = pick('lastName')
+  return {
+    fullName: [firstName, lastName].filter(Boolean).join(' '),
+    firstName,
+    lastName,
+    phone: pick('phone'),
+    business: pick('business'),
+    existingSite: pick('existingSite'),
+    instagramBusiness: pick('instagramBusiness'),
+    facebookBusiness: pick('facebookBusiness'),
+    budget: budgetLabel(budgetValue),
+    goal: pick('goal'),
+    whyNow: pick('whyNow'),
+    notes: pick('notes'),
+    source: 'thewitch.co.il',
+  }
+}
+
+async function sendLeadToEmailEndpoint(payload: Record<string, string>): Promise<void> {
+  const res = await fetch(LEAD_EMAIL_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!res.ok) {
+    throw new Error(`Lead email endpoint failed: ${res.status}`)
+  }
 }
 
 function onlyDigits(s: string): string {
@@ -312,6 +353,8 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
   const [budget, setBudget] = useState<string>('')
   const [submitted, setSubmitted] = useState(false)
   const [submittedOnDevice, setSubmittedOnDevice] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [canSubmit, setCanSubmit] = useState(false)
   const [nameDraft, setNameDraft] = useState({ firstName: '', lastName: '' })
   const [phoneDraft, setPhoneDraft] = useState('')
@@ -469,28 +512,47 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
   const fbForSocialPlausible = socialNone ? NO_SOCIAL_SENTINEL : facebookBusiness
   const socialShellError = socialBlockTouched && !plausibleSocialBusinessCard(igForSocialPlausible, fbForSocialPlausible)
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!readCanSubmit()) return
+    if (submitting || !readCanSubmit()) return
 
     const form = e.currentTarget
     const fd = new FormData(form)
     const body = buildWhatsAppBody(fd, budget)
-    const waDigits = WHATSAPP_E164.replace(/\D/g, '')
-    const url = `https://wa.me/${waDigits}?text=${encodeURIComponent(body)}`
-    trackEvent('form_submit', {
-      form_name: 'lead_match_whatsapp',
-      form_step: formStep,
-    })
-    trackEvent('whatsapp_click', {
-      surface: 'lead_form_submit',
-      pathname: window.location.pathname,
-      link_domain: 'wa.me',
-    })
-    window.open(url, '_blank', 'noopener,noreferrer')
-    markLeadFormSubmittedOnDevice()
-    setSubmittedOnDevice(true)
-    setSubmitted(true)
+    setSubmitError(null)
+    setSubmitting(true)
+
+    try {
+      if (LEAD_EMAIL_ENDPOINT) {
+        await sendLeadToEmailEndpoint(buildLeadPayload(fd, budget))
+        trackEvent('form_submit', {
+          form_name: 'lead_match_email',
+          form_step: formStep,
+        })
+      } else {
+        const waDigits = WHATSAPP_E164.replace(/\D/g, '')
+        const url = `https://wa.me/${waDigits}?text=${encodeURIComponent(body)}`
+        trackEvent('form_submit', {
+          form_name: 'lead_match_whatsapp',
+          form_step: formStep,
+        })
+        trackEvent('whatsapp_click', {
+          surface: 'lead_form_submit',
+          pathname: window.location.pathname,
+          link_domain: 'wa.me',
+        })
+        window.open(url, '_blank', 'noopener,noreferrer')
+      }
+
+      markLeadFormSubmittedOnDevice()
+      setSubmittedOnDevice(true)
+      setSubmitted(true)
+      window.location.assign('/thank-you')
+    } catch {
+      setSubmitError('לא הצלחתי לשלוח את הטופס כרגע. נסו שוב בעוד רגע.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -969,16 +1031,21 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
               >
                 <button
                   type="submit"
-                  disabled={!canSubmit}
+                  disabled={!canSubmit || submitting}
                   aria-label="שליחת בקשת בדיקת התאמה לוואטסאפ"
                   className={
-                    canSubmit
+                    canSubmit && !submitting
                       ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] motion-reduce:active:scale-100 md:py-4'
                       : 'w-full min-h-[52px] cursor-not-allowed rounded-full bg-slate-950/70 px-6 py-3 text-base font-medium text-slate-500 ring-1 ring-white/[0.06] backdrop-blur-sm transition-[box-shadow,ring-color] duration-300 ease-out md:py-4'
                   }
                 >
-                  שליחת הבקשה
+                  {submitting ? 'שולח…' : 'שליחת הבקשה'}
                 </button>
+                {submitError ? (
+                  <p className="text-center text-sm font-medium text-red-300" role="alert">
+                    {submitError}
+                  </p>
+                ) : null}
                 <div className="space-y-1.5 text-balance text-center text-[11px] leading-snug text-slate-500 sm:text-xs md:text-sm">
                   <p>אין התחייבות. נחזור אליך רק אם יש התאמה.</p>
                   <div className="space-y-1 text-slate-500/85">
