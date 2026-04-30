@@ -33,14 +33,14 @@ function isViewportScroller(scroller: Element | Window): boolean {
 export function useHeroScrollFade(
   sectionRef: RefObject<HTMLElement | null>,
   backdropFadeRef: RefObject<HTMLElement | null>,
-  foregroundFadeRef: RefObject<HTMLElement | null>,
+  foregroundFadeRef?: RefObject<HTMLElement | null>,
 ): void {
   useEffect(() => {
     const section = sectionRef.current
     const backdropLayer = backdropFadeRef.current
-    const foregroundLayer = foregroundFadeRef.current
-    if (!section || !backdropLayer || !foregroundLayer) return
-    const layers = [backdropLayer, foregroundLayer]
+    const foregroundLayer = foregroundFadeRef?.current ?? null
+    if (!section || !backdropLayer) return
+    const layers = foregroundLayer ? [backdropLayer, foregroundLayer] : [backdropLayer]
 
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (mq.matches) return

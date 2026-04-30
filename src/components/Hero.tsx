@@ -169,7 +169,6 @@ export function Hero({
   const stacked = layout === 'stacked'
   const sectionRef = useRef<HTMLElement | null>(null)
   const scrollFadeBackdropRef = useRef<HTMLDivElement | null>(null)
-  const scrollFadeForegroundRef = useRef<HTMLDivElement | null>(null)
   const [witchFlying, setWitchFlying] = useState(false)
   /** מסלול חדש בכל סיבוב אנימציה — מיקומי התחלה/סיום אקראיים */
   const [witchPathEpoch, setWitchPathEpoch] = useState(0)
@@ -179,7 +178,7 @@ export function Hero({
 
   useRevealIsVisible(disclaimerRevealRef)
 
-  useHeroScrollFade(sectionRef, scrollFadeBackdropRef, scrollFadeForegroundRef)
+  useHeroScrollFade(sectionRef, scrollFadeBackdropRef)
 
   const logoViewStyle = useMemo(() => buildLogoViewStyle(), [])
 
@@ -299,11 +298,10 @@ export function Hero({
             </div>
 
             <div
-              ref={scrollFadeForegroundRef}
               className={
                 stacked
-                  ? 'hero-scroll-fade-layer hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 md:gap-5'
-                  : 'hero-scroll-fade-layer hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 md:gap-8'
+                  ? 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 md:gap-5'
+                  : 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 md:gap-8'
               }
             >
             <h1 className="hero-reveal--lcp mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
