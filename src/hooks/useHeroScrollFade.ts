@@ -19,18 +19,28 @@ function scrollListenerTargets(scroller: Element | Window): EventTarget[] {
   return [scroller]
 }
 
+function isViewportScroller(scroller: Element | Window): boolean {
+  return (
+    scroller instanceof Window ||
+    scroller === document.documentElement ||
+    scroller === document.body
+  )
+}
+
 /**
- * כשגוללים מטה, תוכן ה-Hero נעלם בהדרגה (opacity + translateY) למעבר חלק לסקשנים מתחת.
- * עדכון ישיר ל-DOM ב־rAF — בלי Framer Motion ובלי setState בכל גלילה.
+ * כשגוללים מטה, רקע + טקסט ב-Hero נעלמים בהדרגה — הלוגו מחוץ לשכבות אלה כדי להישאר בבהירות מלאה (opacity לא "עוברת" לילדים).
  */
 export function useHeroScrollFade(
   sectionRef: RefObject<HTMLElement | null>,
-  fadeLayerRef: RefObject<HTMLElement | null>,
+  backdropFadeRef: RefObject<HTMLElement | null>,
+  foregroundFadeRef: RefObject<HTMLElement | null>,
 ): void {
   useEffect(() => {
     const section = sectionRef.current
-    const layer = fadeLayerRef.current
-    if (!section || !layer) return
+    const backdropLayer = backdropFadeRef.current
+    const foregroundLayer = foregroundFadeRef.current
+    if (!section || !backdropLayer || !foregroundLayer) return
+    const layers = [backdropLayer, foregroundLayer]
 
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (mq.matches) return
@@ -43,8 +53,12 @@ export function useHeroScrollFade(
     const apply = () => {
       const top = section.getBoundingClientRect().top
       const t = Math.max(0, Math.min(1, -top / fadeRangePx))
-      layer.style.opacity = String(1 - t)
-      layer.style.transform = `translate3d(0, ${-40 * t}px, 0)`
+      const opacity = String(1 - t)
+      const transform = `translate3d(0, ${-40 * t}px, 0)`
+      for (const layer of layers) {
+        layer.style.opacity = opacity
+        layer.style.transform = transform
+      }
     }
 
     const schedule = () => {
@@ -62,14 +76,42 @@ export function useHeroScrollFade(
     }
     window.addEventListener('resize', schedule, { passive: true })
 
+    const viewportScroll = isViewportScroller(root)
+    const vv = window.visualViewport
+
+    /** במומנטום (במיוחד iOS) אירועי scroll נדירים — IO + visualViewport + scrollend מחדדים סיום */
+    const io = new IntersectionObserver(schedule, {
+      root: null,
+      threshold: Array.from({ length: 33 }, (_, i) => i / 32),
+    })
+    io.observe(section)
+
+    if (viewportScroll) {
+      document.addEventListener('scrollend', schedule, { passive: true })
+      vv?.addEventListener('scroll', schedule, { passive: true })
+      vv?.addEventListener('resize', schedule, { passive: true })
+    } else if (root instanceof Element) {
+      root.addEventListener('scrollend', schedule, { passive: true })
+    }
+
     return () => {
+      io.disconnect()
       for (const target of scrollTargets) {
         target.removeEventListener('scroll', schedule)
       }
       window.removeEventListener('resize', schedule)
+      if (viewportScroll) {
+        document.removeEventListener('scrollend', schedule)
+        vv?.removeEventListener('scroll', schedule)
+        vv?.removeEventListener('resize', schedule)
+      } else if (root instanceof Element) {
+        root.removeEventListener('scrollend', schedule)
+      }
       if (raf !== 0) window.cancelAnimationFrame(raf)
-      layer.style.removeProperty('opacity')
-      layer.style.removeProperty('transform')
+      for (const layer of layers) {
+        layer.style.removeProperty('opacity')
+        layer.style.removeProperty('transform')
+      }
     }
-  }, [sectionRef, fadeLayerRef])
+  }, [sectionRef, backdropFadeRef, foregroundFadeRef])
 }

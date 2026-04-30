@@ -272,7 +272,7 @@ html[data-block-heavy-effects='1'] .witch-sprite--flying {
   z-index: 2;
 }
 
-/* גלילה: opacity 1→0, translateY 0→-40px (מעודכן ב-JS + rAF; ראה useHeroScrollFade) */
+/* גלילה: opacity 1→0, translateY 0→-40px (שני שכבות: רקע+מכשפה + טקסט/CTA — הלוגו בחוץ; JS: useHeroScrollFade) */
 .hero-scroll-fade-layer {
   transform: translate3d(0, 0, 0);
 }

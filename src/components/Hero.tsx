@@ -168,7 +168,8 @@ export function Hero({
 }) {
   const stacked = layout === 'stacked'
   const sectionRef = useRef<HTMLElement | null>(null)
-  const scrollFadeLayerRef = useRef<HTMLDivElement | null>(null)
+  const scrollFadeBackdropRef = useRef<HTMLDivElement | null>(null)
+  const scrollFadeForegroundRef = useRef<HTMLDivElement | null>(null)
   const [witchFlying, setWitchFlying] = useState(false)
   /** מסלול חדש בכל סיבוב אנימציה — מיקומי התחלה/סיום אקראיים */
   const [witchPathEpoch, setWitchPathEpoch] = useState(0)
@@ -178,7 +179,7 @@ export function Hero({
 
   useRevealIsVisible(disclaimerRevealRef)
 
-  useHeroScrollFade(sectionRef, scrollFadeLayerRef)
+  useHeroScrollFade(sectionRef, scrollFadeBackdropRef, scrollFadeForegroundRef)
 
   const logoViewStyle = useMemo(() => buildLogoViewStyle(), [])
 
@@ -222,59 +223,61 @@ export function Hero({
       dir="rtl"
       lang="he"
     >
-      <div
-        ref={scrollFadeLayerRef}
-        className="hero-scroll-fade-layer relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
-      >
-        {showCosmicField ? <CosmicField /> : null}
+      <div className="relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden">
+        <div
+          ref={scrollFadeBackdropRef}
+          className="hero-scroll-fade-layer pointer-events-none absolute inset-0 z-0 flex flex-col overflow-hidden"
+        >
+          {showCosmicField ? <CosmicField /> : null}
 
-        <img
-          src="/witch.webp"
-          width={400}
-          height={400}
-          className={
-            witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
-          }
-          style={witchMotionStyle}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          onAnimationIteration={
-            reducedMotion ? undefined : () => setWitchPathEpoch((n) => n + 1)
-          }
-        />
+          <img
+            src="/witch.webp"
+            width={400}
+            height={400}
+            className={
+              witchFlying ? 'witch-sprite witch-sprite--flying' : 'witch-sprite'
+            }
+            style={witchMotionStyle}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            onAnimationIteration={
+              reducedMotion ? undefined : () => setWitchPathEpoch((n) => n + 1)
+            }
+          />
+        </div>
 
         <div className="relative z-10 flex min-h-0 w-full min-w-0 max-w-full flex-1 touch-manipulation flex-col items-center justify-center pb-[max(1rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
           <div
             className={
               stacked
-                ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:block md:pt-7'
-                : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:block md:pt-7'
+                ? 'flex w-full min-w-0 max-w-full flex-col items-center gap-2 break-words px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
+                : 'flex w-full min-w-0 max-w-full flex-col items-center gap-5 break-words px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
             }
-            lang="en"
-            dir="ltr"
           >
-            <img
-              src={logoSrc}
-              alt="The Witch logo"
-              width={1690}
-              height={890}
-              decoding="async"
-              fetchPriority="high"
-              className={desktopLogoImgClass}
-              style={logoImageStyle}
-            />
-          </div>
+            <div
+              className={
+                stacked
+                  ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:block md:pt-7'
+                  : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:block md:pt-7'
+              }
+              lang="en"
+              dir="ltr"
+            >
+              <img
+                src={logoSrc}
+                alt="The Witch logo"
+                width={1690}
+                height={890}
+                decoding="async"
+                fetchPriority="high"
+                className={desktopLogoImgClass}
+                style={logoImageStyle}
+              />
+            </div>
 
-          <div
-            className={
-              stacked
-                ? 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 break-words px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
-                : 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 break-words px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
-            }
-          >
             <div
               className="pointer-events-auto hero-reveal--lcp mt-2 block w-full min-w-0 max-w-full shrink-0 pt-5 [overflow:visible] md:hidden"
               dir="ltr"
@@ -295,6 +298,14 @@ export function Hero({
               />
             </div>
 
+            <div
+              ref={scrollFadeForegroundRef}
+              className={
+                stacked
+                  ? 'hero-scroll-fade-layer hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 md:gap-5'
+                  : 'hero-scroll-fade-layer hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 md:gap-8'
+              }
+            >
             <h1 className="hero-reveal--lcp mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
               <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
                 {headline}
@@ -360,6 +371,7 @@ export function Hero({
                 ))}
               </p>
             ) : null}
+            </div>
           </div>
         </div>
       </div>
