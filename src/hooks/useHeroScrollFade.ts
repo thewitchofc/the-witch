@@ -10,6 +10,15 @@ function getScrollParent(el: HTMLElement): Element | Window {
   return window
 }
 
+/** גלילת viewport — ב־Safari/iOS לעיתים `scroll` לא נשלח ל־documentElement; `window` אמין */
+function scrollListenerTargets(scroller: Element | Window): EventTarget[] {
+  if (scroller instanceof Window) return [window]
+  if (scroller === document.documentElement || scroller === document.body) {
+    return [window]
+  }
+  return [scroller]
+}
+
 /**
  * כשגוללים מטה, תוכן ה-Hero נעלם בהדרגה (opacity + translateY) למעבר חלק לסקשנים מתחת.
  * עדכון ישיר ל-DOM ב־rAF — בלי Framer Motion ובלי setState בכל גלילה.
@@ -47,12 +56,16 @@ export function useHeroScrollFade(
     }
 
     apply()
-    const scrollTarget: EventTarget = root instanceof Window ? window : root
-    scrollTarget.addEventListener('scroll', schedule, { passive: true })
+    const scrollTargets = scrollListenerTargets(root)
+    for (const target of scrollTargets) {
+      target.addEventListener('scroll', schedule, { passive: true })
+    }
     window.addEventListener('resize', schedule, { passive: true })
 
     return () => {
-      scrollTarget.removeEventListener('scroll', schedule)
+      for (const target of scrollTargets) {
+        target.removeEventListener('scroll', schedule)
+      }
       window.removeEventListener('resize', schedule)
       if (raf !== 0) window.cancelAnimationFrame(raf)
       layer.style.removeProperty('opacity')
