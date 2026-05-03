@@ -46,6 +46,7 @@ const projects: PortfolioProject[] = [
     image: royalFruitHero,
     imageAlt: 'מסך הבית של Royal Fruit, פירות וירקות טריים עד הבית',
     href: '/projects/royal-fruit',
+    liveSiteUrl: 'https://royalfruit.co.il/',
   },
   {
     title: 'Sachi Ramen & Sushi',
@@ -170,6 +171,32 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             ←
           </span>
         </div>
+        {project.liveSiteUrl ? (
+          <a
+            href={project.liveSiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto mt-3 inline-flex w-fit text-sm font-medium text-cyan-200/95 underline decoration-cyan-400/45 underline-offset-[5px] transition hover:text-white hover:decoration-cyan-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={(e) => {
+              e.stopPropagation()
+              trackEvent('cta_click', {
+                cta_location: 'portfolio_live_site',
+                link_url: project.liveSiteUrl,
+                project_title: project.title,
+              })
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={`${project.title}, אתר חי (נפתח בלשונית חדשה)`}
+          >
+            {(() => {
+              try {
+                return new URL(project.liveSiteUrl).hostname.replace(/^www\./, '')
+              } catch {
+                return project.liveSiteUrl
+              }
+            })()}
+          </a>
+        ) : null}
       </div>
     </div>
   )

@@ -29,7 +29,7 @@ export function RoyalFruitPage() {
         result="אתר שמגדיל את כמות ההזמנות היומיות ומחזק את המותג כספק פרימיום של פירות וירקות."
         workItems={workItems}
         ctaLocation="royal_fruit_case_study"
-        statusLabel="בבנייה"
+        liveSiteUrl="https://royalfruit.co.il/"
         imageObjectClassName="object-cover object-[42%_62%]"
         imageSizeClassName="h-[280px] md:h-[360px]"
       />
