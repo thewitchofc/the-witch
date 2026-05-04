@@ -228,6 +228,50 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   }
 }
 
+/**
+ * דף הבית — כוכבים קלים (CSS) כשאפקטים כבדים חסומים; ללא WebGL/Canvas.
+ */
+.home-light-starfield {
+  contain: layout paint;
+}
+
+.home-light-star {
+  position: absolute;
+  margin-left: -1px;
+  margin-top: -1px;
+  border-radius: 9999px;
+  background: rgba(248, 250, 252, 0.95);
+  box-shadow:
+    0 0 10px rgba(196, 181, 253, 0.22),
+    0 0 22px rgba(34, 211, 238, 0.07);
+}
+
+@keyframes home-light-star-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: var(--hs-lo, 0.25);
+  }
+
+  50% {
+    transform: translate3d(var(--hs-dx, 0), var(--hs-dy, 0), 0);
+    opacity: var(--hs-hi, 0.62);
+  }
+}
+
+.home-light-star--drift {
+  animation: home-light-star-drift var(--hs-dur, 22s) ease-in-out infinite;
+  animation-delay: var(--hs-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-light-starfield .home-light-star--drift {
+    animation: none !important;
+    transform: none !important;
+    opacity: 0.32 !important;
+  }
+}
+
 /* מכשפה: מצב סטטי עד כניסה ל-viewport (מופעל מ־Hero) */
 .witch-sprite {
   position: absolute;
@@ -257,14 +301,12 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   animation: witchFly var(--witch-dur) linear infinite;
 }
 
-/* חסימת אפקטים כבדים (מוקדם מ-index.html + heavyEffectsGuard) */
-html[data-block-heavy-effects='1'] .witch-sprite,
-html[data-block-heavy-effects='1'] .witch-sprite--flying {
-  animation: none !important;
-  left: var(--w-left-1);
-  top: var(--w-top-1);
-  transform: none;
-  transform-origin: center center;
+@media (max-width: 767px) {
+  .witch-sprite,
+  .witch-sprite--flying {
+    width: 148px;
+    opacity: 0.38;
+  }
 }
 
 .hero-content {

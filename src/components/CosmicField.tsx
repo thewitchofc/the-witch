@@ -4,6 +4,7 @@ import { useHeavyEffectsReady } from '../context/HeavyEffectsReadyContext'
 import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { isHomePath } from '../lib/cosmicFieldAllowlist'
 import { scrollIsolationDebug } from '../lib/scrollIsolationDebug'
+import { HomeLightStarfield } from './HomeLightStarfield'
 
 const CosmicFieldLazy = lazy(() =>
   import('./CosmicField.impl').then((m) => ({ default: m.CosmicFieldImpl })),
@@ -47,7 +48,12 @@ export function CosmicField() {
   }
 
   if (blocked || !ready) {
-    return <CosmicFieldMountPlaceholder />
+    return (
+      <div className="pointer-events-none absolute inset-0 isolate overflow-hidden" aria-hidden>
+        <CosmicFieldMountPlaceholder />
+        {blocked ? <HomeLightStarfield /> : null}
+      </div>
+    )
   }
 
   return (
