@@ -97,21 +97,22 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
     : `${project.title}, פתיחת הפרויקט`
 
   return (
-    <div
-      className={`group block cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-white/[0.045] p-3 text-right shadow-[0_0_32px_rgba(15,23,42,0.18)] ring-1 ring-white/[0.04] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.065] hover:shadow-[0_0_42px_rgba(34,211,238,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 ${
-        featured ? 'md:col-span-2 md:grid md:grid-cols-[1.12fr_0.88fr] md:gap-5 md:p-4' : ''
+    <article
+      className={`group relative block overflow-hidden rounded-3xl border border-white/10 bg-white/[0.045] text-right shadow-[0_0_32px_rgba(15,23,42,0.18)] ring-1 ring-white/[0.04] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.065] hover:shadow-[0_0_42px_rgba(34,211,238,0.12)] ${
+        featured ? 'md:col-span-2 p-3 md:p-4' : 'p-3'
       }`}
-      role="link"
-      tabIndex={0}
-      onClick={openProject}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          openProject()
-        }
-      }}
-      aria-label={cardAriaLabel}
     >
+      <button
+        type="button"
+        className="absolute inset-0 z-[1] cursor-pointer rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+        onClick={openProject}
+        aria-label={cardAriaLabel}
+      />
+      <div
+        className={`relative z-[2] pointer-events-none ${
+          featured ? 'md:grid md:grid-cols-[1.12fr_0.88fr] md:gap-5' : ''
+        }`}
+      >
       <div className={featured ? 'min-w-0' : ''}>
         <div className="relative overflow-hidden rounded-2xl bg-slate-950">
           <img
@@ -176,16 +177,14 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             href={project.liveSiteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="pointer-events-auto mt-3 inline-flex w-fit text-sm font-medium text-cyan-200/95 underline decoration-cyan-400/45 underline-offset-[5px] transition hover:text-white hover:decoration-cyan-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-            onClick={(e) => {
-              e.stopPropagation()
+            className="relative z-[3] mt-3 inline-flex w-fit text-sm font-medium text-cyan-200/95 underline decoration-cyan-400/45 underline-offset-[5px] transition pointer-events-auto hover:text-white hover:decoration-cyan-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={() =>
               trackEvent('cta_click', {
                 cta_location: 'portfolio_live_site',
                 link_url: project.liveSiteUrl,
                 project_title: project.title,
               })
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
+            }
             aria-label={`${project.title}, אתר חי (נפתח בלשונית חדשה)`}
           >
             {(() => {
@@ -198,7 +197,8 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
           </a>
         ) : null}
       </div>
-    </div>
+      </div>
+    </article>
   )
 }
 
