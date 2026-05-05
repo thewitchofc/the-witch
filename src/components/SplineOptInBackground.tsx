@@ -67,16 +67,56 @@ export function SplineOptInBackground({
   const autoActivationLogged = useRef(false)
   const isHome = isHomePath(pathname)
 
+  /**
+   * טעינת Spline רק אחרי load + idle — לא מתחרה ב-LCP ולא מושך את Lighthouse/PSI עד networkIdle
+   * עקב iframe כבד (googleusercontent WebGL). PSI השמיט Chrome-Lighthouse מה-UA אז לא נסמך על זיהוי בוט.
+   */
   useEffect(() => {
     if (!isHome || !autoActivate || !splineAllowed) return
-    const id = window.requestAnimationFrame(() => {
+
+    let cancelled = false
+    let idleHandle = 0
+    let idleKind: 'idle' | 'timeout' | null = null
+
+    const activate = () => {
+      if (cancelled) return
       setActivated(true)
       if (!autoActivationLogged.current) {
         autoActivationLogged.current = true
         trackEvent('spline_opt_in_activate', { surface: rootClassName, activation: 'auto' })
       }
-    })
-    return () => window.cancelAnimationFrame(id)
+    }
+
+    const scheduleAfterIdle = () => {
+      if (cancelled) return
+      if (typeof window.requestIdleCallback === 'function') {
+        idleKind = 'idle'
+        idleHandle = window.requestIdleCallback(activate, { timeout: 4500 }) as unknown as number
+      } else {
+        idleKind = 'timeout'
+        idleHandle = window.setTimeout(activate, 700)
+      }
+    }
+
+    const onLoad = () => scheduleAfterIdle()
+
+    if (document.readyState === 'complete') {
+      scheduleAfterIdle()
+    } else {
+      window.addEventListener('load', onLoad, { once: true })
+    }
+
+    return () => {
+      cancelled = true
+      window.removeEventListener('load', onLoad)
+      if (idleHandle !== 0) {
+        if (idleKind === 'idle' && typeof window.cancelIdleCallback === 'function') {
+          window.cancelIdleCallback(idleHandle)
+        } else if (idleKind === 'timeout') {
+          window.clearTimeout(idleHandle)
+        }
+      }
+    }
   }, [isHome, autoActivate, splineAllowed, rootClassName])
 
   const onActivate = useCallback(() => {
@@ -98,8 +138,8 @@ export function SplineOptInBackground({
         {splineAllowed && activated ? (
           <iframe
             src={src}
-            loading="eager"
-            fetchPriority="high"
+            loading="lazy"
+            fetchPriority="low"
             width="100%"
             height="100%"
             title="אפקט רקע תלת־ממדי"

@@ -22,7 +22,11 @@ function effectiveTypeIsSlow(): boolean {
   return et === 'slow-2g' || et === '2g' || et === '3g'
 }
 
-/** ביקורת אוטומטית / PSI כשה-UA עדיין מזוהה (תוספת יציבות מעל webdriver) */
+/**
+ * ביקורת אוטומטית / כלי מעבדה כשה-UA עדיין מזוהה.
+ * מ־Lighthouse ~10+ הוסר המזהה Chrome-Lighthouse מה-UA בכוונה (אנטי־gamming) —
+ * לכן לא מסתמכים על זה לבד; דחיית Spline (SplineOptInBackground) מפחיתה timeouts ב-PSI.
+ */
 function auditUserAgentHeavySignals(): boolean {
   if (typeof navigator === 'undefined') return false
   const ua = navigator.userAgent || ''

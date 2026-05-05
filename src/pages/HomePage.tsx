@@ -1,9 +1,13 @@
+import { lazy, Suspense } from 'react'
 import { CosmicField } from '../components/CosmicField'
 import { Hero, HeroSpline } from '../components/Hero'
-import { HowIBuildSitesSection } from '../components/HowIBuildSitesSection'
 import { Seo } from '../components/Seo'
-import { SeoContent } from '../components/SeoContent'
-import WhyMe from '../components/WhyMe'
+
+const WhyMe = lazy(() => import('../components/WhyMe'))
+const HowIBuildSitesSection = lazy(() =>
+  import('../components/HowIBuildSitesSection').then((m) => ({ default: m.HowIBuildSitesSection })),
+)
+const SeoContent = lazy(() => import('../components/SeoContent').then((m) => ({ default: m.SeoContent })))
 
 /** דף הבית — גלילה רק על מסמך (body/html), בלי scrollport כפול */
 export function HomePage() {
@@ -21,9 +25,15 @@ export function HomePage() {
       <HeroSpline src="https://my.spline.design/particlenebula-yMPUIhRUYftCj8iVtsWaBcG6/" />
       <div className="pointer-events-none relative z-[10] flex min-h-[100svh] min-w-0 flex-1 flex-col supports-[min-height:100dvh]:min-h-[100dvh]">
         <Hero layout="stacked" showCosmicField={false} />
-        <WhyMe variant="stacked" />
-        <HowIBuildSitesSection />
-        <SeoContent />
+        <Suspense fallback={null}>
+          <WhyMe variant="stacked" />
+        </Suspense>
+        <Suspense fallback={null}>
+          <HowIBuildSitesSection />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SeoContent />
+        </Suspense>
       </div>
     </div>
   )

@@ -282,19 +282,24 @@ export function Hero({
               dir="ltr"
               lang="en"
             >
-              <img
-                src={logoSrc}
-                alt="The Witch"
-                width={1690}
-                height={890}
-                decoding="async"
+              <div
                 className={
                   stacked
-                    ? 'mx-auto h-auto w-auto max-h-[min(25vh,148px)] object-contain object-center select-none'
-                    : 'mx-auto h-auto w-auto max-h-[min(27vh,158px)] object-contain object-center select-none sm:max-h-[min(30vh,176px)]'
+                    ? 'mx-auto aspect-[1690/890] w-[min(88vw,272px)] shrink-0'
+                    : 'mx-auto aspect-[1690/890] w-[min(90vw,300px)] shrink-0 sm:w-[min(88vw,320px)]'
                 }
-                style={logoImageStyle}
-              />
+              >
+                <img
+                  src={logoSrc}
+                  alt="The Witch"
+                  width={1690}
+                  height={890}
+                  decoding="async"
+                  fetchPriority="high"
+                  className="h-full w-full object-contain object-center select-none"
+                  style={logoImageStyle}
+                />
+              </div>
             </div>
 
             <div
@@ -304,7 +309,7 @@ export function Hero({
                   : 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 md:gap-8'
               }
             >
-            <h1 className="hero-reveal--lcp mx-auto w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
+            <h1 className="hero-reveal--lcp mx-auto min-h-[4.85rem] w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:min-h-0 md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
               <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
                 {headline}
               </span>

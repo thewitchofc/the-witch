@@ -36,10 +36,20 @@
     <link data-rh="true" rel="canonical" href="https://thewitch.co.il/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- LCP: לוגו SVG נטען מוקדם; הפונט נטען ללא חסימת רינדור -->
+    <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
     <title data-rh="true">The Witch, בניית אתרים שמביאים לקוחות</title>
     <!-- רקע מיידי לפני CSS של Vite, מונע הבזק לבן -->
     <style>
