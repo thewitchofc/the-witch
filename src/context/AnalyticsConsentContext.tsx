@@ -9,9 +9,9 @@ import {
   type ReactNode,
 } from 'react'
 import {
+  applyConsentChoice,
+  loadAnalyticsIfConsented,
   readConsent,
-  scheduleInjectGoogleAnalytics,
-  writeConsent,
   type AnalyticsConsentStored,
 } from '../lib/analytics'
 
@@ -34,16 +34,16 @@ export function AnalyticsConsentProvider({ children }: { children: ReactNode }) 
   const [consent, setConsent] = useState<AnalyticsConsentUi>(initialConsent)
 
   useEffect(() => {
-    if (consent === 'granted') scheduleInjectGoogleAnalytics()
+    if (consent === 'granted') loadAnalyticsIfConsented()
   }, [consent])
 
   const accept = useCallback(() => {
-    writeConsent('granted')
+    applyConsentChoice('granted')
     setConsent('granted')
   }, [])
 
   const decline = useCallback(() => {
-    writeConsent('denied')
+    applyConsentChoice('denied')
     setConsent('denied')
   }, [])
 

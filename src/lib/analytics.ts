@@ -1,7 +1,14 @@
-/** הסכמה לעוגיות/אנליטיקה, נשמר ב־localStorage */
-const STORAGE_KEY = 'the-witch-analytics-consent'
+/**
+ * הסכמה לעוגיות/אנליטיקה (localStorage).
+ * granted — בלי באנר, טוען Meta Pixel + GA
+ * denied — בלי באנר, בלי פיקסל
+ * null — טרם נבחר, מציגים באנר בכל כניסה
+ */
+export const ANALYTICS_CONSENT_STORAGE_KEY = 'the-witch-analytics-consent'
 
 export type AnalyticsConsentStored = 'granted' | 'denied'
+
+export const ANALYTICS_CONSENT_GRANTED_EVENT = 'the-witch-consent-granted'
 
 type Fbq = {
   (...args: unknown[]): void
@@ -24,7 +31,7 @@ declare global {
 
 export function readConsent(): AnalyticsConsentStored | null {
   try {
-    const v = localStorage.getItem(STORAGE_KEY)
+    const v = localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)
     if (v === 'granted' || v === 'denied') return v
   } catch {
     /* ignore */
@@ -32,15 +39,43 @@ export function readConsent(): AnalyticsConsentStored | null {
   return null
 }
 
+export function hasConsentChoice(): boolean {
+  return readConsent() !== null
+}
+
+export function isConsentGranted(): boolean {
+  return readConsent() === 'granted'
+}
+
+export function isConsentDenied(): boolean {
+  return readConsent() === 'denied'
+}
+
+export function shouldShowCookieBanner(): boolean {
+  return !hasConsentChoice()
+}
+
 export function writeConsent(value: AnalyticsConsentStored) {
   try {
-    localStorage.setItem(STORAGE_KEY, value)
+    localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, value)
   } catch {
     /* ignore */
   }
   if (value === 'granted' && typeof window !== 'undefined') {
-    window.dispatchEvent(new Event('the-witch-consent-granted'))
+    window.dispatchEvent(new Event(ANALYTICS_CONSENT_GRANTED_EVENT))
   }
+}
+
+/** טוען Meta Pixel ו־GA רק אם נשמר אישור בעבר או זה עתה */
+export function loadAnalyticsIfConsented() {
+  if (!isConsentGranted()) return
+  scheduleInjectGoogleAnalytics()
+}
+
+/** שמירת בחירה + טעינת אנליטיקה רק באישור */
+export function applyConsentChoice(value: AnalyticsConsentStored) {
+  writeConsent(value)
+  if (value === 'granted') loadAnalyticsIfConsented()
 }
 
 function measurementId(): string | undefined {

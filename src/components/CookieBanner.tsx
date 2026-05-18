@@ -1,18 +1,19 @@
 import { CustomLink } from './CustomLink'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
+import { shouldShowCookieBanner } from '../lib/analytics'
 
-/** באנר הסכמה לעוגיות ול־Google Analytics, טעינת GA רק אחרי «אישור» */
+/** מוצג רק בלי בחירה שמורה; אישור/דחייה נשמרים ב-localStorage ומסתירים לצמיתות */
 export function CookieBanner() {
   const { consent, accept, decline } = useAnalyticsConsent()
 
-  if (consent !== 'unknown') return null
+  if (!shouldShowCookieBanner() || consent !== 'unknown') return null
 
   return (
     <div
       role="dialog"
       aria-modal="false"
       aria-label="הסכמה לשימוש בעוגיות ולמדידת תנועה"
-      className="fixed bottom-0 left-0 right-0 z-[8000] border-t border-white/10 bg-slate-950/95 px-4 py-4 text-slate-200 shadow-[0_-8px_32px_rgba(0,0,0,0.45)] backdrop-blur-md md:px-6 md:py-5"
+      className="fixed bottom-0 left-0 right-0 z-[10001] border-t border-white/10 bg-slate-950/95 px-4 py-4 text-slate-200 shadow-[0_-8px_32px_rgba(0,0,0,0.45)] backdrop-blur-md md:px-6 md:py-5"
       dir="rtl"
       lang="he"
     >

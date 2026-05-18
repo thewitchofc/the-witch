@@ -51,17 +51,26 @@
       />
     </noscript>
     <title data-rh="true">The Witch, בניית אתרים שמביאים לקוחות</title>
-    <!-- Meta Pixel Code — ב-Vite הקובץ index.html בשורש הפרויקט (לא public); נטען אחרי אישור עוגיות -->
+    <!-- Meta Pixel — נטען רק אם localStorage = granted; denied / ללא בחירה = ללא פיקסל -->
     <script>
       (function () {
         var CONSENT_KEY = 'the-witch-analytics-consent'
+        var CONSENT_EVENT = 'the-witch-consent-granted'
         var PIXEL_ID = '2717421571978420'
+        var consentPoll = null
 
-        function consentGranted() {
+        function readConsent() {
           try {
-            return localStorage.getItem(CONSENT_KEY) === 'granted'
+            return localStorage.getItem(CONSENT_KEY)
           } catch (e) {
-            return false
+            return null
+          }
+        }
+
+        function stopPolling() {
+          if (consentPoll !== null) {
+            window.clearInterval(consentPoll)
+            consentPoll = null
           }
         }
 
@@ -90,16 +99,21 @@
           fbq('track', 'PageView')
         }
 
-        function maybeInstall() {
-          if (consentGranted()) installMetaPixel()
+        function syncFromStorage() {
+          var choice = readConsent()
+          if (choice === 'granted') {
+            installMetaPixel()
+            stopPolling()
+            return
+          }
+          if (choice === 'denied') {
+            stopPolling()
+          }
         }
 
-        maybeInstall()
-        window.addEventListener('the-witch-consent-granted', maybeInstall)
-        var consentPoll = window.setInterval(maybeInstall, 400)
-        window.setTimeout(function () {
-          window.clearInterval(consentPoll)
-        }, 600000)
+        syncFromStorage()
+        window.addEventListener(CONSENT_EVENT, syncFromStorage)
+        consentPoll = window.setInterval(syncFromStorage, 400)
       })()
     </script>
     <noscript
