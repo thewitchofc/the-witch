@@ -51,6 +51,66 @@
       />
     </noscript>
     <title data-rh="true">The Witch, בניית אתרים שמביאים לקוחות</title>
+    <!-- Meta Pixel Code — ב-Vite הקובץ index.html בשורש הפרויקט (לא public); נטען אחרי אישור עוגיות -->
+    <script>
+      (function () {
+        var CONSENT_KEY = 'the-witch-analytics-consent'
+        var PIXEL_ID = '2717421571978420'
+
+        function consentGranted() {
+          try {
+            return localStorage.getItem(CONSENT_KEY) === 'granted'
+          } catch (e) {
+            return false
+          }
+        }
+
+        function installMetaPixel() {
+          if (window.__theWitchMetaPixelInstalled) return
+          window.__theWitchMetaPixelInstalled = true
+
+          !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return
+            n = f.fbq = function () {
+              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            }
+            if (!f._fbq) f._fbq = n
+            n.push = n
+            n.loaded = !0
+            n.version = '2.0'
+            n.queue = []
+            t = b.createElement(e)
+            t.async = !0
+            t.src = v
+            s = b.getElementsByTagName(e)[0]
+            s.parentNode.insertBefore(t, s)
+          })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js')
+
+          fbq('init', PIXEL_ID)
+          fbq('track', 'PageView')
+        }
+
+        function maybeInstall() {
+          if (consentGranted()) installMetaPixel()
+        }
+
+        maybeInstall()
+        window.addEventListener('the-witch-consent-granted', maybeInstall)
+        var consentPoll = window.setInterval(maybeInstall, 400)
+        window.setTimeout(function () {
+          window.clearInterval(consentPoll)
+        }, 600000)
+      })()
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        alt=""
+        src="https://www.facebook.com/tr?id=2717421571978420&amp;ev=PageView&amp;noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
     <!-- רקע מיידי לפני CSS של Vite, מונע הבזק לבן -->
     <style>
       html,

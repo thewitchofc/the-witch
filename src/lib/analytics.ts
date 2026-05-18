@@ -18,6 +18,7 @@ declare global {
     gtag?: (...args: unknown[]) => void
     fbq?: Fbq
     _fbq?: Fbq
+    __theWitchMetaPixelInstalled?: boolean
   }
 }
 
@@ -37,6 +38,9 @@ export function writeConsent(value: AnalyticsConsentStored) {
   } catch {
     /* ignore */
   }
+  if (value === 'granted' && typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('the-witch-consent-granted'))
+  }
 }
 
 function measurementId(): string | undefined {
@@ -44,9 +48,20 @@ function measurementId(): string | undefined {
   return typeof id === 'string' && /^G-[A-Z0-9]+$/i.test(id.trim()) ? id.trim() : undefined
 }
 
+const META_PIXEL_DEFAULT_ID = '2717421571978420'
+
 function metaPixelId(): string | undefined {
-  const id = import.meta.env.VITE_META_PIXEL_ID
-  return typeof id === 'string' && /^\d{8,20}$/.test(id.trim()) ? id.trim() : undefined
+  const raw = import.meta.env.VITE_META_PIXEL_ID ?? META_PIXEL_DEFAULT_ID
+  return typeof raw === 'string' && /^\d{8,20}$/.test(raw.trim()) ? raw.trim() : undefined
+}
+
+function isMetaPixelInstalled(): boolean {
+  if (typeof window === 'undefined') return false
+  return Boolean(
+    window.__theWitchMetaPixelInstalled ||
+      window.fbq ||
+      document.querySelector('script[src*="connect.facebook.net"]'),
+  )
 }
 
 /** תור dataLayer + gtag + config — בלי רשת, כדי ש־trackPageView יעבוד מיד אחרי הסכמה */
@@ -107,6 +122,11 @@ export function ensureFbqSnippet() {
   const id = metaPixelId()
   if (!id || typeof window === 'undefined' || fbqSnippetReady) return
 
+  if (isMetaPixelInstalled()) {
+    fbqSnippetReady = true
+    return
+  }
+
   if (window.fbq) {
     fbqSnippetReady = true
     return
@@ -135,7 +155,7 @@ export function ensureFbqSnippet() {
 export function loadFbqJs() {
   const id = metaPixelId()
   if (!id || typeof window === 'undefined' || fbqScriptInjected) return
-  if (document.querySelector('script[src*="connect.facebook.net"]')) {
+  if (isMetaPixelInstalled()) {
     fbqScriptInjected = true
     return
   }
