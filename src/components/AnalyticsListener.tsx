@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
-import { trackEvent, trackPageView } from '../lib/analytics'
+import { trackEvent, trackMetaPageView, trackPageView } from '../lib/analytics'
 
 const PROJECT_SLUGS: Record<string, string> = {
   '/projects/sab-glass': 'sab-glass',
@@ -29,6 +29,7 @@ export function AnalyticsListener() {
   useEffect(() => {
     if (consent !== 'granted') return
     trackPageView()
+    trackMetaPageView()
     const slug = PROJECT_SLUGS[pathname]
     if (slug) trackEvent('project_view', { project_slug: slug })
   }, [pathname, consent])

@@ -19,7 +19,8 @@ export function CookieBanner() {
       <div className="mx-auto flex max-w-4xl flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
         <p className="text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
           האתר משתמש בעוגיות לצורך תפקוד בסיסי ולשיפור החוויה. עם אישורך נטעין גם{' '}
-          <span className="text-white">Google Analytics</span> למדידת תנועה אנונימית. פרטים במדיניות הפרטיות.
+          <span className="text-white">Google Analytics</span> ו־<span className="text-white">Meta Pixel</span>{' '}
+          למדידת תנועה. פרטים במדיניות הפרטיות.
         </p>
         <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
           <CustomLink

@@ -3,10 +3,21 @@ const STORAGE_KEY = 'the-witch-analytics-consent'
 
 export type AnalyticsConsentStored = 'granted' | 'denied'
 
+type Fbq = {
+  (...args: unknown[]): void
+  callMethod?: (...args: unknown[]) => void
+  queue: unknown[][]
+  push: Fbq
+  loaded: boolean
+  version: string
+}
+
 declare global {
   interface Window {
     dataLayer?: unknown[]
     gtag?: (...args: unknown[]) => void
+    fbq?: Fbq
+    _fbq?: Fbq
   }
 }
 
@@ -33,11 +44,22 @@ function measurementId(): string | undefined {
   return typeof id === 'string' && /^G-[A-Z0-9]+$/i.test(id.trim()) ? id.trim() : undefined
 }
 
+function metaPixelId(): string | undefined {
+  const id = import.meta.env.VITE_META_PIXEL_ID
+  return typeof id === 'string' && /^\d{8,20}$/.test(id.trim()) ? id.trim() : undefined
+}
+
 /** תור dataLayer + gtag + config — בלי רשת, כדי ש־trackPageView יעבוד מיד אחרי הסכמה */
 let snippetReady = false
 
 /** טעינת gtag/js החיצוני בלבד */
 let scriptInjected = false
+
+/** Meta Pixel — תור fbq + init בלי רשת */
+let fbqSnippetReady = false
+
+/** טעינת fbevents.js החיצוני בלבד */
+let fbqScriptInjected = false
 
 let deferArmActive = false
 
@@ -80,6 +102,53 @@ export function loadGtagJs() {
   scriptInjected = true
 }
 
+/** מאתחל את fbq וה־init (ללא סקריפט חיצוני); idempotent */
+export function ensureFbqSnippet() {
+  const id = metaPixelId()
+  if (!id || typeof window === 'undefined' || fbqSnippetReady) return
+
+  if (window.fbq) {
+    fbqSnippetReady = true
+    return
+  }
+
+  const n = function (...args: unknown[]) {
+    if (n.callMethod) {
+      n.callMethod(...args)
+    } else {
+      n.queue.push(args)
+    }
+  } as Fbq
+
+  if (!window._fbq) window._fbq = n
+  window.fbq = n
+  n.push = n
+  n.loaded = true
+  n.version = '2.0'
+  n.queue = []
+
+  n('init', id)
+  fbqSnippetReady = true
+}
+
+/** מוסיף את סקריפט connect.facebook.net/en_US/fbevents.js */
+export function loadFbqJs() {
+  const id = metaPixelId()
+  if (!id || typeof window === 'undefined' || fbqScriptInjected) return
+  if (document.querySelector('script[src*="connect.facebook.net"]')) {
+    fbqScriptInjected = true
+    return
+  }
+
+  ensureFbqSnippet()
+
+  const script = document.createElement('script')
+  script.async = true
+  script.src = 'https://connect.facebook.net/en_US/fbevents.js'
+  document.head.appendChild(script)
+  fbqScriptInjected = true
+}
+
 /**
  * דוחה את טעינת gtag/js עד אינטראקציה ראשונה (pointerdown / scroll / keydown)
  * או עד requestIdleCallback (timeout 5s; בלי rIC — setTimeout ~2.8s).
@@ -87,13 +156,28 @@ export function loadGtagJs() {
  */
 export function scheduleInjectGoogleAnalytics() {
   if (typeof window === 'undefined') return
-  if (!measurementId()) return
+  const hasGa = Boolean(measurementId())
+  const hasMeta = Boolean(metaPixelId())
+  if (!hasGa && !hasMeta) return
 
-  ensureGtagSnippet()
+  if (hasGa) ensureGtagSnippet()
+  if (hasMeta) ensureFbqSnippet()
 
-  if (scriptInjected) return
-  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
-    scriptInjected = true
+  const gaLoaded =
+    !hasGa ||
+    scriptInjected ||
+    Boolean(document.querySelector('script[src*="googletagmanager.com/gtag/js"]'))
+  const metaLoaded =
+    !hasMeta ||
+    fbqScriptInjected ||
+    Boolean(document.querySelector('script[src*="connect.facebook.net"]'))
+  if (gaLoaded && metaLoaded) {
+    if (hasGa && document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+      scriptInjected = true
+    }
+    if (hasMeta && document.querySelector('script[src*="connect.facebook.net"]')) {
+      fbqScriptInjected = true
+    }
     return
   }
   if (deferArmActive) return
@@ -125,7 +209,8 @@ export function scheduleInjectGoogleAnalytics() {
     removeInteractListeners()
     cancelIdleAndTimeout()
     deferArmActive = false
-    loadGtagJs()
+    if (hasGa) loadGtagJs()
+    if (hasMeta) loadFbqJs()
   }
 
   function onInteract() {
@@ -145,8 +230,14 @@ export function scheduleInjectGoogleAnalytics() {
 
 /** טוען snippet + סקריפט חיצוני מיד (ללא דחייה) */
 export function injectGoogleAnalytics() {
-  ensureGtagSnippet()
-  loadGtagJs()
+  if (measurementId()) {
+    ensureGtagSnippet()
+    loadGtagJs()
+  }
+  if (metaPixelId()) {
+    ensureFbqSnippet()
+    loadFbqJs()
+  }
 }
 
 export function trackPageView() {
@@ -158,6 +249,23 @@ export function trackPageView() {
     page_title: document.title,
     page_path: `${window.location.pathname}${window.location.search}${window.location.hash}`,
   })
+}
+
+export function trackMetaPageView() {
+  if (readConsent() !== 'granted') return
+  if (!metaPixelId() || !window.fbq) return
+  window.fbq('track', 'PageView')
+}
+
+/** אירוע מותאם ל־Meta Pixel (למשל Lead, Contact) */
+export function trackMetaEvent(eventName: string, params?: Record<string, unknown>) {
+  if (readConsent() !== 'granted') return
+  if (!metaPixelId() || !window.fbq) return
+  if (params && Object.keys(params).length > 0) {
+    window.fbq('track', eventName, params)
+    return
+  }
+  window.fbq('track', eventName)
 }
 
 export function trackEvent(name: string, params?: Record<string, unknown>) {
