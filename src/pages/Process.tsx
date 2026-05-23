@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { CustomLink } from '../components/CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { Seo } from '../components/Seo'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
@@ -174,7 +174,7 @@ export function ProcessPage() {
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className={`final-cta-reveal mt-6 ${primaryCtaOuterClass}`}
               onClick={() =>
-                trackEvent('cta_click', { cta_location: 'process_footer', link_url: '/apply#contact' })
+                trackCtaClick('process_footer', '/apply#contact')
               }
             >
               <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>

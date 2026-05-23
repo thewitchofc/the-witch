@@ -32,6 +32,9 @@ export const FAQ = lazy(() => import('./pages/FAQ'))
 export const PrivacyPage = lazy(() =>
   import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 )
+export const AccessibilityPage = lazy(() =>
+  import('./pages/AccessibilityPage').then((m) => ({ default: m.AccessibilityPage })),
+)
 export const TermsPage = lazy(() =>
   import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })),
 )

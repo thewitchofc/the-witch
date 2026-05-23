@@ -306,24 +306,85 @@ export function trackPageView() {
   })
 }
 
-export function trackMetaPageView() {
-  if (readConsent() !== 'granted') return
-  if (!metaPixelId() || !window.fbq) return
-  window.fbq('track', 'PageView')
+function canTrackMeta(): boolean {
+  if (typeof window === 'undefined') return false
+  if (!isConsentGranted()) return false
+  return Boolean(metaPixelId())
 }
 
-/** אירוע מותאם ל־Meta Pixel (למשל Lead, Contact) */
-export function trackMetaEvent(eventName: string, params?: Record<string, unknown>) {
-  if (readConsent() !== 'granted') return
-  if (!metaPixelId() || !window.fbq) return
+/** קריאה בטוחה ל-fbq — מאתחל תור אם הסקריפט עדיין לא נטען */
+function invokeFbq(...args: unknown[]) {
+  if (!canTrackMeta()) return
+  ensureFbqSnippet()
+  window.fbq?.(...args)
+}
+
+export function trackMetaPageView() {
+  invokeFbq('track', 'PageView')
+}
+
+/** אירוע מותאם אישית — fbq('trackCustom', …) */
+export function trackMetaCustom(eventName: string, params?: Record<string, unknown>) {
   if (params && Object.keys(params).length > 0) {
-    window.fbq('track', eventName, params)
+    invokeFbq('trackCustom', eventName, params)
     return
   }
-  window.fbq('track', eventName)
+  invokeFbq('trackCustom', eventName)
+}
+
+export function trackMetaLead(params?: Record<string, unknown>) {
+  trackMetaCustom('Lead', params)
+}
+
+export function trackMetaContact(params?: Record<string, unknown>) {
+  trackMetaCustom('Contact', params)
+}
+
+export function trackMetaSchedule(params?: Record<string, unknown>) {
+  trackMetaCustom('Schedule', params)
+}
+
+export function trackMetaScrollDepth(depthPercent: 50 | 90, params?: Record<string, unknown>) {
+  trackMetaCustom(`ScrollDepth${depthPercent}`, {
+    depth_percent: depthPercent,
+    ...params,
+  })
+}
+
+function isWhatsAppLink(linkUrl: string): boolean {
+  const u = linkUrl.toLowerCase()
+  return u.includes('wa.me') || u.includes('whatsapp.com') || u.includes('api.whatsapp')
+}
+
+function isScheduleLink(linkUrl: string): boolean {
+  const u = linkUrl.trim()
+  if (!u) return false
+  try {
+    if (u.startsWith('http://') || u.startsWith('https://')) {
+      const parsed = new URL(u)
+      return parsed.pathname.startsWith('/apply') || parsed.hash.includes('contact')
+    }
+  } catch {
+    /* fall through */
+  }
+  return u.startsWith('/apply') || u.includes('#contact')
+}
+
+/** CTA — GA + Meta Schedule / Contact לפי יעד הקישור */
+export function trackCtaClick(ctaLocation: string, linkUrl: string) {
+  const params = { cta_location: ctaLocation, link_url: linkUrl }
+  trackEvent('cta_click', params)
+  if (isWhatsAppLink(linkUrl)) {
+    trackMetaContact(params)
+    return
+  }
+  if (isScheduleLink(linkUrl)) {
+    trackMetaSchedule(params)
+  }
 }
 
 export function trackEvent(name: string, params?: Record<string, unknown>) {
-  if (readConsent() !== 'granted') return
+  if (typeof window === 'undefined') return
+  if (!isConsentGranted()) return
   window.gtag?.('event', name, params)
 }

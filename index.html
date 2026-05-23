@@ -96,7 +96,6 @@
           })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js')
 
           fbq('init', PIXEL_ID)
-          fbq('track', 'PageView')
         }
 
         function syncFromStorage() {
@@ -116,14 +115,6 @@
         consentPoll = window.setInterval(syncFromStorage, 400)
       })()
     </script>
-    <noscript
-      ><img
-        height="1"
-        width="1"
-        style="display: none"
-        alt=""
-        src="https://www.facebook.com/tr?id=1510591837380183&amp;ev=PageView&amp;noscript=1"
-    /></noscript>
     <!-- End Meta Pixel Code -->
     <!-- רקע מיידי לפני CSS של Vite, מונע הבזק לבן -->
     <style>
@@ -134,6 +125,15 @@
     </style>
   </head>
   <body dir="rtl">
+    <!-- Meta Pixel noscript fallback — חייב להיות ב-body (לא ב-head) -->
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        alt=""
+        src="https://www.facebook.com/tr?id=1510591837380183&amp;ev=PageView&amp;noscript=1"
+    /></noscript>
     <!-- לפני React: אותה לוגיקה כמו src/lib/heavyEffectsGuard.ts, dataset ל-CSS מוקדם -->
     <script>
       (function () {
@@ -183,6 +183,32 @@
           }
         }
         document.documentElement.dataset.blockHeavyEffects = shouldBlockHeavyEffects() ? '1' : '0'
+      })()
+    </script>
+    <!-- לפני React: העדפות נגישות מ-localStorage (מונע הבזק) -->
+    <script>
+      (function () {
+        var KEY = 'the-witch-a11y-prefs'
+        try {
+          var raw = localStorage.getItem(KEY)
+          if (!raw) return
+          var p = JSON.parse(raw)
+          var root = document.documentElement
+          var scale = Number(p.fontScale)
+          var scaleValue = scale >= 3 ? 1.375 : scale >= 2 ? 1.25 : scale >= 1 ? 1.125 : 1
+          root.dataset.a11yFont = String(scale >= 3 ? 3 : scale >= 2 ? 2 : scale >= 1 ? 1 : 0)
+          root.style.setProperty('--a11y-font-scale', String(scaleValue))
+          if (p.highContrast) root.setAttribute('data-a11y-high-contrast', '')
+          if (p.underlineLinks) root.setAttribute('data-a11y-underline-links', '')
+          if (p.relaxedLineHeight) root.setAttribute('data-a11y-relaxed-line-height', '')
+          if (p.readableFont) root.setAttribute('data-a11y-readable-font', '')
+          if (p.reduceMotion) {
+            root.setAttribute('data-a11y-reduce-motion', '')
+            root.dataset.blockHeavyEffects = '1'
+          }
+        } catch (e) {
+          /* ignore */
+        }
       })()
     </script>
     <div id="root"></div>

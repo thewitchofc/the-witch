@@ -1,6 +1,6 @@
 import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const focusCards = [
@@ -72,12 +72,7 @@ export default function HamachshefaPage() {
                 <CustomLink
                   to="/apply#contact"
                   className={primaryCtaOuterClass}
-                  onClick={() =>
-                    trackEvent('cta_click', {
-                      cta_location: 'hamachshefa_hero',
-                      link_url: '/apply#contact',
-                    })
-                  }
+                  onClick={() => trackCtaClick('hamachshefa_hero', '/apply#contact')}
                 >
                   <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
                 </CustomLink>

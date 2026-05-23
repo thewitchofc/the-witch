@@ -1,6 +1,6 @@
 import { usePageTransition } from '../context/PageTransitionContext'
 import royalFruitHero from '../assets/royal-fruit-hero.webp?url'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick, trackEvent } from '../lib/analytics'
 import {
   lielEdriLiveUrl,
   lielEdriOgImage,
@@ -179,11 +179,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
             rel="noopener noreferrer"
             className="relative z-[3] mt-3 inline-flex w-fit text-sm font-medium text-cyan-200/95 underline decoration-cyan-400/45 underline-offset-[5px] transition pointer-events-auto hover:text-white hover:decoration-cyan-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
             onClick={() =>
-              trackEvent('cta_click', {
-                cta_location: 'portfolio_live_site',
-                link_url: project.liveSiteUrl,
-                project_title: project.title,
-              })
+              trackCtaClick('portfolio_live_site', project.liveSiteUrl ?? '')
             }
             aria-label={`${project.title}, אתר חי (נפתח בלשונית חדשה)`}
           >

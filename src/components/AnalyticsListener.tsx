@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
-import { trackEvent, trackMetaPageView, trackPageView } from '../lib/analytics'
+import {
+  trackEvent,
+  trackMetaPageView,
+  trackMetaScrollDepth,
+  trackPageView,
+} from '../lib/analytics'
 
 const PROJECT_SLUGS: Record<string, string> = {
   '/projects/sab-glass': 'sab-glass',
@@ -10,7 +15,8 @@ const PROJECT_SLUGS: Record<string, string> = {
   '/projects/sachi-ramen': 'sachi-ramen',
 }
 
-const SCROLL_DEPTHS = [25, 50, 75, 100] as const
+const SCROLL_DEPTHS_GA = [25, 50, 75, 100] as const
+const SCROLL_DEPTHS_META = [50, 90] as const
 
 const TIME_ON_PAGE_MS = 30_000
 
@@ -18,11 +24,13 @@ const TIME_ON_PAGE_MS = 30_000
 export function AnalyticsListener() {
   const { pathname } = useLocation()
   const { consent } = useAnalyticsConsent()
-  const scrollFired = useRef<Set<number>>(new Set())
+  const scrollFiredGa = useRef<Set<number>>(new Set())
+  const scrollFiredMeta = useRef<Set<number>>(new Set())
   const exitIntentFired = useRef(false)
 
   useEffect(() => {
-    scrollFired.current = new Set()
+    scrollFiredGa.current = new Set()
+    scrollFiredMeta.current = new Set()
     exitIntentFired.current = false
   }, [pathname])
 
@@ -53,26 +61,22 @@ export function AnalyticsListener() {
     function onScroll() {
       const doc = document.documentElement
       const maxY = doc.scrollHeight - window.innerHeight
-      if (maxY <= 8) {
-        for (const d of SCROLL_DEPTHS) {
-          if (!scrollFired.current.has(d)) {
-            scrollFired.current.add(d)
-            trackEvent('scroll_depth', { depth_percent: d })
-            if (d === 100) {
-              trackEvent('scroll_complete', { depth_percent: 100 })
-            }
-          }
-        }
-        return
-      }
-      const pct = (window.scrollY / maxY) * 100
-      for (const d of SCROLL_DEPTHS) {
-        if (pct >= d - 0.5 && !scrollFired.current.has(d)) {
-          scrollFired.current.add(d)
+      const pct = maxY <= 8 ? 100 : (window.scrollY / maxY) * 100
+
+      for (const d of SCROLL_DEPTHS_GA) {
+        if (pct >= d - 0.5 && !scrollFiredGa.current.has(d)) {
+          scrollFiredGa.current.add(d)
           trackEvent('scroll_depth', { depth_percent: d })
           if (d === 100) {
             trackEvent('scroll_complete', { depth_percent: 100 })
           }
+        }
+      }
+
+      for (const d of SCROLL_DEPTHS_META) {
+        if (pct >= d - 0.5 && !scrollFiredMeta.current.has(d)) {
+          scrollFiredMeta.current.add(d)
+          trackMetaScrollDepth(d, { pathname })
         }
       }
     }

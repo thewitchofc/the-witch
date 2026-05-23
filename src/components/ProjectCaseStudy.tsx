@@ -1,5 +1,5 @@
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 type ProjectCaseStudyProps = {
@@ -102,7 +102,7 @@ export function ProjectCaseStudy({
               to="/apply#contact"
               aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
               className={`pointer-events-auto z-10 ${primaryCtaOuterClass}`}
-              onClick={() => trackEvent('cta_click', { cta_location: ctaLocation, link_url: '/apply#contact' })}
+              onClick={() => trackCtaClick(ctaLocation, '/apply#contact')}
             >
               <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
             </CustomLink>
@@ -113,7 +113,7 @@ export function ProjectCaseStudy({
                 rel="noopener noreferrer"
                 aria-label={`צפייה באתר החי של ${title} (נפתח בלשונית חדשה)`}
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/15 bg-white/[0.035] px-6 py-3 text-sm font-medium text-slate-200 ring-1 ring-white/[0.06] transition hover:border-cyan-300/35 hover:bg-white/[0.06] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:text-base"
-                onClick={() => trackEvent('cta_click', { cta_location: `${ctaLocation}_live_site`, link_url: liveSiteUrl })}
+                onClick={() => trackCtaClick(`${ctaLocation}_live_site`, liveSiteUrl)}
               >
                 צפייה באתר החי
               </a>
@@ -167,7 +167,7 @@ export function ProjectCaseStudy({
             to="/apply#contact"
             aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
             className={`mt-7 ${primaryCtaOuterClass}`}
-            onClick={() => trackEvent('cta_click', { cta_location: `${ctaLocation}_footer`, link_url: '/apply#contact' })}
+            onClick={() => trackCtaClick(`${ctaLocation}_footer`, '/apply#contact')}
           >
             <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
           </CustomLink>

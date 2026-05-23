@@ -1,5 +1,5 @@
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const ABOUT_SPARKLE_COUNT = 12
@@ -107,7 +107,7 @@ export function About() {
                 className={`pointer-events-auto z-10 ${primaryCtaOuterClass}`}
                 aria-label="מעבר לטופס בדיקת התאמה לפרויקט"
                 onClick={() =>
-                  trackEvent('cta_click', { cta_location: 'about_hero', link_url: '/apply#contact' })
+                  trackCtaClick('about_hero', '/apply#contact')
                 }
               >
                 <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
@@ -162,7 +162,7 @@ export function About() {
                 className={linkClass}
                 aria-label="מעבר לטופס בדיקת התאמה לפרויקט"
                 onClick={() =>
-                  trackEvent('cta_click', { cta_location: 'about_inline', link_url: '/apply#contact' })
+                  trackCtaClick('about_inline', '/apply#contact')
                 }
               >
                 תמלא את הטופס

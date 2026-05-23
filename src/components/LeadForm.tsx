@@ -7,7 +7,7 @@ import {
   useState,
   type FormEvent,
 } from 'react'
-import { trackEvent } from '../lib/analytics'
+import { trackEvent, trackMetaContact, trackMetaLead } from '../lib/analytics'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const fieldShellClass =
@@ -566,6 +566,10 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           form_name: 'lead_match_email',
           form_step: formStep,
         })
+        trackMetaLead({
+          form_name: 'lead_match_email',
+          form_step: formStep,
+        })
       } else {
         const waDigits = WHATSAPP_E164.replace(/\D/g, '')
         const url = `https://wa.me/${waDigits}?text=${encodeURIComponent(body)}`
@@ -573,10 +577,19 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           form_name: 'lead_match_whatsapp',
           form_step: formStep,
         })
+        trackMetaLead({
+          form_name: 'lead_match_whatsapp',
+          form_step: formStep,
+        })
         trackEvent('whatsapp_click', {
           surface: 'lead_form_submit',
           pathname: window.location.pathname,
           link_domain: 'wa.me',
+        })
+        trackMetaContact({
+          surface: 'lead_form_submit',
+          pathname: window.location.pathname,
+          link_url: url,
         })
         window.open(url, '_blank', 'noopener,noreferrer')
         await sendLeadToSheetsEndpoint(payload)

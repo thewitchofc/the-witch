@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick, trackEvent } from '../lib/analytics'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
@@ -88,12 +88,7 @@ export function HowIBuildSitesSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="pointer-events-auto inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-slate-200 ring-1 ring-white/10 transition hover:border-white/25 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 md:text-base"
-              onClick={() =>
-                trackEvent('cta_click', {
-                  cta_location: 'how_build_case_study_live_site',
-                  link_url: caseStudy.liveUrl,
-                })
-              }
+              onClick={() => trackCtaClick('how_build_case_study_live_site', caseStudy.liveUrl)}
             >
               לצפייה באתר
             </a>
@@ -133,10 +128,7 @@ export function HowIBuildSitesSection() {
             to="/apply#contact"
             className={`hero-cta-reveal pointer-events-auto z-10 ${primaryCtaOuterClass}`}
             onClick={() =>
-              trackEvent('cta_click', {
-                cta_location: 'how_build_section',
-                link_url: '/apply#contact',
-              })
+              trackCtaClick('how_build_section', '/apply#contact')
             }
           >
             <span className={`${primaryCtaInnerClass} md:py-3.5 md:text-lg`}>שיחת התאמה חינם</span>

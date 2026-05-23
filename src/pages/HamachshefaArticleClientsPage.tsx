@@ -1,6 +1,6 @@
 import { CustomLink } from '../components/CustomLink'
 import { Seo } from '../components/Seo'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const ARTICLE_PATH = '/hamachshefa-bniyat-atarim-eich-livchor-atar-shmevi-lakochot' as const
@@ -146,12 +146,7 @@ export default function HamachshefaArticleClientsPage() {
             <CustomLink
               to="/apply#contact"
               className={primaryCtaOuterClass}
-              onClick={() =>
-                trackEvent('cta_click', {
-                  cta_location: 'hamachshefa_article_bottom',
-                  link_url: '/apply#contact',
-                })
-              }
+              onClick={() => trackCtaClick('hamachshefa_article_bottom', '/apply#contact')}
             >
               <span className={primaryCtaInnerClass}>בדיקת התאמה לפרויקט</span>
             </CustomLink>

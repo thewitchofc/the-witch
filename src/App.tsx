@@ -14,6 +14,7 @@ import {
   PortfolioPage,
   PrivacyPage,
   ProcessPage,
+  AccessibilityPage,
   RoyalFruitPage,
   SabGlassPage,
   SachiRamenPage,
@@ -86,6 +87,7 @@ function App() {
               element={<HamachshefaArticleClientsPage />}
             />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/accessibility" element={<AccessibilityPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/thank-you" element={<ThankYouPage />} />
           </Routes>

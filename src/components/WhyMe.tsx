@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 
 const cardIconWrapDefault = 'mb-3 flex justify-center'
@@ -178,12 +178,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
             <CustomLink
               to="/apply#contact"
               className="inline-flex min-h-[44px] items-center text-sm font-semibold text-cyan-200 underline-offset-4 transition hover:text-white hover:underline md:text-base"
-              onClick={() =>
-                trackEvent('cta_click', {
-                  cta_location: 'why_me_stacked',
-                  link_url: '/apply#contact',
-                })
-              }
+              onClick={() => trackCtaClick('why_me_stacked', '/apply#contact')}
             >
               שיחת התאמה חינם, לטופס קצר
             </CustomLink>

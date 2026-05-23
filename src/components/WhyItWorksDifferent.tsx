@@ -1,5 +1,5 @@
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 
 const pillars = [
   {
@@ -52,12 +52,7 @@ export function WhyItWorksDifferent() {
           <CustomLink
             to="/apply#contact"
             className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 px-8 py-3 text-base font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.3)] ring-1 ring-white/15 transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 md:px-10 md:text-lg"
-            onClick={() =>
-              trackEvent('cta_click', {
-                cta_location: 'apply_why_different',
-                link_url: '/apply#contact',
-              })
-            }
+            onClick={() => trackCtaClick('apply_why_different', '/apply#contact')}
           >
             מלאו טופס התאמה
           </CustomLink>

@@ -691,3 +691,100 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
     will-change: auto;
   }
 }
+
+/* ── Accessibility widget preferences (data-* on <html>) ── */
+
+html {
+  --a11y-font-scale: 1;
+  --text-xs: calc(0.75rem * var(--a11y-font-scale));
+  --text-sm: calc(0.875rem * var(--a11y-font-scale));
+  --text-base: calc(1rem * var(--a11y-font-scale));
+  --text-lg: calc(1.125rem * var(--a11y-font-scale));
+  --text-xl: calc(1.25rem * var(--a11y-font-scale));
+  --text-2xl: calc(1.5rem * var(--a11y-font-scale));
+  --text-3xl: calc(1.875rem * var(--a11y-font-scale));
+  --text-4xl: calc(2.25rem * var(--a11y-font-scale));
+  --text-5xl: calc(3rem * var(--a11y-font-scale));
+  --text-6xl: calc(3.75rem * var(--a11y-font-scale));
+}
+
+html[data-a11y-font='1'] {
+  --a11y-font-scale: 1.125;
+}
+
+html[data-a11y-font='2'] {
+  --a11y-font-scale: 1.25;
+}
+
+html[data-a11y-font='3'] {
+  --a11y-font-scale: 1.375;
+}
+
+html[data-a11y-font]:not([data-a11y-font='0']) .text-\[11px\] {
+  font-size: calc(11px * var(--a11y-font-scale));
+}
+
+html[data-a11y-font]:not([data-a11y-font='0']) .text-\[15px\] {
+  font-size: calc(15px * var(--a11y-font-scale));
+}
+
+html[data-a11y-font]:not([data-a11y-font='0']) .text-\[0\.65rem\] {
+  font-size: calc(0.65rem * var(--a11y-font-scale));
+}
+
+html[data-a11y-high-contrast] {
+  color-scheme: dark;
+}
+
+html[data-a11y-high-contrast] body {
+  background-color: #000 !important;
+}
+
+html[data-a11y-high-contrast] :where(p, li, span, label, td, th, dd, dt, blockquote, figcaption) {
+  color: #f8fafc !important;
+}
+
+html[data-a11y-high-contrast] :where(h1, h2, h3, h4, h5, h6) {
+  color: #fff !important;
+}
+
+html[data-a11y-high-contrast] :where(a, button) {
+  color: #7dd3fc !important;
+}
+
+html[data-a11y-high-contrast] :where(input, textarea, select) {
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  background-color: #0f172a !important;
+  color: #fff !important;
+}
+
+html[data-a11y-high-contrast] :where(button, [role='button']) {
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+
+html[data-a11y-underline-links] a[href]:not([aria-hidden='true']) {
+  text-decoration: underline !important;
+  text-underline-offset: 0.18em;
+}
+
+html[data-a11y-reduce-motion] *,
+html[data-a11y-reduce-motion] *::before,
+html[data-a11y-reduce-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-a11y-relaxed-line-height] body {
+  line-height: 1.75;
+}
+
+html[data-a11y-relaxed-line-height] :where(p, li, dd, blockquote) {
+  line-height: 1.85;
+}
+
+html[data-a11y-readable-font] body,
+html[data-a11y-readable-font] body :where(*:not(svg):not(svg *)) {
+  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif !important;
+}

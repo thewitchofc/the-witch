@@ -3,7 +3,7 @@ import { CustomLink } from "../components/CustomLink";
 import { JsonLd } from "../components/JsonLd";
 import { Seo } from "../components/Seo";
 import { FAQ_ITEMS } from "../data/faqContent";
-import { trackEvent } from "../lib/analytics";
+import { trackCtaClick } from "../lib/analytics";
 import { primaryCtaInnerClass, primaryCtaOuterClass } from "../lib/primaryCtaClasses";
 import { buildFaqPageJsonLd } from "../seo/structuredData";
 
@@ -110,12 +110,7 @@ export default function FAQ() {
                     to="/apply#contact"
                     aria-label="בדיקת התאמה לפרויקט, מעבר לטופס יצירת קשר"
                     className={primaryCtaOuterClass}
-                    onClick={() =>
-                      trackEvent("cta_click", {
-                        cta_location: "faq_primary",
-                        link_url: "/apply#contact",
-                      })
-                    }
+                    onClick={() => trackCtaClick("faq_primary", "/apply#contact")}
                   >
                     <span className={primaryCtaInnerClass}>{ctaLabel}</span>
                   </CustomLink>

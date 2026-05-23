@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 import { CosmicField } from './CosmicField'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
@@ -348,12 +348,7 @@ export function Hero({
                 to="/apply#contact"
                 aria-label="שיחת התאמה חינם לפרויקט, מעבר לטופס יצירת קשר"
                 className={`hero-cta-reveal--lcp pointer-events-auto z-10 ${primaryCtaOuterClass}`}
-                onClick={() =>
-                  trackEvent('cta_click', {
-                    cta_location: 'hero_primary',
-                    link_url: '/apply#contact',
-                  })
-                }
+                onClick={() => trackCtaClick('hero_primary', '/apply#contact')}
               >
                 <span className={`${primaryCtaInnerClass} md:py-4 md:text-lg`}>
                   <span className="md:hidden">שיחת התאמה חינם</span>

@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { CustomLink } from './CustomLink'
-import { trackEvent } from '../lib/analytics'
+import { trackCtaClick } from '../lib/analytics'
 
 const HEADING_ID = 'seo-home-witch-heading'
 
@@ -30,12 +30,7 @@ export function SeoContent() {
           <CustomLink
             to="/hamachshefa-bniyat-atarim"
             className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-            onClick={() =>
-              trackEvent('cta_click', {
-                cta_location: 'seo_content_home_intro',
-                link_url: '/hamachshefa-bniyat-atarim',
-              })
-            }
+            onClick={() => trackCtaClick('seo_content_home_intro', '/hamachshefa-bniyat-atarim')}
           >
             המכשפה לבניית אתרים
           </CustomLink>{' '}
@@ -72,12 +67,7 @@ export function SeoContent() {
               <CustomLink
                 to="/hamachshefa-bniyat-atarim"
                 className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-                onClick={() =>
-                  trackEvent('cta_click', {
-                    cta_location: 'seo_content_home_expanded',
-                    link_url: '/hamachshefa-bniyat-atarim',
-                  })
-                }
+                onClick={() => trackCtaClick('seo_content_home_expanded', '/hamachshefa-bniyat-atarim')}
               >
                 המכשפה לבניית אתרים
               </CustomLink>
