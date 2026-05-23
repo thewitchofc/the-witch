@@ -20,6 +20,7 @@ import {
   SachiRamenPage,
   TermsPage,
   ThankYouPage,
+  NotFoundPage,
 } from './lazyRoutePages'
 import { HomePage } from './pages/HomePage'
 
@@ -90,6 +91,7 @@ function App() {
             <Route path="/accessibility" element={<AccessibilityPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/thank-you" element={<ThankYouPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </main>

@@ -19,8 +19,11 @@ export type AnalyticsConsentUi = 'unknown' | AnalyticsConsentStored
 
 type Ctx = {
   consent: AnalyticsConsentUi
+  preferencesOpen: boolean
   accept: () => void
   decline: () => void
+  openPreferences: () => void
+  closePreferences: () => void
 }
 
 const AnalyticsConsentContext = createContext<Ctx | null>(null)
@@ -32,6 +35,7 @@ function initialConsent(): AnalyticsConsentUi {
 
 export function AnalyticsConsentProvider({ children }: { children: ReactNode }) {
   const [consent, setConsent] = useState<AnalyticsConsentUi>(initialConsent)
+  const [preferencesOpen, setPreferencesOpen] = useState(false)
 
   useEffect(() => {
     if (consent === 'granted') loadAnalyticsIfConsented()
@@ -47,7 +51,18 @@ export function AnalyticsConsentProvider({ children }: { children: ReactNode }) 
     setConsent('denied')
   }, [])
 
-  const value = useMemo(() => ({ consent, accept, decline }), [consent, accept, decline])
+  const openPreferences = useCallback(() => {
+    setPreferencesOpen(true)
+  }, [])
+
+  const closePreferences = useCallback(() => {
+    setPreferencesOpen(false)
+  }, [])
+
+  const value = useMemo(
+    () => ({ consent, preferencesOpen, accept, decline, openPreferences, closePreferences }),
+    [consent, preferencesOpen, accept, decline, openPreferences, closePreferences],
+  )
 
   return <AnalyticsConsentContext.Provider value={value}>{children}</AnalyticsConsentContext.Provider>
 }

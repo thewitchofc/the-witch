@@ -1,4 +1,5 @@
 import { CustomLink } from './CustomLink'
+import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
 import { trackCtaClick, trackEvent } from '../lib/analytics'
 
 const GOOGLE_BUSINESS_REVIEW_URL =
@@ -6,6 +7,7 @@ const GOOGLE_BUSINESS_REVIEW_URL =
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
+  const { openPreferences } = useAnalyticsConsent()
   return (
     <footer
       className="relative z-10 border-t border-white/10 bg-slate-950/90 py-8 text-slate-300 backdrop-blur-sm"
@@ -62,6 +64,13 @@ export function SiteFooter() {
           >
             מדיניות פרטיות
           </CustomLink>
+          <button
+            type="button"
+            className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={openPreferences}
+          >
+            ניהול עוגיות
+          </button>
           <CustomLink
             to="/terms"
             className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"

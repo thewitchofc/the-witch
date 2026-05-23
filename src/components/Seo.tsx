@@ -8,9 +8,11 @@ type SeoProps = {
   path: string
   /** כתובת מלאה או נתיב יחסי לתמונת OG, יומר ל־URL מוחלט */
   ogImage?: string
+  /** noindex,nofollow — לדפי 404 וכד׳ */
+  noIndex?: boolean
 }
 
-export function Seo({ title, description, path, ogImage = DEFAULT_OG_IMAGE }: SeoProps) {
+export function Seo({ title, description, path, ogImage = DEFAULT_OG_IMAGE, noIndex = false }: SeoProps) {
   const canonical = siteCanonicalUrl(path)
   const ogImageUrl = absoluteOgImage(ogImage)
   const ogIsDefaultCard = ogImageUrl === DEFAULT_OG_IMAGE
@@ -19,6 +21,7 @@ export function Seo({ title, description, path, ogImage = DEFAULT_OG_IMAGE }: Se
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
+      {noIndex ? <meta name="robots" content="noindex, nofollow" /> : null}
       <link rel="canonical" href={canonical} />
 
       <meta property="og:title" content={title} />
