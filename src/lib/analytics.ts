@@ -83,7 +83,7 @@ function measurementId(): string | undefined {
   return typeof id === 'string' && /^G-[A-Z0-9]+$/i.test(id.trim()) ? id.trim() : undefined
 }
 
-const META_PIXEL_DEFAULT_ID = '2717421571978420'
+const META_PIXEL_DEFAULT_ID = '1510591837380183'
 
 function metaPixelId(): string | undefined {
   const raw = import.meta.env.VITE_META_PIXEL_ID ?? META_PIXEL_DEFAULT_ID
