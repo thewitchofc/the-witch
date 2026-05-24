@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { CustomLink } from './CustomLink'
 import { useAccessibility } from '../context/AccessibilityContext'
+import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
+import { shouldShowCookieBanner } from '../lib/analytics'
 
 function AccessibilityIcon() {
   return (
@@ -74,6 +76,10 @@ export function AccessibilityWidget() {
     resetPreferences,
   } = useAccessibility()
 
+  const { consent, preferencesOpen } = useAnalyticsConsent()
+  const cookieBannerVisible =
+    (shouldShowCookieBanner() && consent === 'unknown') || preferencesOpen
+
   useEffect(() => {
     if (!open) return
 
@@ -96,7 +102,11 @@ export function AccessibilityWidget() {
 
   return (
     <div
-      className="pointer-events-none fixed bottom-0 left-0 z-[10002] flex flex-col items-start gap-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))]"
+      className={`pointer-events-none fixed left-0 z-[10002] flex flex-col items-start gap-2 pl-[max(0.75rem,env(safe-area-inset-left))] transition-[bottom] duration-200 ${
+        cookieBannerVisible
+          ? 'bottom-[min(42vh,15.5rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]'
+          : 'bottom-0 pb-[max(0.75rem,env(safe-area-inset-bottom))]'
+      }`}
     >
       {open ? (
         <div
