@@ -93,7 +93,18 @@ function startPreview(port) {
 
 function stopPreview(proc) {
   if (!proc || proc.killed) return
+  proc.stdout?.destroy()
+  proc.stderr?.destroy()
   proc.kill('SIGTERM')
+}
+
+async function stopPreviewAsync(proc) {
+  if (!proc || proc.killed) return
+  stopPreview(proc)
+  await new Promise((resolve) => setTimeout(resolve, 750))
+  if (!proc.killed) {
+    proc.kill('SIGKILL')
+  }
 }
 
 function outFileForRoute(routePath) {
@@ -164,11 +175,14 @@ async function main() {
   try {
     await assertPreviewSite(baseUrl)
   } catch (err) {
-    stopPreview(preview)
+    await stopPreviewAsync(preview)
     throw err
   }
 
-  const browser = await chromium.launch({ headless: true })
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  })
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
     locale: 'he-IL',
@@ -197,8 +211,9 @@ async function main() {
       }
     }
   } finally {
-    await browser.close()
-    stopPreview(preview)
+    await context.close().catch(() => {})
+    await browser.close().catch(() => {})
+    await stopPreviewAsync(preview)
   }
 
   if (failed > 0) {
@@ -208,7 +223,11 @@ async function main() {
   console.log(`prerender done: ${PRERENDER_ROUTES.length} routes`)
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+main()
+  .then(() => {
+    process.exit(0)
+  })
+  .catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
