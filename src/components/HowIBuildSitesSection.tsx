@@ -1,18 +1,19 @@
 import { useRef } from 'react'
 import { CustomLink } from './CustomLink'
-import { trackCtaClick, trackEvent } from '../lib/analytics'
+import { lielEdriLiveUrl } from '../data/clientOgImages'
+import { trackCtaClick } from '../lib/analytics'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const caseStudy = {
-  title: 'מקרה לדוגמה: Royal Fruit',
+  title: 'מקרה לדוגמה: Liel Edri — Homemade Baking',
   problem:
-    'היה צורך באתר מכירתי שמציג קטלוג בצורה ברורה, מחזק אמון וטריות, ומוביל להזמנה מהירה דרך וואטסאפ — בלי עומס וחיכוך.',
+    'היה צורך באתר שישדר בוטיק, אמון וטריות, ויוביל בקלות לפניות והזמנות בוואטסאפ ובאינסטגרם — בלי חיכוך ורעש ויזואלי.',
   improved:
-    'נבנה אתר נקי ורענן עם היררכיה ברורה, קטלוג ידידותי, דגש על תוצרת טרייה ואינטגרציה ישירה לוואטסאפ להזמנות מהירות.',
-  today: 'אתר שמייצר הזמנות ומחזק את המותג כספק פרימיום של פירות וירקות טריים עד הבית.',
-  href: '/projects/royal-fruit',
-  liveUrl: 'https://royalfruit.co.il/' as const,
+    'נבנה אתר נקי ואלגנטי עם צילום מזון חזק, היררכיה ברורה ואינטגרציה מהירה לוואטסאפ ולאינסטגרם.',
+  today: 'אתר שמחזק אמון במותג ומגדיל פניות והזמנות דרך הערוצים הדיגיטליים.',
+  href: '/projects/liel-edri',
+  liveUrl: lielEdriLiveUrl,
 } as const
 
 const principles = [
