@@ -1,5 +1,7 @@
 import { Seo } from '../components/Seo'
 
+const ACCESSIBILITY_EMAIL = 'thewitchofc.il@gmail.com'
+
 export function AccessibilityPage() {
   return (
     <div className="relative isolate min-h-[100svh] w-full bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
@@ -61,12 +63,43 @@ export function AccessibilityPage() {
             </p>
           </section>
 
+          <section aria-labelledby="a11y-coordinator">
+            <h2 id="a11y-coordinator" className="mb-3 text-xl font-semibold text-white">
+              רכז/ת נגישות
+            </h2>
+            <p>
+              רכז/ת הנגישות באתר:{' '}
+              <strong className="font-medium text-white">המכשפה — בניית אתרים</strong> (The Witch).
+            </p>
+            <ul className="mt-3 list-inside list-disc space-y-2 marker:text-violet-400">
+              <li>
+                דוא&quot;ל:{' '}
+                <a
+                  href={`mailto:${ACCESSIBILITY_EMAIL}?subject=${encodeURIComponent('פנייה בנושא נגישות')}`}
+                  className="text-cyan-300 underline-offset-2 hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80"
+                >
+                  {ACCESSIBILITY_EMAIL}
+                </a>
+              </li>
+              <li>
+                טופס באתר:{' '}
+                <a
+                  href="/apply#contact"
+                  className="text-cyan-300 underline-offset-2 hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80"
+                >
+                  יצירת קשר
+                </a>{' '}
+                (ציינו «נגישות» בפנייה)
+              </li>
+            </ul>
+          </section>
+
           <section aria-labelledby="a11y-contact">
             <h2 id="a11y-contact" className="mb-3 text-xl font-semibold text-white">
               משוב, בקשות והתאמות
             </h2>
             <p>
-              נתקלתם בבעיית נגישות? נשמח לעזור. ניתן לפנות אלינו דרך{' '}
+              נתקלתם בבעיית נגישות? נשמח לעזור. ניתן לפנות לרכז/ת הנגישות בדוא&quot;ל, או דרך{' '}
               <a
                 href="/apply#contact"
                 className="text-cyan-300 underline-offset-2 hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80"
