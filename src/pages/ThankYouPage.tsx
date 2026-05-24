@@ -13,6 +13,7 @@ export function ThankYouPage() {
         title="הפרטים התקבלו, The Witch"
         description="תודה, הפרטים התקבלו. אעבור עליהם ואחזור עם המשך צעדים או שאלות ממוקדות."
         path="/thank-you"
+        noIndex
       />
       <div
         className="pointer-events-none absolute -right-28 top-20 h-80 w-80 rounded-full bg-violet-500/20 blur-3xl"

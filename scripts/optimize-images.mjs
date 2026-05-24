@@ -54,6 +54,17 @@ async function main() {
     out.push('public/og-default.webp')
   }
 
+  const a11yIn = path.join(root, 'public/icons/accessibility.png')
+  const a11yWebp = path.join(root, 'public/icons/accessibility.webp')
+  if (existsSync(a11yIn)) {
+    await sharp(a11yIn)
+      .resize(132, 132, { fit: 'cover' })
+      .png({ quality: 92, compressionLevel: 9, palette: true })
+      .toFile(a11yIn)
+    await sharp(a11yIn).webp({ quality: 88, effort: 5 }).toFile(a11yWebp)
+    out.push('public/icons/accessibility.png', 'public/icons/accessibility.webp')
+  }
+
   if (out.length) {
     console.log('image optimize OK:', out.join(', '))
   } else {

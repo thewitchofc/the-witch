@@ -6,15 +6,18 @@ import { shouldShowCookieBanner } from '../lib/analytics'
 
 function AccessibilityIcon() {
   return (
-    <img
-      src="/icons/accessibility.png"
-      alt=""
-      width={44}
-      height={44}
-      className="h-11 w-11 shrink-0 rounded-full object-cover"
-      aria-hidden
-      decoding="async"
-    />
+    <picture>
+      <source srcSet="/icons/accessibility.webp" type="image/webp" />
+      <img
+        src="/icons/accessibility.png"
+        alt=""
+        width={44}
+        height={44}
+        className="h-11 w-11 shrink-0 rounded-full object-cover"
+        aria-hidden
+        decoding="async"
+      />
+    </picture>
   )
 }
 
