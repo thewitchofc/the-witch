@@ -27,25 +27,25 @@ const buildFocus = [
   { title: 'ביצועים מההתחלה', body: 'מהירות, נגישות ומבנה SEO נכנסים לתהליך כבר בשלב הבנייה.' },
 ] as const
 
+const founderStoryParagraphs = [
+  'אחרי שעבדתי עם כמה חברות פרסום ושיווק בארץ הבנתי שרוב האתרים היום בנויים על תבניות. זה אולי נראה טוב בהתחלה, אבל בסוף זה מגביל גם את העיצוב וגם את מה שאפשר לעשות עם האתר אחר כך.',
+  'בשלב מסוים החלטתי שאני רוצה ללמוד לפתח באמת ולא להיות תלויה בתבניות מוכנות ברמה שגם בעל עסק שלא מהתחום יכול להתעסק בהן.',
+  'רציתי לקפוץ למים העמוקים ולהבין באמת מה עומד מאחורי כל דבר ואיך אפשר לחולל קסמים. איך לקחת רעיון שיש למישהו בראש ולהפוך אותו לאתר שבאמת מרגיש כמו שהוא דמיין. רציתי לבנות אתרים בלי גבולות ובלי עיצובים שחוזרים על עצמם.',
+  'בנוסף לזה, הרבה חברות אוהבות לתת ללקוח לעשות שינויים לבד כדי ״לתת לו שליטה״, אבל בפועל רוב האנשים לא באמת מבינים בזה וזה בדרך כלל פשוט יוצר בלגן באתר עם הזמן.',
+  'היום אני בונה אתרים בקוד מותאם אישית כדי שכל עסק יוכל לקבל משהו שמרגיש באמת שלו. לא אתר גנרי שנראה כמו עוד עשרה אחרים.',
+  'חשוב לי שהאתר לא רק ייראה טוב אלא גם ירגיש נכון, יעבוד מהר, וייתן ללקוח תחושה שהוא קיבל בדיוק את מה שהוא רצה.',
+] as const
+
 export function About() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 overflow-x-hidden py-10 text-white md:py-14"
+      className="scroll-mt-24 py-10 text-white md:py-14"
       dir="rtl"
       lang="he"
       aria-labelledby="about-heading"
     >
       <div className="relative mx-auto w-full min-w-0 max-w-5xl py-8 sm:py-10 md:py-14">
-        <div
-          className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -left-28 top-64 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl"
-          aria-hidden
-        />
-
         <div
           className="pointer-events-none absolute left-1/2 top-56 z-0 -translate-x-1/2 motion-reduce:hidden motion-safe:animate-[spin_44s_linear_infinite]"
           aria-hidden
@@ -99,6 +99,18 @@ export function About() {
               <p className="text-lg font-semibold leading-relaxed text-white md:text-2xl">
                 אני לא מוכרת זמן. אני מוכרת תוצאה.
               </p>
+            </div>
+
+            <div className="mx-auto mt-8 max-w-2xl text-right">
+              <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">היי, אני אור</h2>
+              <p className="mt-2 text-base leading-relaxed text-slate-400 md:text-lg">
+                או כמו שרוב האנשים מכירים אותי ״המכשפה״.
+              </p>
+              <div className="mt-5 space-y-4 border-t border-white/[0.08] pt-5 text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
+                {founderStoryParagraphs.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+                ))}
+              </div>
             </div>
 
             <div className="mt-8 flex justify-center">

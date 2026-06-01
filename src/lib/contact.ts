@@ -1,6 +1,10 @@
 /** מספר וואטסאפ ללא +, ספרות בלבד (E.164 בלי +). ברירת מחדל: 0559939345 */
 const DEFAULT_WHATSAPP_E164 = '972559939345'
 
+/** טקסט מוכן מראש לכפתור וואטסאפ הצף */
+export const WHATSAPP_FLOAT_PREFILL =
+  'היי המכשפה, הגעתי דרך האתר שלך ואשמח לקבל עוד פרטים'
+
 export function getWhatsAppE164(): string {
   const raw =
     typeof import.meta.env.VITE_WHATSAPP_E164 === 'string' && import.meta.env.VITE_WHATSAPP_E164

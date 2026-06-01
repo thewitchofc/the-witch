@@ -1,5 +1,5 @@
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
-import { buildWhatsAppUrl } from '../lib/contact'
+import { WHATSAPP_FLOAT_PREFILL, buildWhatsAppUrl } from '../lib/contact'
 import { shouldShowCookieBanner, trackCtaClick } from '../lib/analytics'
 
 function WhatsAppIcon() {
@@ -26,7 +26,7 @@ export function WhatsAppWidget() {
   const cookieBannerVisible =
     (shouldShowCookieBanner() && consent === 'unknown') || preferencesOpen
 
-  const href = buildWhatsAppUrl()
+  const href = buildWhatsAppUrl(WHATSAPP_FLOAT_PREFILL)
 
   return (
     <div

@@ -14,7 +14,7 @@ export function SeoContent() {
 
   return (
     <section
-      className="pointer-events-auto relative z-[11] border-t border-white/[0.08] bg-[#020617]/55 py-14 text-white shadow-[0_-20px_48px_rgba(2,6,23,0.4)] backdrop-blur-2xl backdrop-saturate-150 motion-reduce:bg-[#020617]/95 motion-reduce:shadow-none motion-reduce:backdrop-blur-none sm:py-16"
+      className="pointer-events-auto relative z-[11] border-t border-white/[0.08] bg-[#020617]/55 py-8 text-white shadow-[0_-12px_32px_rgba(2,6,23,0.35)] backdrop-blur-2xl backdrop-saturate-150 motion-reduce:bg-[#020617]/95 motion-reduce:shadow-none motion-reduce:backdrop-blur-none sm:py-9"
       dir="rtl"
       lang="he"
       aria-labelledby={HEADING_ID}
@@ -22,11 +22,11 @@ export function SeoContent() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <h2
           id={HEADING_ID}
-          className="text-xl font-semibold tracking-tight text-white sm:text-2xl md:text-3xl"
+          className="text-lg font-semibold tracking-tight text-white sm:text-xl"
         >
           המכשפה לבניית אתרים
         </h2>
-        <p className="mt-4 text-pretty text-sm leading-relaxed text-white/70 sm:text-base sm:leading-relaxed">
+        <p className="mt-2 text-pretty text-sm leading-snug text-white/70 sm:mt-2.5 sm:text-[15px] sm:leading-relaxed">
           <CustomLink
             to="/hamachshefa-bniyat-atarim"
             className="font-medium text-cyan-200/95 underline decoration-cyan-400/35 underline-offset-2 transition hover:text-cyan-100 hover:decoration-cyan-300/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
@@ -40,7 +40,7 @@ export function SeoContent() {
           type="button"
           aria-expanded={open}
           aria-controls={regionId}
-          className="mt-6 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-cyan-200/95 shadow-sm ring-1 ring-white/[0.04] transition hover:border-cyan-400/25 hover:bg-white/[0.07] hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 active:opacity-90"
+          className="mt-3 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium text-cyan-200/95 shadow-sm ring-1 ring-white/[0.04] transition hover:border-cyan-400/25 hover:bg-white/[0.07] hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 active:opacity-90 sm:mt-3.5"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? 'סגור' : 'קרא עוד'}
@@ -53,7 +53,7 @@ export function SeoContent() {
           }`}
           aria-hidden={!open}
         >
-          <div className="mt-6 space-y-4 border-t border-white/[0.06] pt-6 text-pretty text-sm leading-relaxed text-white/65 sm:text-base sm:leading-relaxed">
+          <div className="mt-4 space-y-3 border-t border-white/[0.06] pt-4 text-pretty text-sm leading-relaxed text-white/65 sm:text-[15px] sm:leading-relaxed">
             <p>
               בניית אתרים מקצועית היום היא הרבה מעבר לעיצוב יפה, מדובר ביצירת מערכת שמביאה תוצאות בפועל. המכשפה
               לבניית אתרים מתמקדת בהמרות, חוויית משתמש ודיוק אסטרטגי.

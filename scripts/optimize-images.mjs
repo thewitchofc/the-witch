@@ -44,19 +44,27 @@ async function main() {
     out.push('public/logo.webp')
   }
 
-  const ogIn = path.join(root, 'public/og-default.png')
   const ogOut = path.join(root, 'public/og-default.webp')
+  const ogIn = path.join(root, 'public/og-default.png')
+  const ogBrand = path.join(root, 'public/brand-favicon-source.png')
   if (existsSync(ogIn)) {
     await sharp(ogIn)
       .resize(1200, 630, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 82, effort: 5 })
       .toFile(ogOut)
     out.push('public/og-default.webp')
+  } else if (existsSync(ogBrand)) {
+    await sharp(ogBrand)
+      .resize(1200, 630, { fit: 'cover', position: 'centre' })
+      .webp({ quality: 85, effort: 5 })
+      .toFile(ogOut)
+    out.push('public/og-default.webp')
   }
 
-  const faviconSource = path.join(root, 'public/logo.webp')
+  const faviconSource = path.join(root, 'public/brand-favicon-source.png')
   if (existsSync(faviconSource)) {
     const faviconSizes = [
+      [32, 'favicon-32.png'],
       [48, 'favicon-48.png'],
       [192, 'favicon-192.png'],
       [180, 'apple-touch-icon.png'],
@@ -69,6 +77,8 @@ async function main() {
         .toFile(outPath)
       out.push(`public/${name}`)
     }
+    await sharp(path.join(root, 'public', 'favicon-48.png')).toFile(path.join(root, 'public', 'favicon.ico'))
+    out.push('public/favicon.ico')
   }
 
   const a11yIn = path.join(root, 'public/icons/accessibility.png')
