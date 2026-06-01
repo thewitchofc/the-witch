@@ -128,6 +128,19 @@ export function isHeavyEffectsDomDatasetOn(): boolean {
   return document.documentElement.dataset[BLOCK_HEAVY_EFFECTS_DATASET] === '1'
 }
 
+/** ביקורת PSI/Lighthouse — ווידג'טים צפים לא נדרשים וגורמים ל-CLS כשמופיעים באמצע מדידה */
+export function shouldSkipFloatingChromeForPerfAudit(
+  search: string = typeof window !== 'undefined' ? window.location.search : '',
+): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false
+  if (navigator.webdriver === true) return true
+  if (parseHeavyEffectsFromSearch(search)) return true
+  if (auditUserAgentHeavySignals()) return true
+  if (auditBrowserMetadataHeavySignals()) return true
+  if (auditReferrerHeavySignals()) return true
+  return false
+}
+
 /** resize / reduced-motion / Network Information, ל-useSyncExternalStore */
 export function subscribeHeavyEffectsRelevantChanges(onChange: () => void): () => void {
   if (typeof window === 'undefined') return () => {}

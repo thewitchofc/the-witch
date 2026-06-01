@@ -127,6 +127,17 @@
       body {
         background-color: #020617;
       }
+      @font-face {
+        font-family: 'Heebo Fallback';
+        src: local('Arial');
+        size-adjust: 100%;
+        ascent-override: 105%;
+        descent-override: 35%;
+        line-gap-override: 0%;
+      }
+      body {
+        font-family: 'Heebo', 'Heebo Fallback', ui-sans-serif, system-ui, sans-serif;
+      }
     </style>
   </head>
   <body dir="rtl">

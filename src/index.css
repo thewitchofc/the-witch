@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Heebo', 'Heebo Fallback', ui-sans-serif, system-ui, sans-serif;
 }
 
 /**
@@ -66,6 +66,14 @@ body {
 html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
   animation: none !important;
   transform: none !important;
+}
+
+/* דף הבית stacked: בלי translateY ב-reveal — פחות CLS במובייל/PSI */
+html[data-block-heavy-effects='1'] .why-me-stacked .hero-reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  will-change: auto;
 }
 
 /* CosmicField: ה־impl עולה אחרי dynamic import — fade-in שלא ירגיש ״קופץ״ */

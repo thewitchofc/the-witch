@@ -2,8 +2,7 @@ import { lazy, Suspense } from 'react'
 import { CosmicField } from '../components/CosmicField'
 import { Hero, HeroSpline } from '../components/Hero'
 import { Seo } from '../components/Seo'
-
-const WhyMe = lazy(() => import('../components/WhyMe'))
+import WhyMe from '../components/WhyMe'
 const HowIBuildSitesSection = lazy(() =>
   import('../components/HowIBuildSitesSection').then((m) => ({ default: m.HowIBuildSitesSection })),
 )
@@ -25,9 +24,7 @@ export function HomePage() {
       <HeroSpline src="https://my.spline.design/particlenebula-yMPUIhRUYftCj8iVtsWaBcG6/" />
       <div className="pointer-events-none relative z-[10] flex min-h-[100svh] min-w-0 flex-1 flex-col supports-[min-height:100dvh]:min-h-[100dvh]">
         <Hero layout="stacked" showCosmicField={false} />
-        <Suspense fallback={<div className="min-h-[220px] md:min-h-[280px]" aria-hidden />}>
-          <WhyMe variant="stacked" />
-        </Suspense>
+        <WhyMe variant="stacked" />
         <Suspense fallback={<div className="min-h-[480px] md:min-h-[560px]" aria-hidden />}>
           <HowIBuildSitesSection />
         </Suspense>

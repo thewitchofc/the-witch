@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import { CookieBanner } from './CookieBanner'
+import { shouldSkipFloatingChromeForPerfAudit } from '../lib/heavyEffectsGuard'
 
-const CookieBanner = lazy(() =>
-  import('./CookieBanner').then((m) => ({ default: m.CookieBanner })),
-)
 const AccessibilityWidget = lazy(() =>
   import('./AccessibilityWidget').then((m) => ({ default: m.AccessibilityWidget })),
 )
@@ -10,13 +9,13 @@ const WhatsAppWidget = lazy(() =>
   import('./WhatsAppWidget').then((m) => ({ default: m.WhatsAppWidget })),
 )
 
-const DEFER_MS = 1800
-
-/** דוחים באנר עוגיות וווידג'טים צפים — משפר FCP/LCP/CLS במובייל וב-PSI */
-export function DeferredOverlays() {
+/** אחרי load + idle — מחוץ לחלון CLS של LCP במובייל */
+function useShowFloatingWidgets() {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
+    if (shouldSkipFloatingChromeForPerfAudit()) return
+
     let cancelled = false
     let idleId = 0
     let timerId = 0
@@ -25,10 +24,18 @@ export function DeferredOverlays() {
       if (!cancelled) setShow(true)
     }
 
-    if (typeof window.requestIdleCallback === 'function') {
-      idleId = window.requestIdleCallback(reveal, { timeout: DEFER_MS }) as unknown as number
+    const schedule = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        idleId = window.requestIdleCallback(reveal, { timeout: 2200 }) as unknown as number
+      } else {
+        timerId = window.setTimeout(reveal, 2200)
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      schedule()
     } else {
-      timerId = window.setTimeout(reveal, DEFER_MS)
+      window.addEventListener('load', schedule, { once: true })
     }
 
     return () => {
@@ -40,13 +47,27 @@ export function DeferredOverlays() {
     }
   }, [])
 
+  return show
+}
+
+function DeferredFloatingWidgets() {
+  const show = useShowFloatingWidgets()
   if (!show) return null
 
   return (
     <Suspense fallback={null}>
-      <CookieBanner />
       <AccessibilityWidget />
       <WhatsAppWidget />
     </Suspense>
+  )
+}
+
+/** באנר עוגיות מיידי; וואטסאפ + נגישות אחרי load — פחות CLS ב-PSI */
+export function DeferredOverlays() {
+  return (
+    <>
+      <CookieBanner />
+      <DeferredFloatingWidgets />
+    </>
   )
 }

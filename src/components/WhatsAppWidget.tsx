@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
 import { WHATSAPP_FLOAT_PREFILL, buildWhatsAppUrl } from '../lib/contact'
 import { shouldShowCookieBanner, trackCtaClick } from '../lib/analytics'
@@ -25,12 +26,20 @@ export function WhatsAppWidget() {
   const { consent, preferencesOpen } = useAnalyticsConsent()
   const cookieBannerVisible =
     (shouldShowCookieBanner() && consent === 'unknown') || preferencesOpen
+  const [allowBottomTransition, setAllowBottomTransition] = useState(false)
+
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => setAllowBottomTransition(true))
+    return () => window.cancelAnimationFrame(id)
+  }, [])
 
   const href = buildWhatsAppUrl(WHATSAPP_FLOAT_PREFILL)
 
   return (
     <div
-      className={`pointer-events-none fixed right-0 z-[10002] flex flex-col items-end pr-[max(0.75rem,env(safe-area-inset-right))] transition-[bottom] duration-200 ${
+      className={`pointer-events-none fixed right-0 z-[10002] flex flex-col items-end pr-[max(0.75rem,env(safe-area-inset-right))] ${
+        allowBottomTransition ? 'transition-[bottom] duration-200' : ''
+      } ${
         cookieBannerVisible
           ? 'bottom-[min(42vh,15.5rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]'
           : 'bottom-0 pb-[max(0.75rem,env(safe-area-inset-bottom))]'

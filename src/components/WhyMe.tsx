@@ -145,7 +145,7 @@ export default function WhyMe({ variant = 'default' }: { variant?: WhyMeVariant 
     <section
       className={
         stacked
-          ? 'pointer-events-none flex-shrink-0 px-3 py-3 text-center md:px-4 md:py-6'
+          ? 'why-me-stacked pointer-events-none flex-shrink-0 px-3 py-3 text-center md:px-4 md:py-6'
           : 'pointer-events-none px-4 py-16 text-center md:py-20'
       }
     >

@@ -82,6 +82,12 @@ export function AccessibilityWidget() {
   const { consent, preferencesOpen } = useAnalyticsConsent()
   const cookieBannerVisible =
     (shouldShowCookieBanner() && consent === 'unknown') || preferencesOpen
+  const [allowBottomTransition, setAllowBottomTransition] = useState(false)
+
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => setAllowBottomTransition(true))
+    return () => window.cancelAnimationFrame(id)
+  }, [])
 
   useEffect(() => {
     if (!open) return
@@ -105,7 +111,9 @@ export function AccessibilityWidget() {
 
   return (
     <div
-      className={`pointer-events-none fixed left-0 z-[10002] pl-[max(0.75rem,env(safe-area-inset-left))] transition-[bottom] duration-200 ${
+      className={`pointer-events-none fixed left-0 z-[10002] pl-[max(0.75rem,env(safe-area-inset-left))] ${
+        allowBottomTransition ? 'transition-[bottom] duration-200' : ''
+      } ${
         cookieBannerVisible
           ? 'bottom-[min(42vh,15.5rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]'
           : 'bottom-0 pb-[max(0.75rem,env(safe-area-inset-bottom))]'
