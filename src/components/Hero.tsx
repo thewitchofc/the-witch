@@ -4,34 +4,15 @@ import { CustomLink } from './CustomLink'
 import { trackCtaClick } from '../lib/analytics'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 import { CosmicField } from './CosmicField'
+import { HeroLogo } from './HeroLogo'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { useHeroScrollFade } from '../hooks/useHeroScrollFade'
-import { SITE_LOGO_SRC } from '../lib/siteLogo'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const WITCH_SECTION_IO: IntersectionObserverInit = {
   root: null,
   rootMargin: '-48px 0px -12% 0px',
   threshold: 0.08,
-}
-
-/** לוגו מונוכרומטי לבן (SVG עם צללים אפורים) + זוהר לבן — קבוע, בלי הובר/לחיצה */
-function buildLogoFilterStyle(): CSSProperties {
-  return {
-    filter: [
-      'brightness(0)',
-      'invert(1)',
-      'drop-shadow(0 0 12px rgba(255, 255, 255, 0.32))',
-      'drop-shadow(0 0 36px rgba(248, 250, 252, 0.14))',
-    ].join(' '),
-    imageRendering: 'auto' as const,
-  }
-}
-
-function buildLogoViewStyle(): CSSProperties {
-  return {
-    transform: 'none',
-    transformOrigin: 'center center',
-  }
 }
 
 const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
@@ -177,19 +158,6 @@ export function Hero({
 
   useHeroScrollFade(sectionRef, scrollFadeBackdropRef)
 
-  const logoViewStyle = useMemo(() => buildLogoViewStyle(), [])
-
-  const logoImageStyle = useMemo((): CSSProperties => {
-    return {
-      ...buildLogoFilterStyle(),
-      ...logoViewStyle,
-    }
-  }, [logoViewStyle])
-
-  const desktopLogoImgClass = stacked
-    ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
-    : 'mx-auto h-auto w-auto max-h-[min(30vh,190px)] object-contain object-center select-none md:max-h-[min(36vh,240px)] lg:max-h-[min(40vh,276px)] xl:max-h-[min(44vh,310px)]'
-
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -256,47 +224,13 @@ export function Hero({
             <div
               className={
                 stacked
-                  ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:block md:pt-7'
-                  : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 hidden w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:block md:pt-7'
+                  ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:pt-7'
+                  : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:pt-7'
               }
               lang="en"
               dir="ltr"
             >
-              <img
-                src={SITE_LOGO_SRC}
-                alt="The Witch logo"
-                width={1690}
-                height={890}
-                decoding="async"
-                fetchPriority="high"
-                className={`${desktopLogoImgClass} brightness-0 invert`}
-                style={logoImageStyle}
-              />
-            </div>
-
-            <div
-              className="pointer-events-auto hero-reveal--lcp mt-2 block w-full min-w-0 max-w-full shrink-0 pt-5 [overflow:visible] md:hidden"
-              dir="ltr"
-              lang="en"
-            >
-              <div
-                className={
-                  stacked
-                    ? 'mx-auto aspect-[1690/890] w-[min(88vw,272px)] shrink-0'
-                    : 'mx-auto aspect-[1690/890] w-[min(90vw,300px)] shrink-0 sm:w-[min(88vw,320px)]'
-                }
-              >
-                <img
-                  src={SITE_LOGO_SRC}
-                  alt="The Witch"
-                  width={1690}
-                  height={890}
-                  decoding="async"
-                  fetchPriority="high"
-                  className="h-full w-full object-contain object-center select-none brightness-0 invert"
-                  style={logoImageStyle}
-                />
-              </div>
+              <HeroLogo stacked={stacked} />
             </div>
 
             <div
@@ -306,7 +240,7 @@ export function Hero({
                   : 'hero-content flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-5 md:gap-8'
               }
             >
-            <h1 className="hero-reveal--lcp mx-auto min-h-[4.85rem] w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:min-h-0 md:max-w-none md:text-5xl md:leading-snug lg:text-6xl lg:leading-[1.08]">
+            <h1 className="hero-reveal--lcp mx-auto min-h-[4.85rem] w-full min-w-0 max-w-[260px] text-balance break-words font-sans text-2xl font-semibold leading-snug tracking-tight md:min-h-[3.25rem] md:max-w-none md:text-5xl md:leading-snug lg:min-h-[3.75rem] lg:text-6xl lg:leading-[1.08]">
               <span className="text-white md:hidden" style={heroHeadlineGlyphStyle}>
                 {headline}
               </span>

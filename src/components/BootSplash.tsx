@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState, useSyncExternalStore } from 'react
 import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { useIsMobileViewport } from '../hooks/useIsMobileViewport'
 import { shouldBlockHeavyEffects } from '../lib/heavyEffectsGuard'
-import { SITE_LOGO_SRC } from '../lib/siteLogo'
+import { HeroLogo } from './HeroLogo'
 
 const easeOutCubic = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -86,15 +86,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                   : `witch-boot-logo-in 0.65s ${easeOutCubic} forwards`,
               }}
             >
-              <img
-                src={SITE_LOGO_SRC}
-                alt="The Witch, לוגו"
-                width={1690}
-                height={890}
-                decoding="async"
-                fetchPriority="high"
-                className="relative z-[1] h-[min(22vh,140px)] w-auto object-contain object-center brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,0.45)] sm:h-[min(24vh,160px)]"
-              />
+              <HeroLogo splash alt="The Witch, לוגו" />
             </div>
 
             <div
