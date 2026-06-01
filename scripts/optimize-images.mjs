@@ -2,7 +2,7 @@
  * המרה ל־WebP + דחיסה. הרץ: `npm run images:optimize`
  *
  * מקורות (הוסף לפני ריצה אם חסר — לדוגמה אחרי שחידשתי עיצוב):
- *   public/witch.png, public/logo.png, public/og-default.png
+ *   public/witch.png, public/og-default.png
  *   src/assets/royal-fruit-hero.png
  * הפלט נשמר כ־*.webp; הקבצים ב־repo אחרי build ראשון כבר WebP.
  */
@@ -51,29 +51,14 @@ async function main() {
     out.push('src/assets/royal-fruit-hero.webp')
   }
 
-  const logoIn = path.join(root, 'public/logo.png')
   const logoBrand = path.join(root, 'public/brand-favicon-source.png')
   const logoHeroOut = path.join(root, 'public/logo-hero.webp')
-  const logoOut = path.join(root, 'public/logo.webp')
   if (existsSync(logoBrand)) {
     await sharp(logoBrand)
       .resize(1200, null, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 88, effort: 5 })
       .toFile(logoHeroOut)
     out.push('public/logo-hero.webp')
-  }
-  if (existsSync(logoIn)) {
-    await sharp(logoIn)
-      .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 88, effort: 5 })
-      .toFile(logoOut)
-    out.push('public/logo.webp')
-  } else if (existsSync(logoBrand)) {
-    const logoSquare = path.join(root, 'public/.logo-square-tmp.png')
-    await writeRoundedSquareFavicon(logoBrand, 512, logoSquare)
-    await sharp(logoSquare).webp({ quality: 85, effort: 5 }).toFile(logoOut)
-    await import('node:fs/promises').then((fs) => fs.unlink(logoSquare).catch(() => {}))
-    out.push('public/logo.webp')
   }
 
   const ogOut = path.join(root, 'public/og-default.webp')
