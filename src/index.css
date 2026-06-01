@@ -752,6 +752,16 @@ html[data-a11y-high-contrast] :where(a, button) {
   color: #7dd3fc !important;
 }
 
+html[data-a11y-high-contrast] a.whatsapp-widget-btn,
+html[data-a11y-high-contrast] a.whatsapp-widget-btn:visited {
+  color: #fff !important;
+}
+
+html[data-a11y-high-contrast] .whatsapp-widget-icon,
+html[data-a11y-high-contrast] .whatsapp-widget-icon path {
+  fill: #fff !important;
+}
+
 html[data-a11y-high-contrast] :where(input, textarea, select) {
   border-color: rgba(255, 255, 255, 0.55) !important;
   background-color: #0f172a !important;
@@ -760,6 +770,11 @@ html[data-a11y-high-contrast] :where(input, textarea, select) {
 
 html[data-a11y-high-contrast] :where(button, [role='button']) {
   border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+
+html[data-a11y-high-contrast] .footer-inline-link {
+  border: none !important;
+  background: transparent !important;
 }
 
 html[data-a11y-underline-links] a[href]:not([aria-hidden='true']) {

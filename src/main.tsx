@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter } from 'react-router-dom'
 import { AccessibilityWidget } from './components/AccessibilityWidget'
+import { WhatsAppWidget } from './components/WhatsAppWidget'
 import { AnalyticsListener } from './components/AnalyticsListener'
 import { BootSplash } from './components/BootSplash'
 import { CookieBanner } from './components/CookieBanner'
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')!).render(
                 </BootSplash>
                 <CookieBanner />
                 <AccessibilityWidget />
+                <WhatsAppWidget />
               </AccessibilityProvider>
             </AnalyticsConsentProvider>
           </PageTransitionProvider>

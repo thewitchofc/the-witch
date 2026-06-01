@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from 'react'
 import { trackEvent, trackMetaContact, trackMetaLead } from '../lib/analytics'
+import { buildWhatsAppUrl } from '../lib/contact'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const fieldShellClass =
@@ -80,12 +81,6 @@ const NO_SITE_SENTINEL = 'אין אתר'
 
 /** כשלוחצים «אין» ברשתות, שני השדות בטופס מקבלים את אותו ערך קנוני */
 const NO_SOCIAL_SENTINEL = 'אין'
-
-/** מספר וואטסאפ לקבלת הפניות, בלי +, ספרות בלבד (למשל 972501234567). אפשר להגדיר ב-.env: VITE_WHATSAPP_E164 */
-const WHATSAPP_E164 =
-  typeof import.meta.env.VITE_WHATSAPP_E164 === 'string' && import.meta.env.VITE_WHATSAPP_E164
-    ? String(import.meta.env.VITE_WHATSAPP_E164).replace(/\D/g, '')
-    : '972000000000'
 
 const LEAD_EMAIL_ENDPOINT =
   typeof import.meta.env.VITE_LEAD_EMAIL_ENDPOINT === 'string'
@@ -571,8 +566,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
           form_step: formStep,
         })
       } else {
-        const waDigits = WHATSAPP_E164.replace(/\D/g, '')
-        const url = `https://wa.me/${waDigits}?text=${encodeURIComponent(body)}`
+        const url = buildWhatsAppUrl(body)
         trackEvent('form_submit', {
           form_name: 'lead_match_whatsapp',
           form_step: formStep,

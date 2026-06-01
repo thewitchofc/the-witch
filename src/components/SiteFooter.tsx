@@ -66,7 +66,7 @@ export function SiteFooter() {
           </CustomLink>
           <button
             type="button"
-            className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            className="footer-inline-link cursor-pointer appearance-none border-0 bg-transparent p-0 font-medium text-cyan-300/95 underline-offset-2 shadow-none transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
             onClick={openPreferences}
           >
             ניהול עוגיות
