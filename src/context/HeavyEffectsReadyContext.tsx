@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { shouldBlockHeavyEffects } from '../lib/heavyEffectsGuard'
 
 export type EffectsStage = 0 | 1 | 2 | 3
 
@@ -32,10 +33,14 @@ const STAGE_3_MS = 400
  * אחרי `ready`: effectsStage 1 → 2 (200ms) → 3 (400ms) כדי לפזר עומס.
  */
 export function HeavyEffectsReadyProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(() =>
+    typeof window !== 'undefined' ? shouldBlockHeavyEffects() : false,
+  )
   const [effectsStage, setEffectsStage] = useState<EffectsStage>(0)
 
   useEffect(() => {
+    if (ready) return
+
     let cancelled = false
     const t0 = performance.now()
     let idleId: number | undefined
@@ -63,7 +68,7 @@ export function HeavyEffectsReadyProvider({ children }: { children: ReactNode })
       }
       if (timerId !== undefined) window.clearTimeout(timerId)
     }
-  }, [])
+  }, [ready])
 
   useEffect(() => {
     if (!ready) {

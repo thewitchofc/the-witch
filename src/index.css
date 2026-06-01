@@ -546,6 +546,14 @@ html[data-block-heavy-effects='1'] .cosmic-scroll-parallax {
 }
 
 /* BootSplash: אנימציות בלי framer-motion */
+@media (min-width: 768px) {
+  .hero-logo-mark--glow {
+    filter: brightness(0) invert(1)
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.32))
+      drop-shadow(0 0 36px rgba(248, 250, 252, 0.14)) !important;
+  }
+}
+
 @keyframes witch-boot-logo-in {
   from {
     opacity: 0;

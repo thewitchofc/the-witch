@@ -7,12 +7,7 @@ import {
 } from '../lib/siteLogo'
 
 const logoFilterStyle: CSSProperties = {
-  filter: [
-    'brightness(0)',
-    'invert(1)',
-    'drop-shadow(0 0 12px rgba(255, 255, 255, 0.32))',
-    'drop-shadow(0 0 36px rgba(248, 250, 252, 0.14))',
-  ].join(' '),
+  filter: 'brightness(0) invert(1)',
   imageRendering: 'auto',
 }
 
@@ -44,7 +39,7 @@ export function HeroLogo({
         height={SITE_LOGO_HEIGHT}
         decoding="sync"
         fetchPriority="high"
-        className="h-full w-full object-contain object-center select-none brightness-0 invert"
+        className="hero-logo-mark h-full w-full object-contain object-center select-none brightness-0 invert md:hero-logo-mark--glow"
         style={logoFilterStyle}
       />
     </div>

@@ -217,14 +217,14 @@ export function Hero({
           <div
             className={
               stacked
-                ? 'flex w-full min-w-0 max-w-full flex-col items-center gap-2 break-words px-3 pt-6 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
+                ? 'flex w-full min-w-0 max-w-full flex-col items-center gap-2 break-words px-3 pt-4 pb-3 text-center md:max-w-4xl md:gap-5 md:px-4 md:py-5 lg:max-w-5xl'
                 : 'flex w-full min-w-0 max-w-full flex-col items-center gap-5 break-words px-4 pt-20 pb-10 text-center md:max-w-4xl md:gap-8 md:py-8 lg:max-w-5xl'
             }
           >
             <div
               className={
                 stacked
-                  ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-4 md:mt-2 md:pt-7'
+                  ? 'pointer-events-auto hero-reveal--lcp mb-0 mt-1 w-full min-w-0 max-w-full shrink-0 pt-4 [overflow:visible] md:mb-4 md:mt-2 md:pt-7'
                   : 'pointer-events-auto hero-reveal--lcp mb-0 mt-2 w-full min-w-0 max-w-full shrink-0 pt-6 [overflow:visible] md:mb-10 md:mt-2 md:pt-7'
               }
               lang="en"

@@ -2,11 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter } from 'react-router-dom'
-import { AccessibilityWidget } from './components/AccessibilityWidget'
-import { WhatsAppWidget } from './components/WhatsAppWidget'
 import { AnalyticsListener } from './components/AnalyticsListener'
 import { BootSplash } from './components/BootSplash'
-import { CookieBanner } from './components/CookieBanner'
+import { DeferredOverlays } from './components/DeferredOverlays'
 import { HeavyEffectsDomSync } from './components/HeavyEffectsDomSync'
 import { AccessibilityProvider } from './context/AccessibilityContext'
 import { AnalyticsConsentProvider } from './context/AnalyticsConsentContext'
@@ -38,9 +36,7 @@ createRoot(document.getElementById('root')!).render(
                   <AnalyticsListener />
                   <App />
                 </BootSplash>
-                <CookieBanner />
-                <AccessibilityWidget />
-                <WhatsAppWidget />
+                <DeferredOverlays />
               </AccessibilityProvider>
             </AnalyticsConsentProvider>
           </PageTransitionProvider>
