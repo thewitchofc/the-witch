@@ -54,6 +54,23 @@ async function main() {
     out.push('public/og-default.webp')
   }
 
+  const faviconSource = path.join(root, 'public/logo.webp')
+  if (existsSync(faviconSource)) {
+    const faviconSizes = [
+      [48, 'favicon-48.png'],
+      [192, 'favicon-192.png'],
+      [180, 'apple-touch-icon.png'],
+    ]
+    for (const [size, name] of faviconSizes) {
+      const outPath = path.join(root, 'public', name)
+      await sharp(faviconSource)
+        .resize(size, size, { fit: 'cover', position: 'centre' })
+        .png({ compressionLevel: 9 })
+        .toFile(outPath)
+      out.push(`public/${name}`)
+    }
+  }
+
   const a11yIn = path.join(root, 'public/icons/accessibility.png')
   const a11yWebp = path.join(root, 'public/icons/accessibility.webp')
   if (existsSync(a11yIn)) {
