@@ -6,16 +6,13 @@ import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaCla
 import { CosmicField } from './CosmicField'
 import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { useHeroScrollFade } from '../hooks/useHeroScrollFade'
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { SITE_LOGO_SRC } from '../lib/siteLogo'
 
 const WITCH_SECTION_IO: IntersectionObserverInit = {
   root: null,
   rootMargin: '-48px 0px -12% 0px',
   threshold: 0.08,
 }
-
-/** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
-const logoSrc = '/logo.svg'
 
 /** לוגו מונוכרומטי לבן (SVG עם צללים אפורים) + זוהר לבן — קבוע, בלי הובר/לחיצה */
 function buildLogoFilterStyle(): CSSProperties {
@@ -266,13 +263,13 @@ export function Hero({
               dir="ltr"
             >
               <img
-                src={logoSrc}
+                src={SITE_LOGO_SRC}
                 alt="The Witch logo"
                 width={1690}
                 height={890}
                 decoding="async"
                 fetchPriority="high"
-                className={desktopLogoImgClass}
+                className={`${desktopLogoImgClass} brightness-0 invert`}
                 style={logoImageStyle}
               />
             </div>
@@ -290,13 +287,13 @@ export function Hero({
                 }
               >
                 <img
-                  src={logoSrc}
+                  src={SITE_LOGO_SRC}
                   alt="The Witch"
                   width={1690}
                   height={890}
                   decoding="async"
                   fetchPriority="high"
-                  className="h-full w-full object-contain object-center select-none"
+                  className="h-full w-full object-contain object-center select-none brightness-0 invert"
                   style={logoImageStyle}
                 />
               </div>

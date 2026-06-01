@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useState, useSyncExternalStore } from 'react
 import { useHeavyEffectsBlocked } from '../hooks/useHeavyEffectsBlocked'
 import { useIsMobileViewport } from '../hooks/useIsMobileViewport'
 import { shouldBlockHeavyEffects } from '../lib/heavyEffectsGuard'
+import { SITE_LOGO_SRC } from '../lib/siteLogo'
 
 const easeOutCubic = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -86,7 +87,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
               }}
             >
               <img
-                src="/logo.svg"
+                src={SITE_LOGO_SRC}
                 alt="The Witch, לוגו"
                 width={1690}
                 height={890}
