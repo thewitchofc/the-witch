@@ -35,11 +35,18 @@ async function main() {
   }
 
   const logoIn = path.join(root, 'public/logo.png')
+  const logoBrand = path.join(root, 'public/brand-favicon-source.png')
   const logoOut = path.join(root, 'public/logo.webp')
   if (existsSync(logoIn)) {
     await sharp(logoIn)
       .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 88, effort: 5 })
+      .toFile(logoOut)
+    out.push('public/logo.webp')
+  } else if (existsSync(logoBrand)) {
+    await sharp(logoBrand)
+      .resize(512, 512, { fit: 'cover', position: 'centre' })
+      .webp({ quality: 85, effort: 5 })
       .toFile(logoOut)
     out.push('public/logo.webp')
   }

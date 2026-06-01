@@ -6,8 +6,8 @@ const PERSON_ID = `${SITE_ORIGIN}/#person`
 const SERVICE_ID = `${SITE_ORIGIN}/#service`
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`
 
-/** לוגו מלא, PNG לתאימות טובה יותר לתוצאות עשירות */
-const LOGO_URL = `${SITE_ORIGIN}/logo.webp`
+/** לוגו מרובע מהמותג, לתוצאות חיפוש ו־Knowledge Panel */
+const LOGO_URL = `${SITE_ORIGIN}/favicon-192.png`
 
 function faqAnswerPlainText(answer: string): string {
   return answer.replace(/\s+/g, ' ').trim()
