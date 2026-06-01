@@ -51,16 +51,6 @@ async function main() {
     out.push('src/assets/royal-fruit-hero.webp')
   }
 
-  const logoBrand = path.join(root, 'public/brand-favicon-source.png')
-  const logoHeroOut = path.join(root, 'public/logo-hero.webp')
-  if (existsSync(logoBrand)) {
-    await sharp(logoBrand)
-      .resize(1200, null, { fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 88, effort: 5 })
-      .toFile(logoHeroOut)
-    out.push('public/logo-hero.webp')
-  }
-
   const ogOut = path.join(root, 'public/og-default.webp')
   const ogIn = path.join(root, 'public/og-default.png')
   const ogBrand = path.join(root, 'public/brand-favicon-source.png')

@@ -14,7 +14,28 @@ const WITCH_SECTION_IO: IntersectionObserverInit = {
   threshold: 0.08,
 }
 
-import { BRAND_LOGO_HEIGHT, BRAND_LOGO_SRC, BRAND_LOGO_WIDTH } from '../lib/brandAssets'
+/** לוגו יחיד מתוך `public/logo.svg` (ללא רקע לבן בקובץ) */
+const logoSrc = '/logo.svg'
+
+/** לוגו מונוכרומטי לבן (SVG עם צללים אפורים) + זוהר לבן — קבוע, בלי הובר/לחיצה */
+function buildLogoFilterStyle(): CSSProperties {
+  return {
+    filter: [
+      'brightness(0)',
+      'invert(1)',
+      'drop-shadow(0 0 12px rgba(255, 255, 255, 0.32))',
+      'drop-shadow(0 0 36px rgba(248, 250, 252, 0.14))',
+    ].join(' '),
+    imageRendering: 'auto' as const,
+  }
+}
+
+function buildLogoViewStyle(): CSSProperties {
+  return {
+    transform: 'none',
+    transformOrigin: 'center center',
+  }
+}
 
 const headline = 'אתרים שמביאים לך לקוחות, לא רק ביקורים.'
 
@@ -159,12 +180,14 @@ export function Hero({
 
   useHeroScrollFade(sectionRef, scrollFadeBackdropRef)
 
+  const logoViewStyle = useMemo(() => buildLogoViewStyle(), [])
+
   const logoImageStyle = useMemo((): CSSProperties => {
     return {
-      filter: 'drop-shadow(0 0 24px rgba(124, 58, 237, 0.35)) drop-shadow(0 0 48px rgba(59, 130, 246, 0.2))',
-      imageRendering: 'auto',
+      ...buildLogoFilterStyle(),
+      ...logoViewStyle,
     }
-  }, [])
+  }, [logoViewStyle])
 
   const desktopLogoImgClass = stacked
     ? 'mx-auto h-auto w-auto max-h-[min(28vh,172px)] object-contain object-center select-none md:max-h-[min(32vh,224px)] lg:max-h-[min(36vh,260px)]'
@@ -243,10 +266,10 @@ export function Hero({
               dir="ltr"
             >
               <img
-                src={BRAND_LOGO_SRC}
+                src={logoSrc}
                 alt="The Witch logo"
-                width={BRAND_LOGO_WIDTH}
-                height={BRAND_LOGO_HEIGHT}
+                width={1690}
+                height={890}
                 decoding="async"
                 fetchPriority="high"
                 className={desktopLogoImgClass}
@@ -262,15 +285,15 @@ export function Hero({
               <div
                 className={
                   stacked
-                    ? 'mx-auto aspect-[1024/682] w-[min(88vw,272px)] shrink-0'
-                    : 'mx-auto aspect-[1024/682] w-[min(90vw,300px)] shrink-0 sm:w-[min(88vw,320px)]'
+                    ? 'mx-auto aspect-[1690/890] w-[min(88vw,272px)] shrink-0'
+                    : 'mx-auto aspect-[1690/890] w-[min(90vw,300px)] shrink-0 sm:w-[min(88vw,320px)]'
                 }
               >
                 <img
-                  src={BRAND_LOGO_SRC}
+                  src={logoSrc}
                   alt="The Witch"
-                  width={BRAND_LOGO_WIDTH}
-                  height={BRAND_LOGO_HEIGHT}
+                  width={1690}
+                  height={890}
                   decoding="async"
                   fetchPriority="high"
                   className="h-full w-full object-contain object-center select-none"
