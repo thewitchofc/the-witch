@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSplineWebGLEmbedAllowed } from '../hooks/useSplineWebGLEmbedAllowed'
+import { HEAVY_EFFECTS_IDLE_FALLBACK_MS, useUserEngaged } from '../hooks/useUserEngaged'
 import { trackEvent } from '../lib/analytics'
 import { isHomePath } from '../lib/cosmicFieldAllowlist'
 
@@ -63,23 +64,23 @@ export function SplineOptInBackground({
 }: SplineOptInBackgroundProps) {
   const { pathname } = useLocation()
   const splineAllowed = useSplineWebGLEmbedAllowed()
+  const userEngaged = useUserEngaged()
   const [activated, setActivated] = useState(false)
   const autoActivationLogged = useRef(false)
   const isHome = isHomePath(pathname)
 
   /**
-   * טעינת Spline רק אחרי load + idle — לא מתחרה ב-LCP ולא מושך את Lighthouse/PSI עד networkIdle
-   * עקב iframe כבד (googleusercontent WebGL). PSI השמיט Chrome-Lighthouse מה-UA אז לא נסמך על זיהוי בוט.
+   * Spline/WebGL עלול לקרוס את PageSpeed (Target closed).
+   * טעינה רק אחרי אינטראקציה, או עיכוב ארוך — לא ב-idle מוקדם של audit.
    */
   useEffect(() => {
-    if (!isHome || !autoActivate || !splineAllowed) return
+    if (!isHome || !autoActivate || !splineAllowed || activated) return
 
     let cancelled = false
-    let idleHandle = 0
-    let idleKind: 'idle' | 'timeout' | null = null
+    let fallbackTimer = 0
 
     const activate = () => {
-      if (cancelled) return
+      if (cancelled || activated) return
       setActivated(true)
       if (!autoActivationLogged.current) {
         autoActivationLogged.current = true
@@ -87,37 +88,20 @@ export function SplineOptInBackground({
       }
     }
 
-    const scheduleAfterIdle = () => {
-      if (cancelled) return
-      if (typeof window.requestIdleCallback === 'function') {
-        idleKind = 'idle'
-        idleHandle = window.requestIdleCallback(activate, { timeout: 4500 }) as unknown as number
-      } else {
-        idleKind = 'timeout'
-        idleHandle = window.setTimeout(activate, 700)
+    if (userEngaged) {
+      activate()
+      return () => {
+        cancelled = true
       }
     }
 
-    const onLoad = () => scheduleAfterIdle()
-
-    if (document.readyState === 'complete') {
-      scheduleAfterIdle()
-    } else {
-      window.addEventListener('load', onLoad, { once: true })
-    }
+    fallbackTimer = window.setTimeout(activate, HEAVY_EFFECTS_IDLE_FALLBACK_MS)
 
     return () => {
       cancelled = true
-      window.removeEventListener('load', onLoad)
-      if (idleHandle !== 0) {
-        if (idleKind === 'idle' && typeof window.cancelIdleCallback === 'function') {
-          window.cancelIdleCallback(idleHandle)
-        } else if (idleKind === 'timeout') {
-          window.clearTimeout(idleHandle)
-        }
-      }
+      window.clearTimeout(fallbackTimer)
     }
-  }, [isHome, autoActivate, splineAllowed, rootClassName])
+  }, [isHome, autoActivate, splineAllowed, rootClassName, userEngaged, activated])
 
   const onActivate = useCallback(() => {
     trackEvent('spline_opt_in_activate', { surface: rootClassName, activation: 'click' })
