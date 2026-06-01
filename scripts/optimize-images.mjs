@@ -14,6 +14,23 @@ import sharp from 'sharp'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..')
 
+/** ~22% — פינות מעוגלות כמו אייקון אפליקציה */
+function faviconCornerRadius(size) {
+  return Math.round(size * 0.22)
+}
+
+async function writeRoundedSquareFavicon(inputPath, size, outPath) {
+  const radius = faviconCornerRadius(size)
+  const mask = Buffer.from(
+    `<svg width="${size}" height="${size}"><rect x="0" y="0" width="${size}" height="${size}" rx="${radius}" ry="${radius}"/></svg>`,
+  )
+  await sharp(inputPath)
+    .resize(size, size, { fit: 'cover', position: 'centre' })
+    .composite([{ input: mask, blend: 'dest-in' }])
+    .png({ compressionLevel: 9 })
+    .toFile(outPath)
+}
+
 async function main() {
   const out = []
   // מכשפה: מוצגת ב־~160px — מספיק 400px @2.5dppx
@@ -44,10 +61,10 @@ async function main() {
       .toFile(logoOut)
     out.push('public/logo.webp')
   } else if (existsSync(logoBrand)) {
-    await sharp(logoBrand)
-      .resize(512, 512, { fit: 'cover', position: 'centre' })
-      .webp({ quality: 85, effort: 5 })
-      .toFile(logoOut)
+    const logoSquare = path.join(root, 'public/.logo-square-tmp.png')
+    await writeRoundedSquareFavicon(logoBrand, 512, logoSquare)
+    await sharp(logoSquare).webp({ quality: 85, effort: 5 }).toFile(logoOut)
+    await import('node:fs/promises').then((fs) => fs.unlink(logoSquare).catch(() => {}))
     out.push('public/logo.webp')
   }
 
@@ -78,10 +95,7 @@ async function main() {
     ]
     for (const [size, name] of faviconSizes) {
       const outPath = path.join(root, 'public', name)
-      await sharp(faviconSource)
-        .resize(size, size, { fit: 'cover', position: 'centre' })
-        .png({ compressionLevel: 9 })
-        .toFile(outPath)
+      await writeRoundedSquareFavicon(faviconSource, size, outPath)
       out.push(`public/${name}`)
     }
     await sharp(path.join(root, 'public', 'favicon-48.png')).toFile(path.join(root, 'public', 'favicon.ico'))
