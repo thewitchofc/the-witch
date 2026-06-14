@@ -45,7 +45,7 @@ export function ApplyPage() {
         <section
           id="contact"
           className={`mx-auto grid w-full scroll-mt-24 items-start gap-8 px-4 py-10 transition-[max-width] duration-300 sm:px-6 md:px-8 md:py-14 ${
-            showIntroCard ? 'max-w-6xl md:grid-cols-[0.9fr_1.1fr] lg:gap-10' : 'max-w-3xl'
+            showIntroCard ? 'max-w-6xl md:grid-cols-[0.9fr_1.1fr] lg:gap-10' : 'max-w-3xl justify-items-center'
           }`}
           aria-labelledby="apply-heading"
         >
@@ -86,7 +86,7 @@ export function ApplyPage() {
             </div>
           </div>
 
-          <div className="w-full min-w-0">
+          <div className={`w-full min-w-0 ${showIntroCard ? '' : 'max-w-2xl'}`}>
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/45 px-4 py-8 shadow-[0_0_48px_rgba(15,23,42,0.26)] ring-1 ring-white/[0.05] backdrop-blur-xl sm:px-6 md:px-8">
               <div
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-l from-transparent via-cyan-300/70 to-transparent"

@@ -21,7 +21,7 @@ export default function FAQ() {
       <JsonLd data={buildFaqPageJsonLd()} />
       <Seo
         title="שאלות נפוצות, The Witch"
-        description="מחירים, זמני פיתוח, WordPress מול קוד מלא, תחזוקה ועוד. תשובות קצרות לפני שמבקשים הצעת מחיר לאתר."
+        description="זמני פיתוח, WordPress מול קוד מלא, תחזוקה ועוד. תשובות קצרות לפני שמבקשים בדיקת התאמה לאתר."
         path="/faq"
       />
       <div className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#020617] text-white supports-[min-height:100dvh]:min-h-[100dvh]">
@@ -49,7 +49,7 @@ export default function FAQ() {
                   שאלות נפוצות
                 </h1>
                 <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-300 md:text-lg">
-                  כל מה שכדאי לדעת לפני שבונים אתר: תהליך, מחירים, קוד מלא, תחזוקה ומה קורה אחרי העלייה לאוויר.
+                  כל מה שכדאי לדעת לפני שבונים אתר: תהליך, קוד מלא, תחזוקה ומה קורה אחרי העלייה לאוויר.
                 </p>
               </header>
 

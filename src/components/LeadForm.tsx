@@ -26,22 +26,13 @@ const fieldControlClass =
 const compactTextAreaClass =
   'mt-3 w-full rounded-2xl border border-white/[0.12] bg-slate-950/62 px-4 py-3 text-base leading-relaxed text-white shadow-inner shadow-black/25 transition placeholder:text-slate-300/80 hover:border-white/[0.18] focus:border-cyan-300/35 focus:outline-none focus:ring-1 focus:ring-cyan-300/20'
 
-const BUDGET_BELOW = 'below' as const
-
 /** מינימום תווים לטקסט חופשי (עדיין עובר heuristics ב־plausibleFreetext) */
 const GOAL_FREETEXT_MIN = 3
 const WHY_NOW_FREETEXT_MIN = 3
 
 const LEAD_FORM_SUBMITTED_STORAGE_KEY = 'the-witch:lead-form-submitted'
 
-const budgetChoices = [
-  { value: '10k-20k', label: '10K–20K' },
-  { value: '20k-40k', label: '20K–40K' },
-  { value: '40k-plus', label: '40K+' },
-  { value: BUDGET_BELOW, label: 'התקציב שלי נמוך יותר' },
-] as const
-
-const FORM_STEP_LABELS = ['פרטים ועסק', 'אתר ורשתות', 'תקציב והמשך'] as const
+const FORM_STEP_LABELS = ['פרטים ועסק', 'אתר ורשתות', 'מטרות והמשך'] as const
 
 const stepNavSecondaryClass =
   'min-h-[48px] touch-manipulation rounded-xl border border-white/[0.14] bg-slate-900/45 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-white/[0.22] hover:bg-slate-800/55 hover:text-white sm:min-h-0'
@@ -73,8 +64,25 @@ function HomeStyleContinueButton({
   )
 }
 
-/** זמני, עדכני לכתובת השירות/דף הנחיתה הסופי */
-const QUICK_SOLUTION_URL = 'https://wordpress.com'
+function buildWhatsAppBody(fd: FormData): string {
+  const pick = (key: string) => String(fd.get(key) ?? '').trim() || '—'
+
+  const first = pick('firstName')
+  const last = pick('lastName')
+  const fullName = [first, last].filter((x) => x !== '—').join(' ').trim() || '—'
+
+  return [
+    `שם: ${fullName}`,
+    `טלפון: ${pick('phone')}`,
+    `עסק: ${pick('business')}`,
+    `אתר קיים: ${pick('existingSite')}`,
+    `אינסטגרם עסקי: ${pick('instagramBusiness')}`,
+    `פייסבוק עסקי: ${pick('facebookBusiness')}`,
+    `מטרה: ${pick('goal')}`,
+    `למה עכשיו: ${pick('whyNow')}`,
+    `הערות: ${pick('notes')}`,
+  ].join('\n')
+}
 
 /** ערך קנוני כשלוחצים «אין אתר», חייב להתאים לכפתור ול־plausibleExistingSite */
 const NO_SITE_SENTINEL = 'אין אתר'
@@ -92,34 +100,7 @@ const LEAD_SHEETS_ENDPOINT =
     ? String(import.meta.env.VITE_LEAD_SHEETS_ENDPOINT).trim()
     : ''
 
-function budgetLabel(value: string): string {
-  if (!value) return '—'
-  const row = budgetChoices.find((o) => o.value === value)
-  return row?.label ?? value
-}
-
-function buildWhatsAppBody(fd: FormData, budgetValue: string): string {
-  const pick = (key: string) => String(fd.get(key) ?? '').trim() || '—'
-
-  const first = pick('firstName')
-  const last = pick('lastName')
-  const fullName = [first, last].filter((x) => x !== '—').join(' ').trim() || '—'
-
-  return [
-    `שם: ${fullName}`,
-    `טלפון: ${pick('phone')}`,
-    `עסק: ${pick('business')}`,
-    `אתר קיים: ${pick('existingSite')}`,
-    `אינסטגרם עסקי: ${pick('instagramBusiness')}`,
-    `פייסבוק עסקי: ${pick('facebookBusiness')}`,
-    `תקציב: ${budgetLabel(budgetValue)}`,
-    `מטרה: ${pick('goal')}`,
-    `למה עכשיו: ${pick('whyNow')}`,
-    `הערות: ${pick('notes')}`,
-  ].join('\n')
-}
-
-function buildLeadPayload(fd: FormData, budgetValue: string): Record<string, string> {
+function buildLeadPayload(fd: FormData): Record<string, string> {
   const pick = (key: string) => String(fd.get(key) ?? '').trim()
   const firstName = pick('firstName')
   const lastName = pick('lastName')
@@ -140,7 +121,6 @@ function buildLeadPayload(fd: FormData, budgetValue: string): Record<string, str
     existingSite: pick('existingSite'),
     instagramBusiness: pick('instagramBusiness'),
     facebookBusiness: pick('facebookBusiness'),
-    budget: budgetLabel(budgetValue),
     goal: pick('goal'),
     whyNow: pick('whyNow'),
     notes: pick('notes'),
@@ -371,7 +351,6 @@ function markLeadFormSubmittedOnDevice(): void {
 }
 
 export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => void }) {
-  const [budget, setBudget] = useState<string>('')
   const [submitted, setSubmitted] = useState(false)
   const [submittedOnDevice, setSubmittedOnDevice] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -399,7 +378,6 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
   const [formStep, setFormStep] = useState(0)
   const formRef = useRef<HTMLFormElement | null>(null)
   const skipStepScrollRef = useRef(true)
-  const isLowBudget = budget === BUDGET_BELOW
   const prefersReducedMotion = usePrefersReducedMotion()
 
   const goToStep = useCallback((nextStep: number) => {
@@ -417,9 +395,6 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
     const form = formRef.current
     if (!form) return false
     const fd = new FormData(form)
-    const bFromFd = String(fd.get('budget') ?? '').trim()
-    const b = bFromFd || budget
-    if (!b || b === BUDGET_BELOW) return false
 
     const firstName =
       String(fd.get('firstName') ?? '').trim() || nameDraftRef.current.firstName.trim()
@@ -445,7 +420,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
       plausibleFreetext(goal, GOAL_FREETEXT_MIN) &&
       plausibleFreetext(whyNow, WHY_NOW_FREETEXT_MIN)
     )
-  }, [budget, existingSite, instagramBusiness, facebookBusiness, socialNone])
+  }, [existingSite, instagramBusiness, facebookBusiness, socialNone])
 
   const readStep0Valid = useCallback((): boolean => {
     const form = formRef.current
@@ -519,7 +494,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
       revalidate()
     }, 0)
     return () => window.clearTimeout(id)
-  }, [revalidate, budget, existingSite, instagramBusiness, facebookBusiness, socialNone, formStep])
+  }, [revalidate, existingSite, instagramBusiness, facebookBusiness, socialNone, formStep])
 
   useEffect(() => {
     if (skipStepScrollRef.current) {
@@ -548,8 +523,8 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
 
     const form = e.currentTarget
     const fd = new FormData(form)
-    const body = buildWhatsAppBody(fd, budget)
-    const payload = buildLeadPayload(fd, budget)
+    const body = buildWhatsAppBody(fd)
+    const payload = buildLeadPayload(fd)
     setSubmitError(null)
     setSubmitting(true)
 
@@ -602,7 +577,7 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
 
   return (
     <section
-      className="relative w-full min-w-0 max-w-lg text-white md:max-w-xl lg:max-w-2xl"
+      className="relative mx-auto w-full min-w-0 max-w-lg text-white md:max-w-xl lg:max-w-2xl"
       dir="rtl"
       lang="he"
     >
@@ -914,61 +889,14 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
             </button>
             <HomeStyleContinueButton
               disabled={!step1Valid}
-              ariaLabel="המשך לשלב תקציב והמשך"
+              ariaLabel="המשך לשלב מטרות והמשך"
               onClick={() => readStep1Valid() && goToStep(2)}
             />
           </div>
           </div>
 
           <div className={`space-y-4 md:space-y-6${formStep !== 2 ? ' hidden' : ''}`}>
-          <fieldset className="space-y-3 md:space-y-4 md:pt-1">
-            <legend className="sr-only">תקציב משוער לפרויקט (חובה)</legend>
-            <p className="text-sm font-medium text-slate-300 sm:text-base">
-              תקציב משוער לפרויקט <span className="font-normal text-slate-500">(חובה)</span>
-            </p>
-            <p className="text-xs text-slate-500">בחרי כרטיס אחד</p>
-            <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-              {budgetChoices.map((opt) => {
-                const selected = budget === opt.value
-                return (
-                  <label key={opt.value} className="min-w-0">
-                    <input
-                      type="radio"
-                      name="budget"
-                      value={opt.value}
-                      checked={selected}
-                      onChange={() => setBudget(opt.value)}
-                      className="peer sr-only"
-                    />
-                    <span
-                      className={`flex min-h-[3.25rem] cursor-pointer items-center justify-center text-pretty rounded-2xl border px-2 py-3 text-center text-sm font-medium tracking-tight transition-[background-color,border-color,box-shadow,color,transform] duration-300 ease-out will-change-transform sm:min-h-[3.5rem] sm:px-5 sm:py-4 sm:text-base peer-checked:scale-[1.02] motion-reduce:peer-checked:scale-100 hover:translate-y-[-2px] motion-reduce:hover:translate-y-0 active:scale-[0.985] motion-reduce:active:scale-100 ${
-                        selected
-                          ? 'border-violet-400/60 bg-gradient-to-br from-violet-500/12 via-violet-950/40 to-fuchsia-500/10 text-white shadow-[0_0_0_1px_rgba(167,139,250,0.4),0_0_28px_-10px_rgba(139,92,246,0.38),0_0_48px_-18px_rgba(124,58,237,0.22)] ring-2 ring-violet-400/50 ring-offset-2 ring-offset-[#020617]'
-                          : 'border-white/[0.1] bg-slate-950/45 text-slate-200 hover:border-white/[0.22] hover:bg-slate-900/60 hover:text-white hover:shadow-[0_8px_28px_-12px_rgba(15,23,42,0.65)] peer-focus-visible:border-violet-400/50 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-400/35 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#020617]'
-                      } `}
-                    >
-                      {opt.label}
-                    </span>
-                  </label>
-                )
-              })}
-            </div>
-          </fieldset>
-
-          {budget !== '' && (
-            <p
-              className={`text-center text-xs leading-snug text-slate-400 sm:text-sm ${
-                prefersReducedMotion ? '' : 'lead-form-fade-in'
-              }`}
-            >
-              מעולה, נמשיך 👇
-            </p>
-          )}
-
-          <div
-            key={budget ? 'has-budget' : 'no-budget'}
-            className="space-y-4 md:space-y-5"
-          >
+          <div className="space-y-4 md:space-y-5">
           <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
             <div className={`min-w-0 ${compactFieldShellClass}`}>
               <label htmlFor="lead-goal" className="block text-sm font-medium text-slate-300">
@@ -1019,87 +947,36 @@ export function LeadForm({ onStepChange }: { onStepChange?: (step: number) => vo
             </button>
           </div>
 
-            {isLowBudget ? (
-              <div
-                key="low-budget-panel"
-                className={`space-y-6 pt-2 md:space-y-7 md:pt-3 ${
-                  prefersReducedMotion ? '' : 'lead-form-section-in'
-                }`}
-              >
-                <h3 className="text-center text-base font-semibold tracking-tight text-white sm:text-lg">
-                  הודעה מהמתכנתת
-                </h3>
-                <div className="rounded-2xl border border-white/[0.08] bg-slate-950/50 px-5 py-6 text-pretty text-sm leading-relaxed text-slate-300 ring-1 ring-white/[0.04] sm:text-base">
-                  <p className="mb-4">
-                    כרגע אני עובדת רק עם פרויקטים בהתאמה אישית
-                    <br />
-                    בתקציב שמתחיל מ־10,299 ₪.
-                  </p>
-                  <p>
-                    אם התקציב נמוך יותר,
-                    <br />
-                    כנראה שפתרון מוכן כמו WordPress יתאים לך יותר בשלב הזה.
-                  </p>
-                </div>
-                <div className="flex justify-center">
-                  <div className="relative mx-auto flex w-full max-w-full justify-center overflow-visible">
-                    <a
-                      href={QUICK_SOLUTION_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="פתיחת קישור חיצוני, פתרון מהיר (אתר אחר)"
-                      className="group relative z-10 flex min-h-[52px] w-full min-w-0 touch-manipulation items-stretch rounded-full bg-gradient-to-l from-cyan-400 via-violet-500 to-fuchsia-500 p-[1.5px] text-base font-medium text-white no-underline shadow-[0_2px_16px_rgba(0,0,0,0.4),0_0_20px_rgba(139,92,246,0.22),0_0_28px_rgba(34,211,238,0.1)] transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 hover:shadow-[0_8px_28px_rgba(0,0,0,0.45),0_0_28px_rgba(167,139,250,0.35),0_0_40px_rgba(34,211,238,0.16)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/80 active:opacity-95"
-                    >
-                      <span className="flex min-h-0 w-full flex-1 items-center justify-center rounded-full bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 px-6 py-3 text-center text-base font-medium text-white shadow-inner shadow-black/40 ring-1 ring-inset ring-white/12 backdrop-blur-md transition-[background-color,box-shadow,ring-color] duration-300 ease-out group-hover:from-slate-900/92 group-hover:via-slate-950 group-hover:to-slate-950 group-hover:ring-white/22 md:py-4">
-                        <span className="inline-flex items-center justify-center gap-2.5" dir="ltr">
-                          <span className="shrink-0 opacity-90" aria-hidden>
-                            →
-                          </span>
-                          <span dir="rtl" className="min-w-0">
-                            לפתרון מהיר יותר
-                          </span>
-                          <span className="shrink-0 opacity-90" aria-hidden>
-                            ←
-                          </span>
-                        </span>
-                      </span>
-                    </a>
-                  </div>
-                </div>
+          <div
+            className={`space-y-3 max-md:space-y-4 md:space-y-3.5 ${
+              prefersReducedMotion ? '' : 'lead-form-section-in'
+            }`}
+          >
+            <button
+              type="submit"
+              disabled={!canSubmit || submitting}
+              aria-label="שליחת בקשת בדיקת התאמה לוואטסאפ"
+              className={
+                canSubmit && !submitting
+                  ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] motion-reduce:active:scale-100 md:py-4'
+                  : 'w-full min-h-[52px] cursor-not-allowed rounded-full bg-slate-950/70 px-6 py-3 text-base font-medium text-slate-500 ring-1 ring-white/[0.06] backdrop-blur-sm transition-[box-shadow,ring-color] duration-300 ease-out md:py-4'
+              }
+            >
+              {submitting ? 'שולח…' : 'שליחת הבקשה'}
+            </button>
+            {submitError ? (
+              <p className="text-center text-sm font-medium text-red-300" role="alert">
+                {submitError}
+              </p>
+            ) : null}
+            <div className="space-y-1.5 text-balance text-center text-[11px] leading-snug text-slate-500 sm:text-xs md:text-sm">
+              <p>אין התחייבות. נחזור אליך רק אם יש התאמה.</p>
+              <div className="space-y-1 text-slate-500/85">
+                <p>כל עוד השדות לא מלאים או לא תקינים, השליחה לא תתבצע/תתקבל.</p>
+                <p>רק כשהטופס מלא כראוי הבקשה תימסר.</p>
               </div>
-            ) : (
-              <div
-                key="submit-branch"
-                className={`space-y-3 max-md:space-y-4 md:space-y-3.5 ${
-                  prefersReducedMotion ? '' : 'lead-form-section-in'
-                }`}
-              >
-                <button
-                  type="submit"
-                  disabled={!canSubmit || submitting}
-                  aria-label="שליחת בקשת בדיקת התאמה לוואטסאפ"
-                  className={
-                    canSubmit && !submitting
-                      ? 'w-full min-h-[52px] cursor-pointer rounded-full bg-gradient-to-l from-cyan-500 via-violet-600 to-fuchsia-600 px-6 py-3 text-base font-medium text-white shadow-[0_0_28px_rgba(139,92,246,0.35),0_4px_20px_rgba(0,0,0,0.35)] ring-1 ring-white/25 transition-[filter,box-shadow,transform] duration-300 ease-out hover:brightness-110 hover:shadow-[0_0_36px_rgba(167,139,250,0.45),0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:scale-[0.99] motion-reduce:active:scale-100 md:py-4'
-                      : 'w-full min-h-[52px] cursor-not-allowed rounded-full bg-slate-950/70 px-6 py-3 text-base font-medium text-slate-500 ring-1 ring-white/[0.06] backdrop-blur-sm transition-[box-shadow,ring-color] duration-300 ease-out md:py-4'
-                  }
-                >
-                  {submitting ? 'שולח…' : 'שליחת הבקשה'}
-                </button>
-                {submitError ? (
-                  <p className="text-center text-sm font-medium text-red-300" role="alert">
-                    {submitError}
-                  </p>
-                ) : null}
-                <div className="space-y-1.5 text-balance text-center text-[11px] leading-snug text-slate-500 sm:text-xs md:text-sm">
-                  <p>אין התחייבות. נחזור אליך רק אם יש התאמה.</p>
-                  <div className="space-y-1 text-slate-500/85">
-                    <p>כל עוד השדות לא מלאים או לא תקינים, השליחה לא תתבצע/תתקבל.</p>
-                    <p>רק כשהטופס מלא כראוי הבקשה תימסר.</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            </div>
+          </div>
           </div>
             </form>
           )}

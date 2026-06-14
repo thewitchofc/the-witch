@@ -53,7 +53,7 @@ export function PrivacyPage() {
             <ul className="list-inside list-disc space-y-2 marker:text-violet-400">
               <li>
                 <strong className="font-medium text-slate-200">טפסים:</strong> שם, טלפון, פרטי עסק, קישורים לרשתות,
-                תקציב, מטרות, הערות וכל מידע שתמסרו ביוזמתכם בטופס ההתאמה.
+                מטרות, הערות וכל מידע שתמסרו ביוזמתכם בטופס ההתאמה.
               </li>
               <li>
                 <strong className="font-medium text-slate-200">טכני:</strong> סוג דפדפן, מערכת הפעלה, כתובת IP (בשירותי
