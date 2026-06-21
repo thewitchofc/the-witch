@@ -29,7 +29,7 @@ export default function HamachshefaPage() {
     <>
       <Seo
         title="המכשפה לבניית אתרים | The Witch"
-        description="המכשפה לבניית אתרים – שירות פרימיום לבניית אתרים שמביאים לקוחות, עם דגש על מהירות, המרות ו-SEO."
+        description="המכשפה לבניית אתרים: שירות פרימיום לבניית אתרים שמביאים לקוחות, עם דגש על מהירות, המרות ו-SEO."
         path="/hamachshefa-bniyat-atarim"
       />
 

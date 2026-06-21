@@ -65,11 +65,11 @@ function HomeStyleContinueButton({
 }
 
 function buildWhatsAppBody(fd: FormData): string {
-  const pick = (key: string) => String(fd.get(key) ?? '').trim() || '—'
+  const pick = (key: string) => String(fd.get(key) ?? '').trim() || 'לא צוין'
 
   const first = pick('firstName')
   const last = pick('lastName')
-  const fullName = [first, last].filter((x) => x !== '—').join(' ').trim() || '—'
+  const fullName = [first, last].filter((x) => x !== 'לא צוין').join(' ').trim() || 'לא צוין'
 
   return [
     `שם: ${fullName}`,

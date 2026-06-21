@@ -29,6 +29,8 @@ export const ProcessPage = lazy(() =>
   import('./pages/Process').then((m) => ({ default: m.ProcessPage })),
 )
 export const FAQ = lazy(() => import('./pages/FAQ'))
+export const BlogPage = lazy(() => import('./pages/BlogPage'))
+export const BlogArticlePage = lazy(() => import('./pages/BlogArticlePage'))
 export const PrivacyPage = lazy(() =>
   import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 )

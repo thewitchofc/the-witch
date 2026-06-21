@@ -27,7 +27,7 @@ export function PrivacyPage() {
               מפעיל האתר
             </h2>
             <p>
-              האתר מופעל על־ידי <strong className="font-medium text-white">המכשפה — בניית אתרים</strong> (מותג: The
+              האתר מופעל על ידי <strong className="font-medium text-white">המכשפה, בניית אתרים</strong> (מותג: The
               Witch), לצורך הצגת שירותים, תיק עבודות ויצירת קשר.
             </p>
             <p className="mt-2">
@@ -57,7 +57,7 @@ export function PrivacyPage() {
               </li>
               <li>
                 <strong className="font-medium text-slate-200">טכני:</strong> סוג דפדפן, מערכת הפעלה, כתובת IP (בשירותי
-                צד שלישי), מזהי עוגיות, דפים שביקרתם בהם, אירועי לחיצה וגלילה — רק בהסכמתכם לעוגיות אנליטיות.
+                צד שלישי), מזהי עוגיות, דפים שביקרתם בהם, אירועי לחיצה וגלילה, רק בהסכמתכם לעוגיות אנליטיות.
               </li>
               <li>
                 <strong className="font-medium text-slate-200">העדפות מקומיות:</strong> בחירת הסכמה לעוגיות והעדפות
@@ -72,16 +72,16 @@ export function PrivacyPage() {
             </h2>
             <ul className="list-inside list-disc space-y-2 marker:text-violet-400">
               <li>
-                <strong className="font-medium text-slate-200">Formspree</strong> (formspree.io) — קבלת פניות מהטופס
+                <strong className="font-medium text-slate-200">Formspree</strong> (formspree.io): קבלת פניות מהטופס
                 בדוא״ל. המידע שתמסרו בטופס מועבר ל-Formspree לצורך משלוח ההודעה. חלים תנאי השימוש ומדיניות הפרטיות של
                 Formspree.
               </li>
               <li>
-                <strong className="font-medium text-slate-200">Google Sheets / Apps Script</strong> (אופציונלי) — אם
+                <strong className="font-medium text-slate-200">Google Sheets / Apps Script</strong> (אופציונלי): אם
                 מוגדר, עותק של נתוני הטופס עשוי להישמר ב-Google Sheets לצורך ניהול פניות. חלים תנאי Google.
               </li>
               <li>
-                <strong className="font-medium text-slate-200">WhatsApp</strong> (Meta) — בחלק מהזרימות ניתן לפתוח
+                <strong className="font-medium text-slate-200">WhatsApp</strong> (Meta): בחלק מהזרימות ניתן לפתוח
                 שיחה ב-WhatsApp עם פרטים שמילאתם. מעבר ל-WhatsApp כפוף למדיניות Meta.
               </li>
             </ul>
@@ -134,20 +134,20 @@ export function PrivacyPage() {
             </h2>
             <ul className="list-inside list-disc space-y-2 marker:text-violet-400">
               <li>
-                <strong className="font-medium text-slate-200">Google Fonts</strong> — גופן Heebo נטען מ-servers של
+                <strong className="font-medium text-slate-200">Google Fonts</strong>: גופן Heebo נטען מ-servers של
                 Google (fonts.googleapis.com / fonts.gstatic.com). Google עשויה לקבל את כתובת ה-IP שלכם בעת טעינת
                 הגופן.
               </li>
               <li>
-                <strong className="font-medium text-slate-200">Spline</strong> — בחלק מהדפים מוטמע רקע תלת־ממדי מ-my.spline.design.
+                <strong className="font-medium text-slate-200">Spline</strong>: בחלק מהדפים מוטמע רקע תלת ממדי מ-my.spline.design.
                 Spline עשויה לאסוף נתונים טכניים לפי מדיניותה.
               </li>
               <li>
-                <strong className="font-medium text-slate-200">Google Search Console</strong> — אימות בעלות על הדומיין
+                <strong className="font-medium text-slate-200">Google Search Console</strong>: אימות בעלות על הדומיין
                 בלבד; אין איסוף מידע אישי דרך האתר עצמו.
               </li>
               <li>
-                <strong className="font-medium text-slate-200">קישורים חיצוניים</strong> — אתרי לקוחות, Google Business,
+                <strong className="font-medium text-slate-200">קישורים חיצוניים</strong>: אתרי לקוחות, Google Business,
                 WhatsApp ורשתות חברתיות. מעבר אליהם כפוף למדיניות של אותם אתרים.
               </li>
             </ul>
@@ -176,7 +176,7 @@ export function PrivacyPage() {
               >
                 {PRIVACY_EMAIL}
               </a>
-              . ניתן לבטל הסכמה לעוגיות אנליטיות בכל עת על־ידי מחיקת נתוני האתר (localStorage ועוגיות) בדפדפן; בביקור
+              . ניתן לבטל הסכמה לעוגיות אנליטיות בכל עת על ידי מחיקת נתוני האתר (localStorage ועוגיות) בדפדפן; בביקור
               חוזר יוצג שוב באנר ההסכמה.
             </p>
           </section>

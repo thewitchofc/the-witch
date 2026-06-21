@@ -6,9 +6,9 @@ import { useRevealIsVisible } from '../hooks/useRevealIsVisible'
 import { primaryCtaInnerClass, primaryCtaOuterClass } from '../lib/primaryCtaClasses'
 
 const caseStudy = {
-  title: 'מקרה לדוגמה: Liel Edri — Homemade Baking',
+  title: 'מקרה לדוגמה: Liel Edri, Homemade Baking',
   problem:
-    'היה צורך באתר שישדר בוטיק, אמון וטריות, ויוביל בקלות לפניות והזמנות בוואטסאפ ובאינסטגרם — בלי חיכוך ורעש ויזואלי.',
+    'היה צורך באתר שישדר בוטיק, אמון וטריות, ויוביל בקלות לפניות והזמנות בוואטסאפ ובאינסטגרם, בלי חיכוך ורעש ויזואלי.',
   improved:
     'נבנה אתר נקי ואלגנטי עם צילום מזון חזק, היררכיה ברורה ואינטגרציה מהירה לוואטסאפ ולאינסטגרם.',
   today: 'אתר שמחזק אמון במותג ומגדיל פניות והזמנות דרך הערוצים הדיגיטליים.',

@@ -46,8 +46,8 @@ export function AccessibilityPage() {
               טכנולוגיה ותאימות
             </h2>
             <p>
-              האתר נבנה ב־React עם HTML5 ו־CSS3. הנגישות נבדקת בדפדפנים מודרניים (Chrome, Firefox, Safari, Edge)
-              ובשילוב עם קוראי מסך נפוצים. ייתכן שחלק מהתוכן החיצוני (למשל תצוגות תלת־ממד או סרטונים מוטמעים) אינו
+              האתר נבנה ב React עם HTML5 ו CSS3. הנגישות נבדקת בדפדפנים מודרניים (Chrome, Firefox, Safari, Edge)
+              ובשילוב עם קוראי מסך נפוצים. ייתכן שחלק מהתוכן החיצוני (למשל תצוגות תלת ממד או סרטונים מוטמעים) אינו
               בשליטתנו המלאה; אנו ממשיכים לשפר את החלופות והטקסט החלופי.
             </p>
           </section>
@@ -69,7 +69,7 @@ export function AccessibilityPage() {
             </h2>
             <p>
               רכז/ת הנגישות באתר:{' '}
-              <strong className="font-medium text-white">המכשפה — בניית אתרים</strong> (The Witch).
+              <strong className="font-medium text-white">המכשפה, בניית אתרים</strong> (The Witch).
             </p>
             <ul className="mt-3 list-inside list-disc space-y-2 marker:text-violet-400">
               <li>

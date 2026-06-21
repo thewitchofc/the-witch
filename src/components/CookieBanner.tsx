@@ -72,7 +72,7 @@ export function CookieBanner() {
           ) : null}
           <p className="text-pretty text-sm leading-relaxed text-slate-300 md:text-base">
             האתר משתמש בעוגיות לתפקוד ולשיפור החוויה. באישורך נטעין גם{' '}
-            <span className="text-white">Google Analytics</span> ו־<span className="text-white">Meta Pixel</span>{' '}
+            <span className="text-white">Google Analytics</span> ו <span className="text-white">Meta Pixel</span>{' '}
             למדידת תנועה. הפרטים ב
             <CustomLink
               to="/privacy"

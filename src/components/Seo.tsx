@@ -10,9 +10,21 @@ type SeoProps = {
   ogImage?: string
   /** noindex,nofollow — לדפי 404 וכד׳ */
   noIndex?: boolean
+  ogType?: 'website' | 'article'
+  publishedTime?: string
+  modifiedTime?: string
 }
 
-export function Seo({ title, description, path, ogImage = DEFAULT_OG_IMAGE, noIndex = false }: SeoProps) {
+export function Seo({
+  title,
+  description,
+  path,
+  ogImage = DEFAULT_OG_IMAGE,
+  noIndex = false,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+}: SeoProps) {
   const canonical = siteCanonicalUrl(path)
   const ogImageUrl = absoluteOgImage(ogImage)
   const ogIsDefaultCard = ogImageUrl === DEFAULT_OG_IMAGE
@@ -30,8 +42,10 @@ export function Seo({ title, description, path, ogImage = DEFAULT_OG_IMAGE, noIn
       {ogIsDefaultCard ? <meta property="og:image:width" content="1200" /> : null}
       {ogIsDefaultCard ? <meta property="og:image:height" content="630" /> : null}
       <meta property="og:url" content={canonical} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={ogType} />
       <meta property="og:locale" content="he_IL" />
+      {publishedTime ? <meta property="article:published_time" content={publishedTime} /> : null}
+      {modifiedTime ? <meta property="article:modified_time" content={modifiedTime} /> : null}
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />

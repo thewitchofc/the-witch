@@ -8,6 +8,8 @@ import {
   AboutPage,
   ApplyPage,
   FAQ,
+  BlogPage,
+  BlogArticlePage,
   HamachshefaArticleClientsPage,
   HamachshefaPage,
   LielEdriPage,
@@ -76,6 +78,8 @@ function App() {
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/process" element={<ProcessPage />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogArticlePage />} />
             <Route path="/projects/sab-glass" element={<SabGlassPage />} />
             <Route path="/projects/royal-fruit" element={<RoyalFruitPage />} />
             <Route path="/projects/liel-edri" element={<LielEdriPage />} />

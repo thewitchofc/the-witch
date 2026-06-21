@@ -1,4 +1,5 @@
 import { FAQ_ITEMS } from '../data/faqContent'
+import { blogArticlePath, getPublishedBlogPosts, type BlogPost } from '../data/blogPosts'
 import { SITE_ORIGIN } from './site'
 
 const ORG_ID = `${SITE_ORIGIN}/#organization`
@@ -80,5 +81,48 @@ export function buildFaqPageJsonLd(): Record<string, unknown> {
         text: faqAnswerPlainText(item.answer),
       },
     })),
+  }
+}
+
+/** Blog — דף /blog */
+export function buildBlogListingJsonLd(): Record<string, unknown> {
+  const posts = getPublishedBlogPosts()
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'בלוג The Witch',
+    description: 'תובנות על בניית אתרים, המרות וחשיבה עסקית.',
+    url: `${SITE_ORIGIN}/blog`,
+    inLanguage: 'he-IL',
+    publisher: { '@id': ORG_ID },
+    author: { '@id': PERSON_ID },
+    blogPost: posts.map((post) => blogPostingSummary(post)),
+  }
+}
+
+/** BlogPosting — דף מאמר בודד */
+export function buildBlogArticleJsonLd(post: BlogPost): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt ?? post.publishedAt,
+    inLanguage: 'he-IL',
+    url: `${SITE_ORIGIN}${blogArticlePath(post.slug)}`,
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
+    mainEntityOfPage: `${SITE_ORIGIN}${blogArticlePath(post.slug)}`,
+  }
+}
+
+function blogPostingSummary(post: BlogPost): Record<string, unknown> {
+  return {
+    '@type': 'BlogPosting',
+    headline: post.title,
+    url: `${SITE_ORIGIN}${blogArticlePath(post.slug)}`,
+    datePublished: post.publishedAt,
   }
 }

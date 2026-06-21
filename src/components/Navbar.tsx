@@ -44,6 +44,11 @@ export function Navbar() {
                   שאלות נפוצות
                 </CustomNavLink>
               </li>
+              <li>
+                <CustomNavLink to="/blog" className={navLinkClassName}>
+                  בלוג
+                </CustomNavLink>
+              </li>
               <li className="shrink-0 ps-1 md:ps-0">
                 <CustomLink
                   to="/apply#contact"

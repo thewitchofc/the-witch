@@ -36,6 +36,13 @@ export function SiteFooter() {
           >
             המכשפה לבניית אתרים
           </CustomLink>
+          <CustomLink
+            to="/blog"
+            className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
+            onClick={() => trackCtaClick('footer', '/blog')}
+          >
+            בלוג
+          </CustomLink>
           <a
             href={GOOGLE_BUSINESS_REVIEW_URL}
             target="_blank"

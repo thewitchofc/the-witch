@@ -126,7 +126,7 @@ export function SplineOptInBackground({
             fetchPriority="low"
             width="100%"
             height="100%"
-            title="אפקט רקע תלת־ממדי"
+            title="אפקט רקע תלת ממדי"
             frameBorder={0}
           />
         ) : null}
@@ -142,7 +142,7 @@ export function SplineOptInBackground({
               type="button"
               onClick={onActivate}
               className="pointer-events-auto touch-manipulation rounded-full border border-white/20 bg-slate-950/75 px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_24px_rgba(139,92,246,0.25),0_0_48px_rgba(34,211,238,0.12)] ring-1 ring-inset ring-white/10 backdrop-blur-md transition hover:border-cyan-400/35 hover:bg-slate-900/85 hover:shadow-[0_0_28px_rgba(139,92,246,0.32)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/80 active:opacity-95 md:px-6 md:py-3 md:text-base"
-              aria-label="הפעלת אפקט רקע תלת־ממדי (נטען תוכן כבד)"
+              aria-label="הפעלת אפקט רקע תלת ממדי (נטען תוכן כבד)"
             >
               {activateLabel}
             </button>
