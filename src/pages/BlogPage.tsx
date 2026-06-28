@@ -20,7 +20,7 @@ export function BlogPage() {
         path="/blog"
       />
       <BlogPageShell>
-        <main className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-24 md:px-6 md:pb-32 md:pt-28">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-24 md:px-6 md:pb-32 md:pt-28">
           <header className="mx-auto max-w-3xl text-center">
             <p className="mx-auto mb-4 w-fit rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-3 py-1 text-xs font-medium text-cyan-100">
               בלוג
@@ -69,7 +69,7 @@ export function BlogPage() {
               </div>
             </section>
           )}
-        </main>
+        </div>
       </BlogPageShell>
     </>
   )

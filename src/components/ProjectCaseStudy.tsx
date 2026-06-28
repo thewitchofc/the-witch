@@ -43,7 +43,7 @@ export function ProjectCaseStudy({
   showImageBackdrop = false,
 }: ProjectCaseStudyProps) {
   return (
-    <main
+    <div
       className="relative z-10 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:pb-32"
       dir="rtl"
       lang="he"
@@ -173,6 +173,6 @@ export function ProjectCaseStudy({
           </CustomLink>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

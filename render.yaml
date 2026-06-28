@@ -1,0 +1,40 @@
+# HTTP headers for Render Static Site (thewitch.co.il)
+#
+# Vite/React cannot set response headers — they are applied by Render (and Cloudflare if proxied).
+#
+# WHY HEADERS ARE NOT LIVE YET
+# render.yaml is NOT applied on git push alone. Render only reads it when:
+#   1) Dashboard → Blueprints → New Blueprint Instance → connect this repo, OR
+#   2) an existing Blueprint is synced to the service named below.
+# If the site was created manually (not from Blueprint), copy every header below into:
+#   Dashboard → Static Site "the witch" → Settings → Headers → Add Header
+#
+# name must match the existing Render static site service exactly (case-sensitive).
+services:
+  - type: web
+    runtime: static
+    name: the witch
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains; preload
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://formspree.io; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://*.facebook.com https://script.google.com https://script.googleusercontent.com; frame-src 'self' https://my.spline.design"
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

@@ -51,7 +51,7 @@ export default function HamachshefaPage() {
           aria-hidden
         />
 
-        <main className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-24 md:px-6 md:pb-32 md:pt-28">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-24 md:px-6 md:pb-32 md:pt-28">
           <section className="grid gap-5 md:grid-cols-[minmax(0,1.12fr)_minmax(280px,0.88fr)] md:gap-6">
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/45 px-6 py-10 text-center shadow-[0_0_52px_rgba(139,92,246,0.14)] ring-1 ring-white/[0.05] backdrop-blur-xl md:px-8 md:py-12 md:text-right">
               <div
@@ -135,7 +135,7 @@ export default function HamachshefaPage() {
               </CustomLink>
             </div>
           </section>
-        </main>
+        </div>
       </div>
     </>
   )

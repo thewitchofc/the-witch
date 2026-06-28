@@ -11,11 +11,7 @@ const cardClass =
   'rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-right ring-1 ring-white/[0.04] backdrop-blur-md md:p-6'
 
 const fitSignals = [
-  <>
-    רוצה אתר שמייצר פניות, לא עוד
-    <br />
-    “כרטיס ביקור” יפה.
-  </>,
+  'רוצה אתר שמייצר פניות, לא עוד ״כרטיס ביקור״ יפה.',
   'מבין שמסרים, מבנה ומהירות הם חלק מהמכירה.',
   'מוכן להשקיע בבנייה נקייה שמחזיקה לאורך זמן.',
 ] as const
@@ -139,7 +135,11 @@ export function About() {
               {fitSignals.map((signal, index) => (
                 <div key={index} className="rounded-2xl border border-white/10 bg-white/[0.035] p-5 text-right">
                   <span className="mb-3 block h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_16px_rgba(34,211,238,0.7)]" />
-                  <p className="text-base leading-relaxed text-slate-300 md:text-lg">{signal}</p>
+                  <p
+                    className={`text-base leading-relaxed text-slate-300 md:text-lg ${index === 0 ? 'text-pretty md:whitespace-nowrap' : ''}`}
+                  >
+                    {signal}
+                  </p>
                 </div>
               ))}
             </div>

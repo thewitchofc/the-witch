@@ -4,6 +4,11 @@
  */
 export const BLOG_ARTICLE_PRERENDER_ROUTES = [
   {
+    path: '/blog/eich-livchor-boneh-atarim-bli-hatzaa-hakhi-zola',
+    title: 'איך לבחור בונה אתרים בלי ליפול על ההצעה הכי זולה? | The Witch',
+    titleIncludes: 'איך לבחור בונה',
+  },
+  {
     path: '/blog/kama-ole-bniyat-atar-la-esek-2026',
     title: 'כמה עולה בניית אתר לעסק ב 2026? | The Witch',
     titleIncludes: 'כמה עולה',

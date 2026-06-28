@@ -436,6 +436,31 @@ html[data-block-heavy-effects='1'] .why-me-stacked .hero-reveal {
     0 0 22px rgba(34, 211, 238, 0.08);
 }
 
+@property --nav-cta-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.nav-cta-spin {
+  --nav-cta-angle: 0deg;
+  background: conic-gradient(
+    from var(--nav-cta-angle),
+    #22d3ee,
+    #8b5cf6,
+    #d946ef,
+    #c026d3,
+    #22d3ee
+  );
+  animation: nav-cta-border-spin 4s linear infinite;
+}
+
+@keyframes nav-cta-border-spin {
+  to {
+    --nav-cta-angle: 360deg;
+  }
+}
+
 /* CTA סופי בסגנון כהה (למשל תחתית Process) — אותה כניסה, צל ניטרלי */
 .final-cta-reveal {
   opacity: 0;
@@ -495,6 +520,10 @@ html[data-block-heavy-effects='1'] .why-me-stacked .hero-reveal {
       0 0 20px rgba(34, 211, 238, 0.06) !important;
     transition: none !important;
     will-change: auto;
+  }
+
+  .nav-cta-spin {
+    animation: none !important;
   }
 
   .final-cta-reveal {

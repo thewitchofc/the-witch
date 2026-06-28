@@ -10,7 +10,7 @@ export function AccessibilityPage() {
         description="מידע על נגישות האתר, התאמות זמינות, תאימות לתקן ודרכי יצירת קשר לדיווח על בעיות נגישות."
         path="/accessibility"
       />
-      <main
+      <div
         className="relative z-10 mx-auto max-w-3xl px-4 pb-28 pt-24 text-pretty md:px-6 md:pb-32 md:pt-28"
         dir="rtl"
         lang="he"
@@ -124,7 +124,7 @@ export function AccessibilityPage() {
             מסמך זה נועד לספק מידע על מאמצי הנגישות באתר ואינו מהווה ייעוץ משפטי.
           </p>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

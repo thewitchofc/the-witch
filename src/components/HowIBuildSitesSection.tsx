@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { GoogleReviewsMarquee } from './GoogleReviewsMarquee'
 import { CustomLink } from './CustomLink'
 import { lielEdriLiveUrl } from '../data/clientOgImages'
 import { trackCtaClick } from '../lib/analytics'
@@ -119,6 +120,8 @@ export function HowIBuildSitesSection() {
             </div>
           ))}
         </div>
+
+        <GoogleReviewsMarquee />
 
         <div className="mt-10 flex flex-col items-center gap-3 border-t border-white/10 pt-10 md:mt-12 md:gap-4 md:pt-12">
           <p className="max-w-lg text-balance text-center text-sm leading-relaxed text-slate-300 md:text-base">

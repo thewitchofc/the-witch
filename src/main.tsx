@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter } from 'react-router-dom'
 import { AnalyticsListener } from './components/AnalyticsListener'
+import { AppErrorBoundary } from './components/AppErrorBoundary'
 import { BootSplash } from './components/BootSplash'
 import { DeferredOverlays } from './components/DeferredOverlays'
 import { HeavyEffectsDomSync } from './components/HeavyEffectsDomSync'
@@ -33,8 +34,10 @@ createRoot(document.getElementById('root')!).render(
             <AnalyticsConsentProvider>
               <AccessibilityProvider>
                 <BootSplash>
-                  <AnalyticsListener />
-                  <App />
+                  <AppErrorBoundary>
+                    <AnalyticsListener />
+                    <App />
+                  </AppErrorBoundary>
                 </BootSplash>
                 <DeferredOverlays />
               </AccessibilityProvider>

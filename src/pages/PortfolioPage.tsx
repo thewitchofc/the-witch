@@ -18,7 +18,7 @@ export function PortfolioPage() {
         className="pointer-events-none absolute -left-28 top-72 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl"
         aria-hidden
       />
-      <main
+      <div
         id="portfolio"
         className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-4 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:px-6 md:pb-32"
         dir="rtl"
@@ -46,7 +46,7 @@ export function PortfolioPage() {
         <PortfolioGrid />
 
         <WhyItWorksDifferent />
-      </main>
+      </div>
     </div>
   )
 }

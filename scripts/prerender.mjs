@@ -10,7 +10,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { PRERENDER_ROUTES } from './prerender-routes.mjs'
-import { canonicalForRoute, postprocessPrerenderHtml } from './prerender-html-postprocess.mjs'
+import {
+  assertSingleSeoTags,
+  canonicalForRoute,
+  postprocessPrerenderHtml,
+} from './prerender-html-postprocess.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..')
@@ -121,7 +125,7 @@ async function assertPreviewSite(baseUrl) {
   const res = await fetch(`${baseUrl}/`)
   if (!res.ok) throw new Error(`preview server returned ${res.status}`)
   const html = await res.text()
-  if (!html.includes('The Witch') && !html.includes('thewitch.co.il')) {
+  if (!html.includes('id="root"') && !html.includes('/assets/index-')) {
     throw new Error('preview server is not serving The Witch build')
   }
 }
@@ -154,6 +158,7 @@ async function prerenderRoute(page, baseUrl, route) {
   }
 
   html = postprocessPrerenderHtml(html, route)
+  assertSingleSeoTags(html)
   if (!canonicalMatches(route.path, html.match(/rel="canonical" href="([^"]+)"/)?.[1])) {
     throw new Error('canonical URL mismatch after postprocess')
   }

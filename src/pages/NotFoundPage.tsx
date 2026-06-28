@@ -24,7 +24,7 @@ export function NotFoundPage() {
         aria-hidden
       />
 
-      <main className="relative z-10 mx-auto flex min-h-[calc(100svh-12rem)] max-w-3xl items-center justify-center">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-12rem)] max-w-3xl items-center justify-center">
         <section className="w-full rounded-3xl border border-violet-300/15 bg-gradient-to-l from-violet-500/[0.12] via-slate-950/75 to-cyan-500/[0.08] px-6 py-12 text-center shadow-[0_0_54px_rgba(139,92,246,0.14)] ring-1 ring-white/[0.05] backdrop-blur-xl md:px-10 md:py-16">
           <p className="mx-auto mb-4 w-fit rounded-full border border-violet-300/25 bg-violet-300/[0.08] px-3 py-1 text-xs font-medium text-violet-100">
             404
@@ -48,7 +48,7 @@ export function NotFoundPage() {
             </CustomLink>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   )
 }

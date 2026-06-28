@@ -1,9 +1,7 @@
+import { GOOGLE_BUSINESS_MAPS_URL } from '../data/googleReviews'
 import { CustomLink } from './CustomLink'
 import { useAnalyticsConsent } from '../context/AnalyticsConsentContext'
 import { trackCtaClick, trackEvent } from '../lib/analytics'
-
-const GOOGLE_BUSINESS_REVIEW_URL =
-  'https://g.page/r/CTT3x24u8dC2EBM/review' as const
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
@@ -44,20 +42,20 @@ export function SiteFooter() {
             בלוג
           </CustomLink>
           <a
-            href={GOOGLE_BUSINESS_REVIEW_URL}
+            href={GOOGLE_BUSINESS_MAPS_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium text-cyan-300/95 underline-offset-2 transition hover:text-cyan-200 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70"
-            aria-label="השארת ביקורת ב-Google Business (נפתח בחלון חדש)"
+            aria-label="פרופיל THE WITCH ב-Google Maps (נפתח בחלון חדש)"
             onClick={() =>
               trackEvent('cta_click', {
                 cta_location: 'footer',
-                link_url: GOOGLE_BUSINESS_REVIEW_URL,
-                cta_type: 'google_business_review',
+                link_url: GOOGLE_BUSINESS_MAPS_URL,
+                cta_type: 'google_business_profile',
               })
             }
           >
-            ביקורת בגוגל
+            ביקורות בגוגל
           </a>
           <CustomLink
             to="/accessibility"

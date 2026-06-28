@@ -8,7 +8,7 @@ export function TermsPage() {
         description="תנאי שימוש באתר The Witch: שירותי מידע, קישורים חיצוניים, הגבלת אחריות וקניין רוחני."
         path="/terms"
       />
-      <main
+      <div
         className="relative z-10 mx-auto max-w-3xl px-4 pb-28 pt-24 text-pretty md:px-6 md:pb-32 md:pt-28"
         dir="rtl"
         lang="he"
@@ -61,7 +61,7 @@ export function TermsPage() {
           </section>
           <p className="text-xs text-slate-400">עודכן לאחרונה: אפריל 2026. מסמך זה אינו ייעוץ משפטי.</p>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

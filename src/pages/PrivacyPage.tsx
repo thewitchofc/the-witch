@@ -10,7 +10,7 @@ export function PrivacyPage() {
         description="מדיניות פרטיות לאתר The Witch: עוגיות, Google Analytics, Meta Pixel, טפסים, Formspree ושירותים נוספים."
         path="/privacy"
       />
-      <main
+      <div
         className="relative z-10 mx-auto max-w-3xl px-4 pb-28 pt-24 text-pretty md:px-6 md:pb-32 md:pt-28"
         dir="rtl"
         lang="he"
@@ -183,7 +183,7 @@ export function PrivacyPage() {
 
           <p className="text-xs text-slate-400">עודכן לאחרונה: מאי 2026. מסמך זה אינו ייעוץ משפטי.</p>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

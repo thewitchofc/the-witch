@@ -86,7 +86,7 @@ export function ProcessPage() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.10),transparent_48%)]"
         aria-hidden
       />
-      <main
+      <div
         id="process"
         className="relative z-10 mx-auto min-h-[100svh] max-w-6xl px-4 pb-24 pt-20 supports-[min-height:100dvh]:min-h-[100dvh] md:px-6 md:pb-32"
         dir="rtl"
@@ -181,7 +181,7 @@ export function ProcessPage() {
             </CustomLink>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   )
 }
