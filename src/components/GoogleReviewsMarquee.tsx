@@ -1,5 +1,5 @@
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion'
-import { useLayoutEffect, useRef, useState, useSyncExternalStore, type RefObject } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from 'react'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import {
   GOOGLE_BUSINESS_MAPS_URL,
@@ -9,7 +9,8 @@ import {
   type GoogleReview,
 } from '../data/googleReviews'
 
-const MARQUEE_SPEED_PX_PER_SEC = 48
+const MARQUEE_SPEED_DESKTOP_PX_PER_SEC = 48
+const MARQUEE_SPEED_MOBILE_PX_PER_SEC = 30
 const MAX_SEGMENT_EXPANSIONS = 32
 /** רווח אחיד בין כל כרטיסי המסילה */
 const MARQUEE_TRACK_GAP = 'gap-6 md:gap-8'
@@ -162,57 +163,71 @@ function MarqueeCards({
   keyPrefix,
   loopPointRef,
   duplicate = false,
+  onCardTapToggle,
+  touchPauseEnabled = false,
 }: {
   items: readonly MarqueeItem[]
   hasReviews: boolean
   keyPrefix: string
   loopPointRef?: RefObject<HTMLDivElement | null>
   duplicate?: boolean
+  onCardTapToggle?: () => void
+  touchPauseEnabled?: boolean
 }) {
   const hiddenProps = duplicate ? ({ 'aria-hidden': true } as const) : {}
+  const interactive = touchPauseEnabled && !duplicate
+
+  const wrapCard = (key: string, card: ReactNode, ref?: RefObject<HTMLDivElement | null>) => (
+    <div
+      key={key}
+      ref={ref}
+      className={`flex-[0_0_auto] ${touchPauseEnabled ? 'cursor-pointer touch-pan-y' : ''}`}
+      {...hiddenProps}
+      onClick={
+        touchPauseEnabled
+          ? (event) => {
+              if ((event.target as HTMLElement).closest('a')) return
+              onCardTapToggle?.()
+            }
+          : undefined
+      }
+      onKeyDown={
+        interactive
+          ? (event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return
+              event.preventDefault()
+              onCardTapToggle?.()
+            }
+          : undefined
+      }
+      {...(interactive
+        ? {
+            role: 'button' as const,
+            tabIndex: 0,
+            'aria-label': 'השהיית או המשך גלילת הביקורות',
+          }
+        : {})}
+    >
+      {card}
+    </div>
+  )
 
   if (hasReviews) {
     return (items as readonly GoogleReview[]).map((review, index) => {
       const card = <ReviewCard review={review} />
       if (loopPointRef && index === 0) {
-        return (
-          <div
-            key={`${keyPrefix}-loop-${review.author}`}
-            ref={loopPointRef}
-            className="flex-[0_0_auto]"
-            {...hiddenProps}
-          >
-            {card}
-          </div>
-        )
+        return wrapCard(`${keyPrefix}-loop-${review.author}`, card, loopPointRef)
       }
-      return (
-        <div key={`${keyPrefix}-${review.author}-${index}`} className="flex-[0_0_auto]" {...hiddenProps}>
-          {card}
-        </div>
-      )
+      return wrapCard(`${keyPrefix}-${review.author}-${index}`, card)
     })
   }
 
   return (items as readonly CtaCard[]).map((card, index) => {
     const cta = <ProfileCtaCard {...card} />
     if (loopPointRef && index === 0) {
-      return (
-        <div
-          key={`${keyPrefix}-loop-${card.title}`}
-          ref={loopPointRef}
-          className="flex-[0_0_auto]"
-          {...hiddenProps}
-        >
-          {cta}
-        </div>
-      )
+      return wrapCard(`${keyPrefix}-loop-${card.title}`, cta, loopPointRef)
     }
-    return (
-      <div key={`${keyPrefix}-${card.title}-${index}`} className="flex-[0_0_auto]" {...hiddenProps}>
-        {cta}
-      </div>
-    )
+    return wrapCard(`${keyPrefix}-${card.title}-${index}`, cta)
   })
 }
 
@@ -256,8 +271,10 @@ function InfiniteMarqueeEngine({
   const loopPointRef = useRef<HTMLDivElement>(null)
   const firstListWidthRef = useRef(0)
   const pausedRef = useRef(false)
+  const speedRef = useRef(MARQUEE_SPEED_MOBILE_PX_PER_SEC)
   const expansionCountRef = useRef(0)
   const supportsHoverPause = useSupportsHoverPause()
+  const touchPauseEnabled = !supportsHoverPause
 
   const [segmentItems, setSegmentItems] = useState<readonly MarqueeItem[]>(() => duplicateTwice(baseItems))
   const offset = useMotionValue(0)
@@ -300,8 +317,15 @@ function InfiniteMarqueeEngine({
   }, [baseItems, segmentItems])
 
   useLayoutEffect(() => {
+    speedRef.current = supportsHoverPause
+      ? MARQUEE_SPEED_DESKTOP_PX_PER_SEC
+      : MARQUEE_SPEED_MOBILE_PX_PER_SEC
     if (!supportsHoverPause) pausedRef.current = false
   }, [supportsHoverPause])
+
+  const toggleTouchPause = () => {
+    pausedRef.current = !pausedRef.current
+  }
 
   useAnimationFrame((_time, delta) => {
     if (pausedRef.current) return
@@ -309,7 +333,7 @@ function InfiniteMarqueeEngine({
     const loopWidth = firstListWidthRef.current
     if (loopWidth <= 0) return
 
-    let next = offset.get() + (MARQUEE_SPEED_PX_PER_SEC * delta) / 1000
+    let next = offset.get() + (speedRef.current * delta) / 1000
 
     while (next >= loopWidth) {
       next -= loopWidth
@@ -348,13 +372,21 @@ function InfiniteMarqueeEngine({
           transformOrigin: '0px 0px',
         }}
       >
-        <MarqueeCards items={segmentItems} hasReviews={hasReviews} keyPrefix="a" />
+        <MarqueeCards
+          items={segmentItems}
+          hasReviews={hasReviews}
+          keyPrefix="a"
+          onCardTapToggle={toggleTouchPause}
+          touchPauseEnabled={touchPauseEnabled}
+        />
         <MarqueeCards
           items={segmentItems}
           hasReviews={hasReviews}
           keyPrefix="b"
           loopPointRef={loopPointRef}
           duplicate
+          onCardTapToggle={toggleTouchPause}
+          touchPauseEnabled={touchPauseEnabled}
         />
       </motion.div>
     </div>
