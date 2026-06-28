@@ -1,5 +1,5 @@
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion'
-import { useLayoutEffect, useRef, useState, type RefObject } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore, type RefObject } from 'react'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import {
   GOOGLE_BUSINESS_MAPS_URL,
@@ -216,6 +216,19 @@ function MarqueeCards({
   })
 }
 
+function useSupportsHoverPause(): boolean {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === 'undefined') return () => {}
+      const mq = window.matchMedia('(hover: hover) and (pointer: fine)')
+      mq.addEventListener('change', onStoreChange)
+      return () => mq.removeEventListener('change', onStoreChange)
+    },
+    () => window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+    () => false,
+  )
+}
+
 function useA11yReduceMotion(): boolean {
   const prefersReduced = usePrefersReducedMotion()
   const [widgetReduced, setWidgetReduced] = useState(false)
@@ -244,6 +257,7 @@ function InfiniteMarqueeEngine({
   const firstListWidthRef = useRef(0)
   const pausedRef = useRef(false)
   const expansionCountRef = useRef(0)
+  const supportsHoverPause = useSupportsHoverPause()
 
   const [segmentItems, setSegmentItems] = useState<readonly MarqueeItem[]>(() => duplicateTwice(baseItems))
   const offset = useMotionValue(0)
@@ -285,6 +299,10 @@ function InfiniteMarqueeEngine({
     return () => observer.disconnect()
   }, [baseItems, segmentItems])
 
+  useLayoutEffect(() => {
+    if (!supportsHoverPause) pausedRef.current = false
+  }, [supportsHoverPause])
+
   useAnimationFrame((_time, delta) => {
     if (pausedRef.current) return
 
@@ -306,10 +324,10 @@ function InfiniteMarqueeEngine({
       className="relative w-[100vw] max-w-[100vw] overflow-hidden [margin-inline:calc(50%-50vw)]"
       dir="ltr"
       onMouseEnter={() => {
-        pausedRef.current = true
+        if (supportsHoverPause) pausedRef.current = true
       }}
       onMouseLeave={() => {
-        pausedRef.current = false
+        if (supportsHoverPause) pausedRef.current = false
       }}
       aria-label={hasReviews ? 'ביקורות לקוחות מגוגל' : 'קישורים לפרופיל Google Business'}
     >
